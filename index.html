@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArríbaTe</title>
+    <link rel="shortcut icon" href="./img/logo4.png">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="./css/styles1.css" />
+    <link rel="stylesheet" href="./css/stylefilter.css" />
+    <link rel="stylesheet" href="./css/stylesmodal.css" />
+    <link rel="stylesheet" href="./css/stylesmenu.css" />
+    <link rel="stylesheet" href="./css/stylespublicate.css" />
+    <link rel="stylesheet" href="./css/stylesterminos.css" />
+</head>
+
+
+<body>
+    <div class="loader">
+        <div class="loader-logo"></div>
+        <!-- <img src="./img/logo2.svg" id="loader-img" alt="Logo de carga"> -->
+        <img src="./img/logonombre2.png" alt="Logo de carga" style="animation: loadernombre 3s forwards; ">
+    </div>
+
+    <div class="boxmaster">
+
+
+        <div class="menumaster">
+            <!-- Menu Left -->
+            <div class="menumaster-in-left">
+                <div class="logonombre">
+                    <div class="logo1"></div>
+                    <div style="margin-left: 10px;">
+                        <h1>ArríbaTe</h1>
+                        <span>República Dominicana</span>
+                    </div>
+                </div>
+
+                <div class="linediv"></div>
+
+                <div class="botonbox">
+                    <button id="alquilerButton" class="toggle-button active vibrar-button">Alquiler</button>
+                    <button id="ventaButton" class="toggle-button vibrar-button">Venta</button>
+                </div>
+
+
+
+            </div>
+            <!-- Menu Left FIN -->
+
+
+
+            <!-- Menu respon -->
+            <div class="botonbox2">
+
+                <div><button id="alquilerButton-rpsv" class="toggle-button vibrar-button">
+                        <h3>Alquiler</h3>
+                    </button>
+                    <button id="ventaButton-rpsv" class="toggle-button vibrar-button">
+                        <h3>Venta</h3>
+                    </button>
+                </div>
+
+                <div id="publicate-filter-rpsv" class="vibrar-button">
+                    <div class="publicate-rpsv" class="vibrar-button">
+                        <!-- <h3>Publíca<span style="color: #cd1025;">Te</span></h3> -->
+                        <button id="open-publicate-respon" class="vibrar-button"></button> <!--  -------------   -->
+                    </div>
+                    <div class="cube-boton-filtro-respon"><button id="open-filter-button-respon" class="vibrar-button"></button></div>
+                </div>
+            </div>
+            <!-- Menu respon FIN -->
+
+
+            <div class="cube-boton-filtro"><button id="open-filter-button" class="vibrar-button">Filtros</button></div>
+
+
+
+            <!-- Menu Right -->
+            <div class="menumaster-in-right">
+                <!-- <div class="cube-boton-filtro-respon"><button id="open-filter-button-respon"></button></div> -->
+                <!-- Alquilar/vender -->
+
+                <!-- <div class="Menu-contacto-redes-respon"></div> -->
+                <div class="publicate">
+                    <div class="publicate-In" id="open-publicate">Publíca<span style="color: #cd1025;">Te</span></div>
+                    <!--  -------------   -->
+                </div>
+
+                <div class="linediv" style="margin: 0px 12px;"></div>
+                <!-- Alquilar/vender FIN-->
+                <!-- Redes -->
+                <div class="redes-box">
+                    <div class="redes-box-in">
+                        <p>Síguenos:</p>
+                        <div class="redes-buttones">
+                            <div class="redes-button"></div>
+                            <div class="redes-button" style="background-image: url(./img/icons/facebook1.png);"></div>
+                            <div class="redes-button" style="background-image: url(./img/icons/x1.png);"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Redes FIN -->
+
+                <!-- Terminos -->
+                <!-- <div class="terminos-condiciones">
+                    <button id="openModalTerminosBtn">Términos</button>
+                </div> -->
+                <!-- Terminos FIN-->
+
+
+                <!-- Menú new -->
+                <div id="openBoxJmBtn" class="menu-all single-menu vibrar-button">
+                    <div class="menu-lines">
+                        <span class="line line1"></span>
+                        <span class="line line2"></span>
+                        <span class="line line3"></span>
+                    </div>
+                </div>
+
+
+
+
+
+
+                <!-- Menú new FIN-->
+            </div>
+            <!-- Menu Right FIN -->
+
+        </div>
+
+        <!-- contacto -->
+        <!-- <div class="barcontacto">
+        <div class="barcontactobtn">Síguenos:</div>
+        <div class="barredesbtn" style="background: #0093ff;"></div>
+        <div class="barredesbtn" style="background: #ff6c00;"></div>
+        <div class="barredesbtn" style="background: #2d2d2d;"></div>   
+    </div> -->
+        <!-- contacto FIN-->
+
+
+
+        <!-- Barra redes -->
+        <!-- <div class="bar-redes">
+        <div class="bar-redes-in">
+            <p>Redes</p>
+            <div class="button-redes"></div>
+            <div class="button-redes"></div>
+            <div class="button-redes"></div>
+        </div>
+    </div> -->
+        <!-- Barra redes FIN-->
+
+
+        <!-- MAPA -->
+        <div class="mapbox" style="position: fixed;top: 0px;left: 0px;">
+            <div id="map" style="background: #aad3df;height: 100%;width: 100%;"></div>
+
+            <button id="fullscreenButton" class="vibrar-button"></button>
+
+
+            <!-- Botones capas, location -->
+            <button id="changeLayerButton" class="layer-button vibrar-button">
+                <img src="./img/capasatelite2.png" alt="Cambiar capa" id="layerIcon">
+            </button>
+
+            <button id="locateButton" class="vibrar-button"></button>
+
+            <!-- Boton centrar en RD -->
+            <button id="centerButton" class="center-button vibrar-button" style="display: none;">
+            </button>
+            <!-- Boton centrar en RD FIN -->
+            <!-- Botones capas, location FIN -->
+
+        </div>
+    </div>
+    <!-- MAPA Fin-->
+
+
+    <!-- Modal -->
+    <div id="propertyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-logo">
+                <div class="modal-logo-in">
+                    <img src="./img/logo2.png">
+                    <p>ARRIBA<span>TE</span></p>
+                </div>
+
+            </div>
+            <div class="modal-in">
+                <!-- <h2>Información de la Propiedad</h2> -->
+
+
+
+
+                <!-- Galeria -->
+                <div class="gallery">
+                    <div class="main-image">
+
+                        <button class="nav-button-img-p left" id="prevMainImage">&#10094;</button>
+                        <img id="currentImage" src="" alt="Imagen Principal">
+                        <button class="nav-button-img-p right" id="nextMainImage">&#10095;</button>
+                    </div>
+                    <div class="thumbnails-container">
+                        <button class="scroll-button left">&#10094;</button>
+
+                        <div class="thumbnails"></div>
+
+                        <button class="scroll-button right">&#10095;</button>
+                    </div>
+                </div>
+
+                <div id="fullscreenView">
+                    <button class="nav-button left" id="prevImage">&#10094;</button>
+                    <div id="fullscreenImageContainer">
+                        <img id="fullscreenImage" src="" alt="Imagen en pantalla completa">
+                    </div>
+                    <button class="nav-button right" id="nextImage">&#10095;</button>
+                    <button id="closeFullscreen">Cerrar</button>
+                </div>
+                <!-- Galeria FIN -->
+
+
+
+                <!-- Aquí se inyectará la información de CADA propiedad -->
+                <div class="infocompleta">
+                    <!-- Modal body -->
+                    <div class="modal-body" id="modalPropertyDetails">
+
+                    </div>
+
+
+
+                    <!-- Modal para selección de aplicaciones de mapas IOS -->
+                    <div id="modal-map-ios" class="modal-map-ios">
+                        <div class="modal-map-ios-content">
+                            <span class="close-modal-map-ios">&times;</span>
+                            <h2>¿Con qué APP quieres abrir las coordenadas de esta propiedad?</h2>
+                            <div>
+                                <button id="appleMapsBtn"></button>
+                                <button id="googleMapsBtn"></button>
+                                <button id="wazeBtn"></button>
+                                <button id="uberBtn"></button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Modal para selección de aplicaciones de mapas IOS FIN -->
+
+
+
+
+
+                    <!-- Modal body FIN -->
+
+
+
+                </div>
+                <!-- Aquí se inyectará la información de CADA propiedad FIN -->
+
+
+
+
+
+
+
+            </div>
+
+            <!-- Información general para todas las propiedades -->
+            <div class="modal-end">
+                <button id="comoLlegarButton" class="como-llegar-button" onclick="comoLlegarDesdeModal()"><img
+                        src="./img/icons/location1.svg">
+                    <div>
+                        <h3>Cómo llegar</h3><span>a esta propiedad</span>
+                    </div>
+                </button>
+                <div class="contactos-res">
+                    <button><a href="#" id="whatsappButton" class="whatsapp-button" onclick="openWhatsApp()"
+                            target="_blank"><img src="./img/icons/whatsapp2.svg">
+                            <div><span>Para más información</span>
+                                <h3>WhatsApp</h3>
+                            </div>
+                        </a>
+                    </button></a>
+
+                </div>
+
+                <div class="modal-redes">
+                    <p>Síguenos en:</p>
+                    <img src="./img/icons/instagram1.png">
+                    <img src="./img/icons/facebook1.png">
+                    <img src="./img/icons/tiktok1.png">
+                    <img src="./img/icons/x1.png">
+                </div>
+
+            </div>
+            <span class="close" onclick="closeModal()">&times;</span>
+        </div>
+        <!-- Modal FIN -->
+
+
+
+        <!-- Modal para imágenes en pantalla completa -->
+        <div id="fullscreenModal" class="fullscreen-modal">
+            <button class="close-fullscreen" onclick="closeFullscreenModal()">&times;</button>
+            <img class="fullscreen-image" id="fullscreenModalImage" src="">
+            <button class="nav-button left" id="prevFullscreenImage">&#10094;</button>
+            <button class="nav-button right" id="nextFullscreenImage">&#10095;</button>
+        </div>
+        <!-- Modal para imágenes en pantalla completa FIN -->
+
+
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+
+
+
+    <!-- // Detectar cambios en el tema del sistema operativo
+const colorSchemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+function handleColorSchemeChange(e) {
+    const isDarkMode = e.matches;
+    const loader = document.querySelector('.loader');
+
+    if (isDarkMode) {
+        loader.style.backgroundColor = '#222222';
+    } else {
+        loader.style.backgroundColor = 'white';
+    }
+}
+
+// Aplicar estilos iniciales y escuchar cambios
+handleColorSchemeChange(colorSchemeQuery);
+colorSchemeQuery.addEventListener('change', handleColorSchemeChange); -->
+
+
+
+
+
+    <!-- Filtros -->
+    <div id="price-filter" class="filter">
+
+        <div class="header-filter"><img src="./img/logo2.svg">
+            <h1>Filtros</h1>
+            <button id="close-filter-button" class="vibrar-button">X</button>
+        </div>
+
+
+        <div class="body-filter">
+            <!-- Filtro de tipo de propiedad -->
+            <h2>Tipos de propiedad</h2>
+            <div class="filter-buttons">
+
+                <button id="filter-house" class="filter-button active vibrar-button">
+                    <img src="./img/casa4.png" alt="Casas">
+                    <p>Casas</p>
+                </button>
+                <button id="filter-building" class="filter-button active vibrar-button">
+                    <img src="./img/apartamento2.png" alt="Edificios" style="border-color: #52bae8;">
+                    <p>Apartamentos</p>
+                </button>
+                <button id="filter-land" class="filter-button active vibrar-button">
+                    <img src="./img/solar2.png" alt="Solares" style="border-color: #59a739;">
+                    <p>Solares</p>
+                </button>
+            </div>
+            <!-- Filtro de tipo de propiedad FIN-->
+
+            <div class="filtro-divisor"></div>
+
+            <!-- Filtro de Precios -->
+            <h2>Rango de Precio</h2>
+
+            <div class="price-labels">
+                <div class="price-labels-cube">
+                    <h6>Mínimo</h6>
+                    <input type="text" id="min-price" placeholder="RD$0" readonly>
+                </div>
+                <h6 style="margin-block-start: 25px;color: #777777;">hasta</h6>
+                <div class="price-labels-cube">
+                    <h6>Máximo</h6>
+                    <input type="text" id="max-price" placeholder="RD$0" readonly>
+                </div>
+            </div>
+
+            <div class="range-slider">
+                <div class="track"></div>
+                <div class="range" id="range-highlight"></div>
+                <input type="range" id="min-price-range" min="0" max="30000000" value="0">
+                <input type="range" id="max-price-range" min="0" max="30000000" value="30000000">
+            </div>
+
+            <!-- Filtro de Precios fin -->
+
+            <div class="filtro-divisor"></div>
+
+            <!-- Filtro de cantidad -->
+            <h2>Cantidades</h2>
+            <div class="filtro-cantidad-cube">
+
+                <div class="filter-counter">
+                    <img src="./img/icons/habitacion1.svg">
+                    <h6>Habitaciones</h6>
+                    <div class="counter-cube">
+                        <button id="decrease-rooms" class="vibrar-button">-</button>
+                        <span id="rooms-count">Cualquiera</span>
+                        <button id="increase-rooms" class="vibrar-button">+</button>
+                    </div>
+                </div>
+
+                <div class="filter-counter">
+                    <img src="./img/icons/baño2.svg">
+                    <h6>Baños</h6>
+                    <div class="counter-cube">
+                        <button id="decrease-bathrooms" class="vibrar-button">-</button>
+                        <span id="bathrooms-count">Cualquiera</span>
+                        <button id="increase-bathrooms" class="vibrar-button">+</button>
+                    </div>
+                </div>
+
+                <div class="filter-counter">
+                    <img src="./img/icons/parqueo1.svg">
+                    <h6>Parqueos</h6>
+                    <div class="counter-cube">
+                        <button id="decrease-parking" class="vibrar-button">-</button>
+                        <span id="parking-count">Cualquiera</span>
+                        <button id="increase-parking" class="vibrar-button">+</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Filtro de cantidad FIN -->
+        </div>
+
+
+        <div class="footer-filter">
+
+            <div class="toggle-buttons2">
+                <button id="alquilerButton-filter" class="toggle-button active vibrar-button"><img src="./img/icons/refresh1.png">
+                    <h3>Alquiler</h3>
+                </button>
+                <button id="ventaButton-filter" class="toggle-button vibrar-button"><img src="./img/icons/refresh1.png">
+                    <h3>Venta</h3>
+                </button>
+            </div>
+
+        </div>
+        <!-- Filtros FIN -->
+
+
+    </div>
+
+
+
+
+
+    <!-- Cuadro BoxJM1 -->
+    <div id="boxjm1" class="boxjm1">
+        <div class="boxjm1-content">
+
+            <div class="boxjm1-titulo">
+                <p>Información</p>
+                <span class="close2">&times;</span>
+            </div>
+            <div class="boxjm1-body">
+
+                <nav>
+                    <ul>
+                        <li>
+                            <h3>Conócenos:</h3>
+
+                            <button data-seccion="sobre-nosotros" class="vibrar-button"><img src="./img/logo2.svg"><h5>Sobre nosotros (ArríbaTe, S.A.)</h5></button>
+
+                        </li>
+                        <li>
+                            <h3>Contáctanos:</h3>
+                            <button class="vibrar-button"><a href="tel:+18299605566"><img src="./img/icons/llamar1.png"><h5>+1 (829) 960-5566</h5></a></button>
+                            <button class="vibrar-button"><a href="https://wa.me/18299605566?text=Hola,%20quisiera%20comunicarme%20con%20el%20servicio%20al%20cliente." target="_blank"><img src="./img/icons/servicio al cliente1.png"><h5>Servicio al cliente</h5></a></button>
+                            <button class="vibrar-button"><a href="mailto:info@arribate.com"><img src="./img/icons/correo1.png"><h5>info@arribate.com</h5></a></button>
+                        </li>
+                        <li>
+                            <h3>Siguénos:</h3>
+                            <button data-seccion="terminos-de-uso" class="vibrar-button" style="padding-right: 115px;"><img src="./img/icons/instagram4.png"><h5>Instagram</h5></button>
+                            <button data-seccion="terminos-de-uso" class="vibrar-button" style="padding-right: 145px;"><img src="./img/icons/facebook4.png"><h5>Facebook</h5></button>
+                            <button data-seccion="politicas-de-privacidad" class="vibrar-button"><img src="./img/icons/tiktok4.png"><h5>TikTok</h5></button>
+                        </li>
+                        <li>
+                            <h3>Infórmate:</h3>
+                            <button data-seccion="terminos-de-uso" class="vibrar-button"><img src="./img/icons/condiciones1.png"><h5>Condiciones de uso</h5></button>
+                            <button data-seccion="politicas-de-privacidad" class="vibrar-button"><img src="./img/icons/privacidad1.png"><h5>Políticas de privacidad</h5></button>
+                        </li>
+
+
+                    </ul>
+                </nav>
+
+
+            </div>
+            <div class="boxjm1-down">
+
+                <div class="boxjm1-redes">
+                    <h6> © ArríbaTe 2024 </h6>
+                    <!-- <div><img src="./img/icons/instagram2.png"><img src="./img/icons/facebook2.png"><img
+                            src="./img/icons/x2.png"></div> -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- PublicaTE -->
+    <div id="background-publicate-modal" class="modal-background">
+        <div id="publicate-modal" class="modal-publicate">
+            <div class="publicate-titulo">
+                <p>Publíca<span style="color: #cd1025;">Te</span></p>
+                <button id="close-publicate-modal" class="vibrar-button">X</button>
+            </div>
+            <div class="publicate-body">
+                <p style="font-size: 14px;">¿Quieres <span style="color: #096caf;">alquilar</span> o <span
+                        style="color: #cd1025;">vender</span> tu propiedad?<br>
+                    <span style="font-size: 13px;">Comunícate con nosotros y nosotros nos encargamos del resto.</span>
+                </p>
+                <p style="font-weight: 100;color: #1e1e1e;font-size: 12px;text-align: left;">Como administradores de
+                    propiedades, facilitamos el proceso y nos ocupamos de todo para que tú no tengas que preocuparte.
+                </p>
+
+                <div class="beneficios-publicate" style="font-family: sans-serif;font-size: 14px;margin-bottom: 18px;">
+                    <p>Beneficios:</p>
+                    Atención personalizada.<br>
+                    Proceso sencillo y sin complicaciones.<br>
+                    Experiencia en el mercado inmobiliario.<br>
+                    Asesoría para la mejor valorización de la propiedad.
+                </div>
+                <div class="publicate-btns">
+                    <button id="publicate-btn-alquilar"><img src="./img/icons/whatsapp2.svg">
+                        <div>
+                            <h3>ALQUILAR</h3><span>propiedad</span>
+                        </div>
+                    </button>
+
+                    <button id="publicate-btn-vender" style="margin-right: 0px;"><img src="./img/icons/whatsapp2.svg">
+                        <div>
+                            <h3>VENDER</h3><span>propiedad</span>
+                        </div>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- PublicaTE FIN -->
+
+
+    <!-- Terminos y condiciones -->
+
+    <div class="terminos-politica-back" id="open-terminos-politica">
+        <div class="terminos-politica-content">
+            <div class="terminos-politica-titulo">
+                <h1>Informaciones</h1>
+                <button class="cerrar-cuadro">X</button>
+
+                <div class="terminos-botones-box">
+                    <button data-seccion="sobre-nosotros" class="vibrar-button">Sobre Nosotros</button>
+                    <button data-seccion="terminos-de-uso" class="vibrar-button">Condiciones de Uso</button>
+                    <button data-seccion="politicas-de-privacidad" class="vibrar-button">Políticas de privacidad</button>
+                </div>
+            </div>
+
+            <div class="terminos-politica-body">
+
+                <div class="display-info-all"></div>
+            </div>
+            <div class="terminos-politica-end">
+                <p>Copyright © 2024 ArríbaTe S.A.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terminos y condiciones FIN -->
+
+
+
+
+    <script>
+
+
+
+        // Ocultar la pantalla de carga y mostrar el contenido después de 2.7 segundos
+        setTimeout(function () {
+            document.querySelector('.loader').style.display = 'none';
+            document.querySelector('.content').style.display = 'block';
+
+        }, 2700);
+
+
+
+
+        
+        // Inicialización del mapa con un maxZoom aumentado
+        var map;
+
+        if (window.innerWidth <= 700) { // ajuste responsive
+            map = L.map('map').setView([18.7357, -70.1627], 7);
+        } else {
+            map = L.map('map').setView([18.7357, -70.1627], 8);
+        }
+
+        // Capas de mapa
+        var baseMaps = {
+            "Claro": L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                maxZoom: 19
+            }).addTo(map),
+            "Vista Satelital": L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+                maxZoom: 19
+            })
+        };
+
+        // Referencia al botón de cambio de capa
+        const changeLayerButton = document.getElementById('changeLayerButton');
+        let isSatelliteView = false;  // Estado inicial
+
+        changeLayerButton.addEventListener('click', () => {
+            if (isSatelliteView) {
+                // Cambiar a capa de mapa
+                map.removeLayer(baseMaps["Vista Satelital"]);
+                baseMaps["Claro"].addTo(map);
+                changeLayerButton.querySelector('img').src = './img/capasatelite2.png'; // Cambiar imagen a satélite
+                changeLayerButton.querySelector('img').alt = 'Cambiar a Satélite';
+            } else {
+                // Cambiar a capa satelital
+                map.removeLayer(baseMaps["Claro"]);
+                baseMaps["Vista Satelital"].addTo(map);
+                changeLayerButton.querySelector('img').src = './img/capamapa2.png'; // Cambiar imagen a mapa
+                changeLayerButton.querySelector('img').alt = 'Cambiar a Mapa';
+            }
+            isSatelliteView = !isSatelliteView; // Alternar estado
+        });
+
+
+
+
+
+
+
+
+        // Definir el ícono personalizado
+        const customIcon = L.icon({
+            iconUrl: './img/icons/location5.png', // Reemplaza con la ruta de tu imagen personalizada
+            iconSize: [38, 38], // Tamaño del ícono [ancho, alto]
+            iconAnchor: [19, 19], // Punto de anclaje en el centro del ícono
+            className: 'custom-icon',
+        });
+
+        // Variables para almacenar el marcador y el círculo
+        let userMarker;
+        let userCircle;
+        let tooltip;
+
+        // Botón de mi ubicación
+        const locateButton = document.getElementById('locateButton');
+
+        // Evento click para centrar el mapa en la ubicación del usuario
+        locateButton.addEventListener('click', () => {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+
+                    // Centrar el mapa en la ubicación del usuario
+                    map.setView([lat, lng], 17);
+
+                    // Si ya existe un marcador, elimínalo
+                    if (userMarker) {
+                        map.removeLayer(userMarker);
+                    }
+
+                    // Si ya existe un círculo, elimínalo
+                    if (userCircle) {
+                        map.removeLayer(userCircle);
+                    }
+
+                    // Agregar un marcador en la ubicación del usuario con el ícono personalizado
+                    userMarker = L.marker([lat, lng], { icon: customIcon }).addTo(map);
+
+                    // Agregar un círculo alrededor del marcador con un radio de 50 metros
+                    userCircle = L.circle([lat, lng], {
+                        color: '#ffffff00', // Color del borde del círculo
+                        fillColor: 'rgb(0 142 255 / 0%)', // Color del interior del círculo (azul con opacidad)
+                        fillOpacity: 1, // Opacidad del interior del círculo
+                        radius: 350 // Radio en metros (50 metros)
+                    }).addTo(map);
+
+                    // Agregar un tooltip con el mensaje de ubicación estimada
+                    tooltip = userMarker.bindTooltip("La ubicación es solo un estimado.", {
+                        permanent: true, // Hace que el tooltip siempre esté visible
+                        direction: 'top', // Coloca el tooltip encima del marcador
+                        offset: [0, -25], // Ajusta la posición del tooltip con respecto al ícono
+                        className: 'custom-tooltip' // Clase personalizada para el tooltip
+                    }).openTooltip();
+
+                    // Función para ocultar suavemente el tooltip
+                    function hideTooltip() {
+                        const tooltipElement = document.querySelector('.custom-tooltip');
+                        if (tooltipElement) {
+                            tooltipElement.style.transition = 'opacity 0.3s ease';
+                            tooltipElement.style.opacity = '0'; // Desvanecer el tooltip
+                            setTimeout(() => {
+                                if (userMarker && tooltip) {
+                                    userMarker.unbindTooltip(); // Eliminar el tooltip después de la animación
+                                }
+                            }, 300); // Tiempo de espera para la animación de 0.3s
+                        }
+                    }
+
+                    // Ocultar el tooltip cuando el usuario haga clic en el mapa
+                    map.on('click', hideTooltip);
+
+                    // Ocultar el tooltip cuando el usuario arrastre el mapa
+                    map.on('dragstart', hideTooltip);
+                }, () => {
+                    console.error("No se pudo obtener la ubicación.");
+                });
+            } else {
+                console.error("La geolocalización no es soportada por este navegador.");
+            }
+        });
+
+
+
+
+        // centrar
+        const bounds = [
+            [18.979026, -71.586914], //Oeste
+            [18.29195, -70.19165], //Sureste
+            [18.64104, -68.686523], //Este
+            [19.733098, -70.587158]  //Norte
+        ];
+
+        const rectangle = L.rectangle(bounds, { color: "transparent", weight: 1 }).addTo(map);
+map.fitBounds(bounds);
+
+// Accede a la capa del rectángulo y establece el estilo
+rectangle._path.style.pointerEvents = "none";
+
+        map.on('moveend', function () {
+            const centerButton = document.getElementById('centerButton');
+            if (map.getBounds().intersects(bounds)) {
+                centerButton.style.display = 'none';
+            } else {
+                centerButton.style.display = 'block';
+            }
+        });
+
+        // Nivel de zoom por defecto
+        let zoomLevel = 8;
+
+        // Ajustar el nivel de zoom según el tamaño de la pantalla
+        function adjustZoomLevel() {
+            if (window.innerWidth <= 700) {
+                zoomLevel = 7;
+            } else {
+                zoomLevel = 8;
+            }
+        }
+
+        // Llamar a la función al cargar la página y al cambiar el tamaño de la ventana
+        adjustZoomLevel();
+        window.addEventListener('resize', adjustZoomLevel);
+
+        document.getElementById('centerButton').addEventListener('click', function () {
+            map.flyToBounds(bounds, {
+                duration: 1,
+                maxZoom: zoomLevel
+            });
+        });
+        // centrar Fin
+
+
+
+
+
+        // Función para formatear números con comas como separadores de miles
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        // Variables de iconos
+        var houseIcon = './img/casa4.png';
+        var buildingIcon = './img/apartamento2.png';
+        var landIcon = './img/solar2.png';
+
+        // Función para obtener el color del fondo del span según el tipo de propiedad
+        function getBackgroundColor(iconUrl) {
+            if (iconUrl === houseIcon) {
+                return '#ff5f64'; // Color para casas
+            } else if (iconUrl === buildingIcon) {
+                return '#1090e7'; // Color para apartamentos
+            } else if (iconUrl === landIcon) {
+                return '#59a739'; // Color para solares
+            } else {
+                return 'white'; // Color por defecto
+            }
+        }
+
+
+        // Creación de íconos personalizados con precio y color según el tipo de propiedad
+        function createIcon(iconUrl, price, isAlquiler) {
+            var backgroundColor = getBackgroundColor(iconUrl); // Obtener color de fondo
+            // Si es un alquiler, añade "/mes" al final del precio
+            var priceText = `RD$${formatNumber(price)}` + (isAlquiler ? "/mes" : "");
+
+            return L.divIcon({
+                html: `<div style="position: relative; display: flex; flex-direction: column; align-items: center;">
+            <img src="${iconUrl}" style="margin-top: -26px;
+            width: 32px; height: 32px; background: #0f1931; border-radius: 31px; border-style: solid; border-color: ${backgroundColor}; border-width: 3px;" />
+            <span style="background: ${backgroundColor}; 
+            font-family: system-ui;color: white;font-size: 12px;font-weight: bold;
+            padding: 2px 4px; border-radius: 3px; margin-top: -8px;">${priceText}</span>
+            <div class="price-tip" style="border-top-color: ${backgroundColor};"></div>
+        </div>`,
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -32]
+            });
+        }
+
+        // Íconos para referencia
+        var roomIcon = './img/icons/habitacion1.svg'; // ícono para habitaciones
+        var bathroomIcon = './img/icons/baño1.svg'; // ícono para baños
+        var parkingIcon = './img/icons/parqueo1.svg'; // ícono para parqueo
+        var areaIcon = './img/icons/area1.svg'; // ícono para área
+
+        // Normalización de ubicaciones
+        function normalizeLocation(location) {
+            return location.latLng ? { ...location, lat: location.latLng[0], lng: location.latLng[1] } : location;
+        }
+
+
+
+        // Definición de ubicaciones con información adicional
+        var alquileres = [
+            {
+                id: 334501, latLng: [18.47434844864751, -69.81027832640669], title: 'Los frailes Casa', price: 25000, icon: houseIcon, rooms: 4, bathrooms: 3, parking: 6, area: 329, imageFolder: './properties/alquiler/334501/img/', imageCount: 10,
+                caracteristicas: ''
+            },
+
+            {
+                id: 334502, latLng: [18.53407239836236, -69.84790422950549], title: 'Casa Res. Don Oscar', price: 32000, icon: houseIcon, rooms: 4, bathrooms: 5, parking: 4, area: 400, imageFolder: './properties/alquiler/334502/img/', imageCount: 15,
+                caracteristicas: '<p>Esta espectacular propiedad cuenta con detalles únicos que la hacen verdaderamente especial. Dispone de una elegante piscina con sistema de iluminación nocturna, ideal para disfrutar de un ambiente relajado bajo las estrellas. Además, la casa incluye un cine privado completamente equipado, perfecto para disfrutar de películas en la comodidad de tu hogar. Los pisos de mármol en todas las áreas comunes aportan un toque de lujo, diseñado con acabados de primera calidad, y una terraza con vista panorámica, ideal para recibir invitados o simplemente relajarse.</p><ul><li><strong>Habitaciones:</strong> 3 amplias habitaciones con iluminación natural.</li></p><li><strong>Baños:</strong> 3 baños completos, equipados con modernos acabados y agua caliente.</li></p><li><strong>Piscina:</strong> Piscina privada de tamaño mediano, perfecta para relajarse en días calurosos.</li></p><li><strong>Patio:</strong> Espacioso patio trasero ideal para reuniones familiares, jardinería o actividades al aire libre.</li></p><li><strong>Frente:</strong> Fachada moderna con jardín decorativo, proporcionando un aspecto atractivo y acogedor.</li></p><li><strong>Ubicación:</strong> Excelente ubicación en un vecindario tranquilo, con acceso cercano a supermercados, escuelas y transporte público.</li></p><li><strong>Cocina:</strong> Cocina equipada con electrodomésticos de alta calidad, gabinetes espaciosos y una isla central.</li></p><li><strong>Sala:</strong> Sala de estar amplia, con ventanales que permiten una vista despejada al jardín.</li></p><li><strong>Comedor:</strong> Comedor separado con espacio para una mesa grande, perfecto para cenas familiares.</li></p><li><strong>Parqueo:</strong> Garaje techado con espacio para dos vehículos.</li></p><li><strong>Seguridad:</strong> Sistema de seguridad integrado con cámaras y alarmas.</p><li><strong>Extras:</strong> Terraza techada, cuarto de servicio, aire acondicionado en todas las habitaciones.</li></p></ul>'
+            },
+
+            {
+                id: 334503, latLng: [18.49683473654844, -69.80295189696278], title: 'San Isidro Apartamento', price: 25500, icon: buildingIcon, rooms: 3, bathrooms: 2, parking: 2, area: 150, imageFolder: './properties/alquiler/334503/img/', imageCount: 14,
+                caracteristicas: ''
+            },
+
+            {
+                id: 334505, latLng: [19.476010256988793, -70.66142702687121], title: 'Casa Santiago', price: 37000, icon: houseIcon, rooms: 4, bathrooms: 3, parking: 2, area: 982, imageFolder: './properties/alquiler/334505/img/', imageCount: 15,
+                caracteristicas: ''
+            },
+
+
+        ];
+
+        var ventas = [
+
+            { id: 224502, latLng: [18.471514679233934, -69.807869359044], title: 'los frailes Casa', price: 14750000, icon: houseIcon, rooms: 4, bathrooms: 3, parking: 6, area: 329, imageFolder: './properties/venta/224502/img/', imageCount: 10, caracteristicas: '' },
+
+            { id: 224504, latLng: [18.457316096553225, -69.91592487067537], title: 'zona universitaria Apartamento', price: 10500000, icon: buildingIcon, rooms: 2, bathrooms: 2, parking: 2, area: 116, imageFolder: './properties/venta/224504/img/', imageCount: 7, caracteristicas: '' },
+
+            { id: 224505, latLng: [19.464670827305877, -70.67438212014031], title: 'Casa Santiago', price: 21181000, icon: houseIcon, rooms: 4, bathrooms: 3, parking: 2, area: 982, imageFolder: './properties/venta/224505/img/', imageCount: 15, caracteristicas: '' },
+
+            { id: 224511, latLng: [19.748816219700327, -70.65440623939426], title: 'Solar, muñoz, puerto plata', price: 13400000, icon: landIcon, rooms: 0, bathrooms: 0, parking: 0, area: 908, imageFolder: './properties/venta/224511/img/', imageCount: 7, caracteristicas: '' },
+
+            { id: 224513, latLng: [18.780254470682426, -68.54500166578522], title: 'Solar Macao, Punta cana', price: 6500000, icon: landIcon, rooms: 0, bathrooms: 0, parking: 0, area: 500, imageFolder: './properties/venta/224513/img/', imageCount: 11, caracteristicas: '' },
+
+            { id: 224503, latLng: [18.515361605411158, -69.79580351613811], title: 'Edificio Santo Domingo', price: 70000000, icon: buildingIcon, rooms: 12, bathrooms: 10, parking: 6, area: 700, imageFolder: './img/properties/224503/', imageCount: 5, caracteristicas: '' },
+
+            {
+                id: 224506, latLng: [18.534530697687792, -69.84886578381361], title: 'Casa calle Santo Domingo', price: 3800000, icon: houseIcon, rooms: 4, bathrooms: 3, parking: 2, area: 150, imageFolder: './img/properties/224504/', imageCount: 7,
+                caracteristicas: '<p>Esta espectacular propiedad cuenta con detalles únicos que la hacen verdaderamente especial. Dispone de una elegante piscina con sistema de iluminación nocturna, ideal para disfrutar de un ambiente relajado bajo las estrellas. Además, la casa incluye un cine privado completamente equipado, perfecto para disfrutar de películas en la comodidad de tu hogar. Los pisos de mármol en todas las áreas comunes aportan un toque de lujo, diseñado con acabados de primera calidad, y una terraza con vista panorámica, ideal para recibir invitados o simplemente relajarse.</p><ul><li><strong>Habitaciones:</strong> 3 amplias habitaciones con iluminación natural.</li></p><li><strong>Baños:</strong> 3 baños completos, equipados con modernos acabados y agua caliente.</li></p><li><strong>Piscina:</strong> Piscina privada de tamaño mediano, perfecta para relajarse en días calurosos.</li></p><li><strong>Patio:</strong> Espacioso patio trasero ideal para reuniones familiares, jardinería o actividades al aire libre.</li></p><li><strong>Frente:</strong> Fachada moderna con jardín decorativo, proporcionando un aspecto atractivo y acogedor.</li></p><li><strong>Ubicación:</strong> Excelente ubicación en un vecindario tranquilo, con acceso cercano a supermercados, escuelas y transporte público.</li></p><li><strong>Cocina:</strong> Cocina equipada con electrodomésticos de alta calidad, gabinetes espaciosos y una isla central.</li></p><li><strong>Sala:</strong> Sala de estar amplia, con ventanales que permiten una vista despejada al jardín.</li></p><li><strong>Comedor:</strong> Comedor separado con espacio para una mesa grande, perfecto para cenas familiares.</li></p><li><strong>Parqueo:</strong> Garaje techado con espacio para dos vehículos.</li></p><li><strong>Seguridad:</strong> Sistema de seguridad integrado con cámaras y alarmas.</p><li><strong>Extras:</strong> Terraza techada, cuarto de servicio, aire acondicionado en todas las habitaciones.</li></p></ul>'
+            }
+        ];
+
+
+       // Carousel
+
+        // Función para crear el carrusel
+        function createCarousel(imageFolder, imageCount) {
+  let carousel = `<div class="carousel">
+                    <div class="botonmaximizar"></div>
+                    <div class="carousel-inner">`;
+
+  const maxImagesToShow = Math.min(imageCount, 7);
+
+  for (let i = 1; i <= maxImagesToShow; i++) {
+    const imgSrc = `${imageFolder}${i}.jpg`;
+    carousel += `
+      <div class="placeholder" style="background-color: #f0f0f0;"> 
+        <img src="${imgSrc}" class="${i === 1 ? 'active' : ''}" alt="Imagen ${i}" loading="lazy" onload="this.parentNode.style.backgroundImage = 'none'"> 
+      </div>`; 
+  }
+  carousel += `
+                    </div>
+                    <button class="prev">❮</button>
+                    <button class="next">❯</button>
+                    <div class="indicators">
+                      ${Array.from({ length: maxImagesToShow }, (_, index) => `<span class="indicator ${index === 0 ? 'active' : ''}" data-index="${index}"></span>`).join('')}
+                    </div>
+                  </div>`;
+  return carousel;
+}
+
+        // Función para cambiar la imagen
+        function changeImage(carousel, direction) {
+            const carouselInner = carousel.querySelector('.carousel-inner');
+            const images = carousel.querySelectorAll('.carousel-inner img');
+            const indicators = carousel.querySelectorAll('.indicator');
+            let currentIndex = Array.from(images).findIndex(img => img.classList.contains('active'));
+
+            // Calcular el nuevo índice
+            let newIndex = currentIndex + direction;
+            if (newIndex < 0) {
+                newIndex = images.length - 1;
+            } else if (newIndex >= images.length) {
+                newIndex = 0;
+            }
+
+            // Actualizar clases 'active'
+            images[currentIndex].classList.remove('active');
+            indicators[currentIndex].classList.remove('active');
+            images[newIndex].classList.add('active');
+            indicators[newIndex].classList.add('active');
+
+            // Mover el carousel-inner
+            const imageWidth = images[0].offsetWidth;
+            const newPosition = -newIndex * imageWidth;
+            carouselInner.style.transform = `translateX(${newPosition}px)`;
+        }
+
+        // Función para establecer la imagen activa al hacer clic en un indicador
+        function setActiveImage(carousel, index) {
+            const carouselInner = carousel.querySelector('.carousel-inner');
+            const images = carousel.querySelectorAll('.carousel-inner img');
+            const indicators = carousel.querySelectorAll('.indicator');
+            const currentIndex = Array.from(images).findIndex(img => img.classList.contains('active'));
+
+            if (currentIndex === index) return; // Si ya está activo, no hacer nada
+
+            // Actualizar clases 'active'
+            images[currentIndex].classList.remove('active');
+            indicators[currentIndex].classList.remove('active');
+            images[index].classList.add('active');
+            indicators[index].classList.add('active');
+
+            // Mover el carousel-inner
+            const imageWidth = images[0].offsetWidth;
+            const newPosition = -index * imageWidth;
+            carouselInner.style.transform = `translateX(${newPosition}px)`;
+        }
+
+        // Funciones para manejar el evento touch
+        function addTouchEvents(carousel) {
+            let touchStartX = 0;
+            let touchEndX = 0;
+            const threshold = 50; // Umbral de deslizamiento en píxeles
+
+            carousel.addEventListener('touchstart', function (event) {
+                touchStartX = event.changedTouches[0].clientX;
+            }, false);
+
+            carousel.addEventListener('touchend', function (event) {
+                touchEndX = event.changedTouches[0].clientX;
+                handleGesture();
+            }, false);
+
+            function handleGesture() {
+                const deltaX = touchEndX - touchStartX;
+                if (Math.abs(deltaX) > threshold) {
+                    if (deltaX > 0) {
+                        // Deslizamiento hacia la derecha -> Imagen anterior
+                        changeImage(carousel, -1);
+                    } else {
+                        // Deslizamiento hacia la izquierda -> Siguiente imagen
+                        changeImage(carousel, 1);
+                    }
+                }
+            }
+        }
+
+        
+
+        // Añadimos los event listeners a cada carrusel después de crearlo
+        function initializeCarouselEvents() {
+            const carousels = document.querySelectorAll('.carousel');
+            carousels.forEach(carousel => {
+                const prevButton = carousel.querySelector('.prev');
+                const nextButton = carousel.querySelector('.next');
+                const indicators = carousel.querySelectorAll('.indicator');
+
+                prevButton.addEventListener('click', () => changeImage(carousel, -1));
+                nextButton.addEventListener('click', () => changeImage(carousel, 1));
+
+                indicators.forEach(indicator => {
+                    indicator.addEventListener('click', () => {
+                        const index = parseInt(indicator.getAttribute('data-index'));
+                        setActiveImage(carousel, index);
+                    });
+                });
+
+                // Añadir eventos táctiles
+                addTouchEvents(carousel);
+            });
+        }
+
+        // Crear marcadores y popups con carruseles
+        function createMarkers(locations, markersArray) {
+            locations.forEach(function (location) {
+                location = normalizeLocation(location);
+                var isAlquiler = markersArray === alquilerMarkers;  // Verifica si es alquiler
+                var marker = L.marker([location.lat, location.lng], { icon: createIcon(location.icon, location.price, isAlquiler) });
+
+                // Crear el carrusel si hay una carpeta de imágenes disponible
+                var carousel = location.imageFolder ? createCarousel(location.imageFolder, location.imageCount) : '';
+
+                // Agregar condicionalmente "/mes" al precio si es un alquiler
+                var priceText = `RD$ ${formatNumber(location.price)}`;
+                if (markersArray === alquilerMarkers) {
+                    priceText += '/mes';
+                }
+
+                marker.bindPopup(
+                    `<button id="vermodal" onclick="openModal(${JSON.stringify(location).replace(/"/g, '&quot;')})"></button>
+                ${carousel}
+                <div class="informacion-basica"> 
+
+                 <button id="btncomollegar" onclick="comoLlegar(${location.lat}, ${location.lng})"><img src="./img/icons/location1.svg">Cómo llegar</button>
+                <span class="price-text">${priceText}</span><br>
+                <b>${location.title}</b><br>
+
+                <div class="detalles-basicos"> 
+                <img src="${roomIcon}" style="width: 26px; height: 26px;"/> ${location.rooms}
+                <img src="${bathroomIcon}" style="width: 26px; height: 26px; margin-left: 10px;"/> ${location.bathrooms}
+                <img src="${parkingIcon}" style="width: 26px; height: 26px; margin-left: 10px;"/> ${location.parking}
+                <img src="${areaIcon}" style="width: 26px; height: 26px; margin-left: 10px;"/> ${location.area} m²
+                </div>
+                </div>`
+                ).addTo(map).on('popupopen', function () {
+                    // Inicializar eventos del carrusel en el popup
+                    initializeCarouselEvents();
+                });
+
+                markersArray.push(marker);
+            });
+        }
+
+
+        // Función de cómo llegar
+        function comoLlegar(lat, lng) {
+            var url = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+            window.open(url, '_blank');
+        }
+        // PopUP FIN
+
+
+
+        function comoLlegarDesdeModal() {
+            // Obtener latitud y longitud de la propiedad actualmente mostrada en el modal
+            const propertyId = parseInt(window.location.hash.substring('#id-'.length));
+            const property = [...alquileres, ...ventas].find(p => p.id === propertyId);
+
+            if (property) {
+                const lat = property.latLng ? property.latLng[0] : property.lat;
+                const lng = property.latLng ? property.latLng[1] : property.lng;
+
+                // Verificar si estamos en un dispositivo iOS
+                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+                if (isIOS) {
+                    // Crear enlaces personalizados para cada aplicación en iOS
+                    const appleMapsUrl = `maps://?q=${lat},${lng}`;
+                    const googleMapsUrl = `comgooglemaps://?q=${lat},${lng}&center=${lat},${lng}`;
+                    const wazeUrl = `waze://?ll=${lat},${lng}&navigate=yes`;
+                    const uberUrl = `uber://?action=setPickup&dropoff[latitude]=${lat}&dropoff[longitude]=${lng}`;
+
+                    // Función para intentar abrir la URL y mostrar un mensaje si no está instalada
+                    function tryOpenUrl(url, fallbackMessage) {
+                        const timeout = setTimeout(() => {
+                            alert(fallbackMessage); // Mostrar el mensaje personalizado
+                        }, 1500); // 1.5 segundos de espera
+
+                        window.location.href = url;
+
+                        window.addEventListener('blur', () => {
+                            clearTimeout(timeout); // Si la app se abre, cancelar el timeout
+                        });
+                    }
+
+                    // Mostrar el modal
+                    const modal = document.getElementById('modal-map-ios');
+                    modal.style.display = 'block';
+
+                    // Obtener los botones y asociar las URLs con la función tryOpenUrl
+                    document.getElementById('appleMapsBtn').onclick = function () {
+                        tryOpenUrl(appleMapsUrl, 'Apple Maps no está instalada en este dispositivo.');
+                    };
+                    document.getElementById('googleMapsBtn').onclick = function () {
+                        tryOpenUrl(googleMapsUrl, 'Google Maps no está instalada en este dispositivo.');
+                    };
+                    document.getElementById('wazeBtn').onclick = function () {
+                        tryOpenUrl(wazeUrl, 'Waze no está instalada en este dispositivo.');
+                    };
+                    document.getElementById('uberBtn').onclick = function () {
+                        tryOpenUrl(uberUrl, 'Uber no está instalada en este dispositivo.');
+                    };
+
+                    // Cerrar el modal cuando se hace clic en la "X"
+                    document.querySelector('.close-modal-map-ios').onclick = function () {
+                        modal.style.display = 'none';
+                    };
+
+                    // Cerrar el modal si el usuario hace clic fuera del contenido del modal
+                    window.onclick = function (event) {
+                        if (event.target == modal) {
+                            modal.style.display = 'none';
+                        }
+                    };
+                } else {
+                    // Para Android, usar geo URI scheme
+                    const url = `geo:${lat},${lng}?q=${lat},${lng}`;
+                    window.location.href = url;
+                }
+            } else {
+                console.error("No se pudo encontrar la propiedad para obtener las coordenadas.");
+            }
+        }
+
+
+
+
+        //boton compartir
+        function shareProperty() {
+            const propertyId = parseInt(window.location.hash.substring('#id-'.length));
+            const propertyLink = `https://arribate.com/#id-${propertyId}`; // Asegúrate de reemplazar 'tusitioweb.com' con tu dominio real
+            const message = `¡Mira esta propiedad en ArríbaTe!`;
+
+            if (navigator.share) { // Verificar si la API Web Share está disponible
+                navigator.share({
+                    title: 'Compartir Propiedad',
+                    text: message,
+                    url: propertyLink
+                })
+                    .then(() => console.log('Contenido compartido exitosamente'))
+                    .catch(error => console.error('Error al compartir:', error));
+            } else {
+                // Si la API Web Share no está disponible, puedes copiar el enlace al portapapeles o mostrar un mensaje
+                alert("La función de compartir no está disponible en este navegador. Puedes copiar el enlace manualmente.");
+                // Código para copiar al portapapeles (opcional):
+                // const tempInput = document.createElement('input');
+                // tempInput.value = propertyLink;
+                // document.body.appendChild(tempInput);
+                // tempInput.select();
+                // document.execCommand('copy');
+                // document.body.removeChild(tempInput);
+            }
+        }
+
+
+
+
+
+
+
+
+
+        var alquilerMarkers = [];
+        var ventaMarkers = [];
+
+        createMarkers(alquileres, alquilerMarkers);
+        createMarkers(ventas, ventaMarkers);
+
+        // Variable para mantener el tipo activo
+        var activeType = 'alquiler';
+
+        // Funciones para mostrar/ocultar marcadores
+        function toggleMarkers(type) {
+            activeType = type; // Actualizar el tipo activo
+
+            var showMarkers = type === 'alquiler' ? alquilerMarkers : ventaMarkers;
+            var hideMarkers = type === 'alquiler' ? ventaMarkers : alquilerMarkers;
+
+            showMarkers.forEach(marker => marker.addTo(map));
+            hideMarkers.forEach(marker => map.removeLayer(marker));
+
+            filterMarkers(); // Filtrar los marcadores después de cambiar el tipo
+        }
+
+
+
+
+        // Botones alquiler-venta con su .active
+        const buttonGroups = {
+            alquiler: ['alquilerButton', 'alquilerButton-filter', 'alquilerButton-rpsv'],
+            venta: ['ventaButton', 'ventaButton-filter', 'ventaButton-rpsv']
+        };
+
+        function activateGroup(group) {
+            for (const buttonId in buttonGroups) {
+                const buttons = buttonGroups[buttonId];
+                buttons.forEach(id => {
+                    const button = document.getElementById(id);
+                    if (buttonId === group) {
+                        button.classList.add('active');
+                    } else {
+                        button.classList.remove('active');
+                    }
+                });
+            }
+            toggleMarkers(group);
+        }
+
+        // Event listeners para todos los botones
+        for (const group in buttonGroups) {
+            buttonGroups[group].forEach(id => {
+                document.getElementById(id).addEventListener('click', () => activateGroup(group));
+            });
+        }
+
+        // Asegurar que 'alquilerButton-rpsv' esté activo al cargar la página
+        activateGroup('alquiler');
+
+        // Botones alquiler-venta con su .active FIN
+
+
+
+
+
+
+
+
+
+
+        // Inicialmente mostrar solo los alquileres
+        toggleMarkers('alquiler');
+    </script>
+
+    <script>
+        // Función para detectar si el dispositivo es iOS
+        function isIOS() {
+            return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        }
+
+        const fullscreenButton = document.getElementById('fullscreenButton');
+
+        // Ocultar el botón de pantalla completa si es iOS
+        if (isIOS()) {
+            fullscreenButton.style.display = 'none'; // Oculta el botón
+        } else {
+            fullscreenButton.addEventListener('click', () => {
+                if (document.fullscreenElement) {
+                    document.exitFullscreen();
+                } else {
+                    document.documentElement.requestFullscreen();
+                }
+            });
+
+            // Evento para detectar cambios en el estado de pantalla completa
+            document.addEventListener('fullscreenchange', () => {
+                if (document.fullscreenElement) {
+                    fullscreenButton.classList.add('active'); // Agregar clase 'active'
+                } else {
+                    fullscreenButton.classList.remove('active'); // Quitar clase 'active'
+                }
+            });
+        }
+    </script>
+
+    <script src="./js/scriptfiltros.js"></script>
+    <script src="./js/scriptmodal.js"></script>
+    <script src="./js/scriptmenu.js"></script>
+    <script src="./js/scriptpublicate.js"></script>
+    <script src="./js/scriptterminos.js"></script>
+
+
+    <script>
+        map.on('contextmenu', function (e) {
+            // Crea el cuadro de coordenadas
+            const coordinateBox = L.DomUtil.create('div', 'coordinate-box');
+            coordinateBox.innerHTML = `
+            <h2>Coordenadas</h2>
+            <p>Latitud: ${e.latlng.lat.toFixed(6)}</p>
+            <p>Longitud: ${e.latlng.lng.toFixed(6)}</p>
+            <button id="coordinateBox-copiar" onclick="copyCoordinates(${e.latlng.lat.toFixed(6)}, ${e.latlng.lng.toFixed(6)})">Copiar</button>
+            <button onclick="openGoogleMaps(${e.latlng.lat.toFixed(6)}, ${e.latlng.lng.toFixed(6)})">Abrir en Google Maps</button>
+            <button id="coordinateBox-cerrar" onclick="closeCoordinateBox()"></button> 
+          `;
+
+            // Posiciona el cuadro en el lugar del clic
+            L.popup({ className: 'coordinate-popup' }) // Agrega la clase 'coordinate-popup'
+                .setLatLng(e.latlng)
+                .setContent(coordinateBox)
+                .openOn(map);
+        });
+
+        function copyCoordinates(lat, lng) {
+            const coordinates = `${lat}, ${lng}`;
+            navigator.clipboard.writeText(coordinates)
+                .then(() => {
+                    const copyButton = document.querySelector('.coordinate-box button:first-of-type'); // Selecciona el primer botón (copiar)
+                    const originalText = copyButton.textContent; // Guarda el texto original del botón
+                    copyButton.textContent = 'Copiado!'; // Cambia el texto a "Copiado"
+
+                    setTimeout(() => {
+                        copyButton.textContent = originalText; // Restaura el texto original después de 3 segundos
+                    }, 3000);
+                })
+                .catch(err => {
+                    console.error('Error al copiar coordenadas: ', err);
+                });
+        }
+
+        function openGoogleMaps(lat, lng) {
+            const url = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+            window.open(url, '_blank');
+        }
+
+        function closeCoordinateBox() {
+            map.closePopup(); // Cierra el popup que contiene el cuadro de coordenadas
+        }
+    </script>
+
+    <script>
+
+const botonesBox = document.querySelector('.terminos-botones-box');
+const botones = botonesBox.querySelectorAll('button');
+
+botones.forEach(boton => {
+  const seccion = boton.dataset.seccion;
+  const nombreCompleto = seccion.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()); // Convertir a nombre completo
+  boton.textContent = nombreCompleto;
+
+  // Verificar si el contenido se sale
+  const botonRect = boton.getBoundingClientRect();
+  const boxRect = botonesBox.getBoundingClientRect();
+  if (botonRect.right > boxRect.right) {
+    boton.classList.add('overflow'); // Agregar una clase para indicar el desbordamiento
+  }
+});
+
+
+    </script>
+
+    <script>
+
+// Seleccionamos todos los botones vibrar y los botones de zoom de Leaflet
+const vibrarButtons = document.querySelectorAll(".vibrar-button, .leaflet-control-zoom-in, .leaflet-control-zoom-out");
+const vibracionToggle = document.getElementById("vibracionToggle"); 
+
+let vibracionActivada = true; // Variable para controlar si la vibración está activada o no
+
+// Valores de duración e intensidad que puedes ajustar según tus necesidades
+const duracionVibracion = 150; // En milisegundos
+const intensidadVibracion = 0.4; // Entre 0 y 1
+
+vibrarButtons.forEach(button => {
+  button.addEventListener("click", () => {
+    if (vibracionActivada) {
+      vibrar(duracionVibracion, intensidadVibracion);
+    }
+  });
+});
+
+vibracionToggle.addEventListener("click", () => {
+  vibracionActivada = !vibracionActivada;
+  vibracionToggle.textContent = vibracionActivada ? "Apagar Vibración" : "Encender Vibración";
+});
+
+function vibrar(duracion, intensidad) {
+  if ("vibrate" in navigator) {
+    // Verificamos que la intensidad esté entre 0 y 1
+    const intensidadAjustada = Math.max(0, Math.min(1, intensidad));
+
+    navigator.vibrate([duracion * intensidadAjustada]); 
+  } 
+}
+
+    </script>
+
+</body>
+
+</html>

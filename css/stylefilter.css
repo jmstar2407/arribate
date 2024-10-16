@@ -1,0 +1,661 @@
+
+.filter {
+    position: absolute;
+    top: 80px;
+    left: 25px;
+    background: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+
+
+.header-filter {
+    position: relative;
+    width: 100%;
+    height: 45px;
+    border-bottom: 1px solid rgb(221 221 221);
+}
+
+.header-filter img {
+    display: none;
+    position: absolute;
+    height: 40px;
+    margin: 2px 0px 0px 10px;
+}
+
+.body-filter {
+    padding: 0px 25px;
+    overflow: auto;
+    max-height: calc(100vh - 170px);
+    min-width: 330px;
+}
+
+.footer-filter {
+    height: 24px;
+    background: #ffffff00;
+    border-radius: 0px 0px 14px 14px;
+}
+
+.filtro-divisor2 {
+    position: relative;
+    width: 100%;
+    height: 1px;
+    margin: 0px 0px;
+    background: #ebebeb;
+}
+
+.filtro-divisor {
+    position: relative;
+    height: 1px;
+    width: 100%;
+    margin: 24px 0px;
+    background: #ebebeb;
+}
+
+.filter h1 {
+    font-family: system-ui;
+    font-size: 22px;
+    margin: 0; /* Elimina todos los márgenes */
+    text-align: center;
+    color: #000000;
+
+    /* Centrado vertical y horizontal */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.filter h2 {
+    font-size: 20px;
+    margin-block-start: 7px;
+    margin-block-end: 5px;
+    font-family: sans-serif;
+}
+
+
+.range-slider {
+    margin-top: 30px;
+    height: 30px;
+    width: 87%;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+    .range-slider input {
+        width: 102%;
+        left: -2%;
+        position: absolute;
+        height: 6px;
+        pointer-events: none;
+        -webkit-appearance: none;
+        appearance: none;
+        background: #00000000;
+    }
+    .range-slider input[type="range"]::-webkit-slider-thumb {
+        pointer-events: all;
+        width: 30px;
+        height: 30px;
+        border: 0;
+        border-radius: 50%;
+        background: #ffffff;
+        box-shadow: 3px 3px 6px 0px rgb(0 0 0 / 30%);
+        cursor: pointer;
+        -webkit-appearance: none;
+        appearance: none;
+        z-index: 9999;
+        box-shadow: 0px 0px 0px 1px rgb(0 0 0 / 36%) inset;
+        box-shadow: 0px 0px 0px 1px rgb(0 0 0 / 36%) inset, 3px 5px 10px 0px rgb(0 0 0 / 11%);
+    }
+
+    .range-slider input[type="range"]::-webkit-slider-thumb:hover {
+        box-shadow: 0px 0px 0px 7px rgb(143 143 143 / 30%);
+    }
+
+    .range-slider input[type="range"]::-moz-range-thumb {
+        pointer-events: all;
+        width: 20px;
+        height: 20px;
+        border: 0;
+        border-radius: 50%;
+        background: #398cce;
+        cursor: pointer;
+        -moz-appearance: none;
+        appearance: none;
+    }
+    .range-slider .track {
+        position: absolute;
+        height: 10px;
+        border-radius: 15px;
+        background: #00000026;
+        width: 100%;
+        box-shadow: 3px 4px 5px -4px rgb(0 0 0 / 36%) inset;
+    }
+
+
+    .range-slider .range {
+        position: absolute;
+        height: 10px;
+        border-radius: 15px;
+        background: linear-gradient(45deg, #0072ff, #00e5ff);
+        background: #00c2ff;
+        box-shadow: 3px 4px 5px -4px rgb(27 57 165) inset;
+    }
+
+    .price-labels {
+        margin-top: 0px;
+        display: flex;
+        height: 55px;
+        justify-content: space-between;
+        background: #00000000;
+    }
+
+    .price-labels input {
+        width: 124px;
+        height: 40px;
+        text-align: center;
+        border: none;
+        background: none;
+        background: #00000026;
+        border-radius: 9px;
+        margin: 0px 12px;
+        padding-block: 0px;
+        padding-inline: 0px;
+    }
+
+.price-labels-cube{
+    background: #00000000;
+    height: 100%;
+    width: 46%;
+}
+
+.price-labels h6 {
+    position: relative;
+    width: 100%;
+    font-family: sans-serif;
+    font-size: 13px;
+    font-weight: 100;
+    margin-block-start: 0px;
+    margin-block-end: 0px;
+    color: #03a9f4;
+    text-align: center;
+}
+
+
+
+
+.filter-buttons {
+    display: flex;
+    justify-content: space-around;
+    margin: 10px 0;
+}
+
+.filter-button {
+    background-color: #f0f0f0;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 43%;
+    height: 70px;
+    box-shadow: 0px 0px 0px 1px rgba(0, 174, 255, 0) inset;
+    background: #f8f8f8;
+    border-radius: 7px;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.filter-button img {
+    width: 30px;
+    height: 30px;
+    background: #1a1a1a;
+    border-radius: 27px;
+    padding: 4px 2px 0px 2px;
+    border-style: solid;
+    border-color: #e17477;
+    border-width: 3px;
+}
+
+.filter-button.active {
+    width: 43%;
+    height: 70px;
+    box-shadow: 0px 0px 0px 1px rgb(0 176 255) inset;
+    background: #03a9f414;
+    border-radius: 7px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.filter-button p{
+    font-family: sans-serif;
+    font-size: 15px;
+    margin-block-start: 0px;
+    margin-block-end: 0px;
+}
+
+
+
+.filtro-cantidad-cube {
+    position: relative;
+    background: #00000000;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 14px;
+    padding: 0px 12px;
+}
+
+
+.filter-counter {
+    position: relative;
+    display: inline-flex;
+    width: 100%;
+    background: #ff000000;
+    margin-bottom: 24px;
+}
+
+.counter-cube {
+    position: absolute;
+    right: 0px;
+    height: 100%;
+    width: 170px;
+    background: #ff000000;
+}
+
+.filter-counter span {
+    font-family: sans-serif;
+    height: 20px;
+    padding: 4px 5px;
+    width: 88px;
+    /* overflow: hidden; */
+    display: inline-block;
+    text-align: center;
+    background: #d9d9d9;
+    /* margin-bottom: 16px; */
+    border-radius: 7px;
+    position: relative;
+    left: 0px;
+}
+
+.filter-counter button {
+    border-radius: 50px;
+    border: none;
+    height: 35px;
+    width: 35px;
+    box-shadow: 0px 0px 0px 1px rgb(0 0 0 / 36%) inset;
+    cursor: pointer;
+    background: #ffffff;
+    transition: 0.2s;
+    position: relative;
+    left: 14px;
+    z-index: 10;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.filter-counter button:hover {
+    background: #d7f2ff;
+    box-shadow: 0px 0px 0px 1px rgb(0 176 255) inset;
+    transform: scale(0.9);
+    transition: 0.2s;
+}
+
+#increase-rooms,
+#increase-bathrooms,
+#increase-parking {
+    position: absolute;
+    right: 7px;
+    left: auto;
+}
+
+
+.filter-counter img{
+    height: 35px;
+}
+
+.filter-counter h6 {
+    font-family: sans-serif;
+    font-size: 17px;
+    margin-block-start: 10px;
+    margin-block-end: 0px;
+    margin-left: 10px;
+    font-weight: 500;
+}
+
+
+        /* Estilos para los botones y el texto del filtro */
+        .filter-quantity {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px; /* Espacio entre filtros */
+        }
+
+        .filter-quantity button {
+            background-color: #f0f0f0;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .filter-quantity span {
+            margin: 0 10px;
+        }
+
+
+        #open-filter-button {
+            position: relative;
+            background: #f1293f;
+            height: 40px;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0px 8px 15px 0px rgb(0 0 0 / 17%);
+            font-size: 18px;
+            color: white;
+            font-weight: bold;
+            padding-block: 0px;
+            padding-inline: 0px;
+            padding: 5px 8px;
+            margin: 10px 20px 10px 20px;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        #open-filter-button-respon {
+            background: #00000000;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            height: 40px;
+            width: 40px;
+            border-radius: 0px;
+            background-image: url(../img/icons/filtro1.png);
+            background-position: center;
+            background-size: 40px;
+            background-repeat: no-repeat;
+            transition: 0.3s;
+            box-shadow: 0px 0px 0px 1px rgb(24 200 255 / 0%);
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+
+        .cube-boton-filtro-respon {
+            display: none;
+            height: 40px;
+            width: 40px;
+            background: #00000000;
+        }
+
+
+        .toggle-buttons2 {
+            display: none;
+        }
+        
+@media (max-width: 700px) {
+
+    .cube-boton-filtro {
+        display: none;
+    }
+
+    .cube-boton-filtro-respon{
+        display: block;
+    }
+
+
+    .filter {
+        top: 130px;
+    }
+    
+    .body-filter {
+        max-height: calc(100vh - 225px);
+    }
+
+}
+
+
+#open-filter-button:hover {
+    background: #c12024;
+    transition: 0.3s;
+}
+
+#open-filter-button.active {
+    background: #c12024;
+}
+    
+#close-filter-button {
+    position: absolute;
+    top: 8px;
+    right: 7px;
+    border: none;
+    background: #ff394e;
+    color: white;
+    padding: 7px 17px;
+    border-radius: 9px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#close-filter-button:hover {
+    background: #db061d;
+    transition: 0.3s;
+}
+
+/* Add this CSS to your stylesheet */
+.filter {
+    display: none; /* Initially hide the filter panel */
+}
+
+.filter.open-filter {
+    display: block;
+    animation: slideInLeft 0.3s ease-in-out;
+}
+
+.filter.close-filter {
+    animation: slideOutLeft 0.3s ease-in-out forwards;
+}
+
+
+@keyframes slideInLeft {
+    from {
+        transform: translateX(-110%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+.filter.close-filter {
+    animation: slideOutLeft 0.3s ease-in-out forwards;
+}
+
+@keyframes slideOutLeft {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-110%);
+    }
+}
+
+.header-filter #filter-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: transparent;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+}
+
+
+
+
+
+
+
+@media (min-width: 700px) {
+    .body-filter {
+        max-width: 345px;
+    }
+
+}
+
+
+
+
+@media (max-width: 500px) {
+
+    .filter.open-filter {
+        display: flex;
+        animation: slideInLeft 0.3s ease-in-out;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        border-radius: 15px 15px 0px 0px;
+        overflow: hidden;
+        z-index: 9999;
+    }
+
+    .filter {
+        display: none;
+    }
+
+    html, body {
+        overflow: hidden;
+    }
+
+    .header-filter img {
+        display: block;
+    }
+
+    #close-filter-button {
+        top: 7px;
+    }
+    
+    .filter {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        height: 100%;
+        border-radius: 0px;
+    }
+
+    .footer-filter {
+        width: 100%;
+        height: 70px;
+        background: #ffffff;
+        border-top: 1px solid rgb(221 221 221);
+        display: inline-flex;
+        justify-content: center;
+    }
+
+    .body-filter {
+        max-height: none;
+        overflow: auto;
+        flex: 1;
+    }
+
+    .toggle-buttons2 {
+        display: inline-flex;
+        background: #ffffff;
+        justify-content: center;
+        width: 100%;
+        height: 70px;
+    }
+
+    #alquilerButton-filter,
+    #ventaButton-filter {
+        display: inline-flex;
+        box-shadow: 0px 0px 0px 1px rgb(180, 180, 180) inset;
+        background: #03a8f400;
+        border-radius: 10px;
+        border: none;
+        width: 100px;
+        height: 40px;
+        padding-inline: 4px;
+        transition: 0.2s;
+        position: relative;
+        align-items: center;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+    }
+
+
+    #alquilerButton-filter {
+        margin-right: 45px;
+    }
+
+    #alquilerButton-filter.active,
+    #ventaButton-filter.active {
+        box-shadow: 0px 0px 0px 1px rgb(0 176 255) inset;
+        background: #03a9f414;
+        /*background-image: url(../img/icons/refresh1.png);*/
+    }
+
+    #ventaButton-filter.active h3 {
+        width: 75%;
+    }
+
+   #alquilerButton-filter img,
+   #ventaButton-filter img {
+    position: relative;
+    height: 20px;
+    left: 2px;
+    display: none;
+}
+
+
+    #alquilerButton-filter.active img,
+    #ventaButton-filter.active img {
+        display: block;
+    }
+
+    #ventaButton-filter.active img {
+        display: block;
+        left: 5px;
+    }
+
+    #alquilerButton-filter h3,
+     #ventaButton-filter h3 {
+        margin-block-start: 0px;
+        margin-block-end: 0px;
+        width: 100%;
+        text-align: center;
+    }
+
+
+
+
+
+
+    @keyframes slideInLeft {
+        from {
+            transform: translateY(110%);
+        }
+        to {
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes slideOutLeft {
+        from {
+            transform: translateY(0);
+        }
+        to {
+            transform: translateY(110%);
+        }
+    }
+
+
+}
+
+
+
+
+
+
