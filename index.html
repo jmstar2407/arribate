@@ -1045,6 +1045,7 @@ rectangle._path.style.pointerEvents = "none";
 
                 marker.bindPopup(
                     `<button id="vermodal" onclick="openModal(${JSON.stringify(location).replace(/"/g, '&quot;')})"></button>
+                    <button onclick="openModal(${JSON.stringify(location).replace(/"/g, '&quot;')}) "style="position: absolute;top: 130px;right: 0px;height: 60px;width: 60px;z-index: 9;border: none;background: #00000000;cursor: pointer;"></button>
                 ${carousel}
                 <div class="informacion-basica"> 
 
