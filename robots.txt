@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /private/
+Disallow: /scripts/
+
+Sitemap: https://arribate.com/sitemap.xml
