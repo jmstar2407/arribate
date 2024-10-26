@@ -86,6 +86,23 @@
             width: 24px;
             height: 24px;
         }
+
+                /* Botones personalizados para el mapa */
+                .leaflet-control-layer-toggle, .leaflet-control-locate {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 35px;
+            height: 35px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .leaflet-control-layer-toggle img, .leaflet-control-locate img {
+            width: 24px;
+            height: 24px;
+        }
     </style>
 </head>
 <body>
@@ -233,7 +250,7 @@
 
         const message = `Propiedad para ${type.toLowerCase()}:\nTipo: ${selectedType}\nPrecio: ${price}\nHabitaciones: ${rooms}\nBaños: ${bathrooms}\nParqueos: ${parking}\nMetros cuadrados: ${area}\nUbicación: ${location}`;
 
-        window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+        window.open(`https://wa.me/1234567890?text=${message}`, '_blank');
     }
 </script>
 
