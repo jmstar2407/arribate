@@ -256,6 +256,7 @@
             </div>
         </div>
 
+
         <label><strong>Proposito de la propiedad</strong></label>
         <div class="radio-group" style="display: flex;flex-direction: column;margin-top: -3px;">
             <label id="alqvend"><input id="inputalq" type="radio" name="operationType" value="Alquilar"
@@ -264,17 +265,23 @@
                     value="Vender" onchange="updatePriceLabel()">Vender</label>
         </div>
 
+
+
+        <label><strong>Moneda:</strong></label>
+        <div class="radio-group" style="display: flex; flex-direction: column; margin-top: -3px;">
+            <label for="currencyRD"><input id="inputalq" type="radio" id="currencyRD" name="currency" value="RD$" checked>RD$</label>
+            <label for="currencyUSD" style="margin-top: -8px;"><input id="inputalq" type="radio" id="currencyUSD" name="currency" value="USD$">USD$</label>
+        </div>
+
+
+
+
         <label for="price">Precio:</label>
         <input type="number" id="price" name="price" required>
         
-        <div>
-            <label>Moneda:</label>
-            <input type="radio" id="currencyRD" name="currency" value="RD$" checked>
-            <label for="currencyRD">RD$</label>
-            
-            <input type="radio" id="currencyUSD" name="currency" value="USD$">
-            <label for="currencyUSD">USD$</label>
-          </div>
+
+
+
 
 
 
