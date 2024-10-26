@@ -253,8 +253,9 @@ body {
         const area = document.getElementById('area').value;
         const location = document.getElementById('location').value;
 
-        const message = `Hola, estoy interesado en ${type} una ${selectedType} con las siguientes características:
-        %0A- Precio: RD$${price}
+        const message = `Detalles de la propiedad ${type}:
+        %0A- Operación: ${selectedType}
+        %0A- Precio: $${price}
         %0A- Habitaciones: ${rooms}
         %0A- Baños: ${bathrooms}
         %0A- Parqueos: ${parking}
