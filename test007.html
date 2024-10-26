@@ -385,6 +385,7 @@
             const parking = document.getElementById('parking').value;
             const area = document.getElementById('area').value;
             const details = document.getElementById('propertyDetails').value;
+            const formattedDetails = encodeURIComponent(details.replace(/\n/g, '\n'));
             const location = document.getElementById('location').value;
 
             const message = `Detalles de la propiedad:
