@@ -18,12 +18,13 @@
         }
 
         .menu-master {
-            position: fixed;
-            height: 60px;
-            width: 100%;
-            background: rgb(255, 255, 255);
-            border-bottom: 1px solid hsl(142.41deg 41.04% 86.89%);
-        }
+    position: fixed;
+    height: 60px;
+    width: 100%;
+    background: rgb(255, 255, 255);
+    border-bottom: 1px solid hsl(142.41deg 41.04% 86.89%);
+    z-index: 9;
+}
 
         form {
             background-color: #fff;
@@ -40,11 +41,16 @@
         }
 
         #alqvend {
-            display: block;
-        }
+    display: block;
+    margin-top: -10px;
+}
 
         #inputalq {
             width: auto;
+        }
+
+        #titlelabel{
+            margin-bottom: 14px;
         }
 
         input {
@@ -217,6 +223,15 @@
             animation: gradientMove linear 7s infinite;
         }
 
+
+        .form-divisor {
+    position: relative;
+    height: 1px;
+    width: 100%;
+    margin: 24px 0px;
+    background: #ebebeb;
+}
+
         @keyframes gradientMove {
             0% {
                 background-position: 0% 50%;
@@ -242,15 +257,17 @@
     </div>
 
     <form id="propertyForm">
-        <h2>Formulario de Propiedad</h2>
+        <h2 style="text-align: center;">Formulario de Propiedad</h2>
 
-        <label><strong>¿Usted es?</strong></label>
+        <label id="titlelabel"><strong>¿Usted es?</strong></label>
         <div class="radio-group" style="display: flex;flex-direction: column;margin-top: -3px;">
-            <label><input id="inputalq" type="radio" name="role" value="Propietario" required> Propietario</label>
-            <label><input id="inputalq" type="radio" name="role" value="Administrador"> Administrador</label>
-            <label><input id="inputalq" type="radio" name="role" value="Agente Inmobiliario"> Agente
+            <label id="alqvend"><input id="inputalq" type="radio" name="role" value="Propietario" required> Propietario</label>
+            <label id="alqvend"><input id="inputalq" type="radio" name="role" value="Administrador"> Administrador</label>
+            <label id="alqvend"><input id="inputalq" type="radio" name="role" value="Agente Inmobiliario"> Agente
                 Inmobiliario</label>
         </div>
+
+        <div class="form-divisor"></div> <!-- Divisor -->
 
         <label><strong>Tipo de propiedad</strong></label>
         <div class="property-type-group">
@@ -265,8 +282,9 @@
             </div>
         </div>
 
+        <div class="form-divisor"></div> <!-- Divisor -->
 
-        <label><strong>Proposito de la propiedad</strong></label>
+        <label id="titlelabel"><strong>Proposito de la propiedad</strong></label>
         <div class="radio-group" style="display: flex;flex-direction: column;margin-top: -3px;">
             <label id="alqvend"><input id="inputalq" type="radio" name="operationType" value="Alquilar"
                     onchange="updatePriceLabel()" required>Alquilar</label>
@@ -274,42 +292,37 @@
                     value="Vender" onchange="updatePriceLabel()">Vender</label>
         </div>
 
+        <div class="form-divisor"></div> <!-- Divisor -->
 
-
-        <label><strong>Moneda:</strong></label>
+        <label id="titlelabel"><strong>Precio de propiedad:</strong></label>
         <div class="radio-group" style="display: flex; flex-direction: column; margin-top: -3px;">
-            <label><input id="inputalq" type="radio" id="currencyRD" name="currency" value="RD$">RD$</label>
-            <label><input id="inputalq" type="radio" id="currencyUSD" name="currency" value="USD$">USD$</label>
+            <label id="alqvend"><input id="inputalq" type="radio" id="currencyRD" name="currency" value="RD$">RD$</label>
+            <label id="alqvend"><input id="inputalq" type="radio" id="currencyUSD" name="currency" value="USD$">USD$</label>
+
+            <input type="number" id="price" placeholder="$" name="price" required>
         </div>
+        
+    
+        <div class="form-divisor"></div> <!-- Divisor -->
 
+        <label><strong>Cantidad de habitaciones:</strong></label>
+        <input type="number" id="rooms" placeholder="0" required>
 
+        <label><strong>Cantidad de Baños:</strong></label>
+        <input type="number" id="bathrooms" placeholder="0" required>
 
+        <label><strong>Cantidad de Parqueos:</strong></label>
+        <input type="number" id="parking" placeholder="0"required>
 
-        <label for="price">Precio:</label>
-        <input type="number" id="price" name="price" required>
+        <label><strong>Metros cuadrados (m²):</strong></label>
+        <input type="number" id="area" placeholder="0" required>
 
-
-
-
-
-
-
-        <label>Cantidad de habitaciones</label>
-        <input type="number" id="rooms" required>
-
-        <label>Baños</label>
-        <input type="number" id="bathrooms" required>
-
-        <label>Parqueos</label>
-        <input type="number" id="parking" required>
-
-        <label>Metros cuadrados</label>
-        <input type="number" id="area" required>
-
-        <label>Detalles de la propiedad:</label>
+        <label><strong>Detalles de la propiedad:</strong></label>
         <textarea id="propertyDetails" rows="4" placeholder="Escriba aquí detalles adicionales..."></textarea>
 
-        <label>Ubicación de la propiedad (Coordenadas)</label>
+        <div class="form-divisor"></div> <!-- Divisor -->
+
+        <label><strong>Ubicación de la propiedad (Coordenadas)</strong></label>
         <input type="text" id="location" placeholder="Seleccione en el mapa" readonly required>
 
         <div id="map"></div>
