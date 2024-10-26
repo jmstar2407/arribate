@@ -264,8 +264,16 @@
                     value="Vender" onchange="updatePriceLabel()">Vender</label>
         </div>
 
-        <label id="priceLabel"><strong>Precio de la propiedad</strong></label>
-        <input type="number" id="price" required>
+        <label for="price">Precio:</label>
+        <input type="number" id="price" name="price" required>
+        
+        <label for="currency">Moneda:</label>
+        <select id="currency" name="currency">
+            <option value="RD$">RD$</option>
+            <option value="USD$">USD$</option>
+        </select>
+
+
 
         <label>Cantidad de habitaciones</label>
         <input type="number" id="rooms" required>
@@ -379,7 +387,8 @@
         function sendToWhatsApp() {
         const userRole = document.querySelector('input[name="role"]:checked').value;
         const type = document.querySelector('input[name="operationType"]:checked').value;
-        const price = document.getElementById('price').value;
+    const price = document.getElementById("price").value;
+    const currency = document.getElementById("currency").value;
         const rooms = document.getElementById('rooms').value;
         const bathrooms = document.getElementById('bathrooms').value;
         const parking = document.getElementById('parking').value;
@@ -394,11 +403,11 @@
         %0A- Usuario: ${userRole}
         %0A- Tipo de propiedad: ${selectedType}
         %0A- Operación: ${type}
-        %0A- Precio: ${price}
+        %0A- La propiedad tiene un precio de ${currency}${price}
         %0A- Habitaciones: ${rooms}
         %0A- Baños: ${bathrooms}
         %0A- Parqueos: ${parking}
-        %0A- Área: ${area} m²
+        %0A- Área: ${area}m²
         %0A- Detalles adicionales: %0A${formattedDetails}
         %0A- Ubicación: ${location}`;
 
