@@ -18,13 +18,14 @@
         }
 
         .menu-master {
-    position: fixed;
-    height: 60px;
-    width: 100%;
-    background: rgb(255, 255, 255);
-    border-bottom: 1px solid hsl(142.41deg 41.04% 86.89%);
-    z-index: 9;
-}
+            position: fixed;
+            height: 60px;
+            width: 100%;
+            background: rgb(255, 255, 255);
+            border-bottom: 1px solid hsl(142.41deg 41.04% 86.89%);
+            z-index: 9;
+            text-align: center;
+        }
 
         form {
             background-color: #fff;
@@ -41,15 +42,15 @@
         }
 
         #alqvend {
-    display: block;
-    margin-top: -10px;
-}
+            display: block;
+            margin-top: -10px;
+        }
 
         #inputalq {
             width: auto;
         }
 
-        #titlelabel{
+        #titlelabel {
             margin-bottom: 14px;
         }
 
@@ -159,8 +160,6 @@
             height: 24px;
         }
 
-
-
         .logonombre {
             position: relative;
             display: inline-flex;
@@ -170,8 +169,6 @@
             font-size: 27px;
             color: #cd1025;
             margin-top: 0px;
-            margin-left: 32px;
-            margin-right: 13px;
             align-items: center;
         }
 
@@ -225,12 +222,12 @@
 
 
         .form-divisor {
-    position: relative;
-    height: 1px;
-    width: 100%;
-    margin: 24px 0px;
-    background: #ebebeb;
-}
+            position: relative;
+            height: 1px;
+            width: 100%;
+            margin: 24px 0px;
+            background: #ebebeb;
+        }
 
         @keyframes gradientMove {
             0% {
@@ -261,8 +258,10 @@
 
         <label id="titlelabel"><strong>¿Usted es?</strong></label>
         <div class="radio-group" style="display: flex;flex-direction: column;margin-top: -3px;">
-            <label id="alqvend"><input id="inputalq" type="radio" name="role" value="Propietario" required> Propietario</label>
-            <label id="alqvend"><input id="inputalq" type="radio" name="role" value="Administrador"> Administrador</label>
+            <label id="alqvend"><input id="inputalq" type="radio" name="role" value="Propietario" required>
+                Propietario</label>
+            <label id="alqvend"><input id="inputalq" type="radio" name="role" value="Administrador">
+                Administrador</label>
             <label id="alqvend"><input id="inputalq" type="radio" name="role" value="Agente Inmobiliario"> Agente
                 Inmobiliario</label>
         </div>
@@ -296,13 +295,15 @@
 
         <label id="titlelabel"><strong>Precio de propiedad:</strong></label>
         <div class="radio-group" style="display: flex; flex-direction: column; margin-top: -3px;">
-            <label id="alqvend"><input id="inputalq" type="radio" id="currencyRD" name="currency" value="RD$">RD$</label>
-            <label id="alqvend"><input id="inputalq" type="radio" id="currencyUSD" name="currency" value="USD$">USD$</label>
+            <label id="alqvend"><input id="inputalq" type="radio" id="currencyRD" name="currency"
+                    value="RD$">RD$</label>
+            <label id="alqvend"><input id="inputalq" type="radio" id="currencyUSD" name="currency"
+                    value="USD$">USD$</label>
 
             <input type="number" id="price" placeholder="$" name="price" required>
         </div>
-        
-    
+
+
         <div class="form-divisor"></div> <!-- Divisor -->
 
         <label><strong>Cantidad de habitaciones:</strong></label>
@@ -312,7 +313,7 @@
         <input type="number" id="bathrooms" placeholder="0" required>
 
         <label><strong>Cantidad de Parqueos:</strong></label>
-        <input type="number" id="parking" placeholder="0"required>
+        <input type="number" id="parking" placeholder="0" required>
 
         <label><strong>Metros cuadrados (m²):</strong></label>
         <input type="number" id="area" placeholder="0" required>
@@ -327,7 +328,8 @@
 
         <div id="map"></div>
 
-        <button type="button" onclick="sendToWhatsApp()"><img src="img/icons/whatsapp2.png" style="height: 24px;margin-right: 5px;">
+        <button type="button" onclick="sendToWhatsApp()"><img src="img/icons/whatsapp2.png"
+                style="height: 24px;margin-right: 5px;">
             <p>Enviar a ArríbaTe</p>
         </button>
     </form>
