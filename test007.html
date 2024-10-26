@@ -217,15 +217,6 @@
                 background-position: 100% 50%;
             }
         }
-
-        #propertyDetails {
-    font-size: 16px;
-    color: #333;
-    padding: 10px;
-    line-height: 1.5;
-    font-family: Arial, sans-serif;
-}
-
     </style>
 </head>
 
@@ -293,7 +284,6 @@
 
         <label>Detalles de la propiedad:</label>
         <textarea id="propertyDetails" rows="4" placeholder="Escriba aquí detalles adicionales..."></textarea>
-        <div id="formattedOutput" style="white-space: pre-wrap; border: 1px solid #ccc; padding: 10px; margin-top: 10px;"></div>
 
         <div id="map"></div>
 
@@ -387,42 +377,37 @@
 
 
         function sendToWhatsApp() {
-            const userRole = document.querySelector('input[name="role"]:checked').value;
-            const type = document.querySelector('input[name="operationType"]:checked').value;
-            const price = document.getElementById('price').value;
-            const rooms = document.getElementById('rooms').value;
-            const bathrooms = document.getElementById('bathrooms').value;
-            const parking = document.getElementById('parking').value;
-            const area = document.getElementById('area').value;
-            const details = document.getElementById('propertyDetails').value;
-            const location = document.getElementById('location').value;
+    const role = document.querySelector('input[name="role"]:checked')?.value || '';
+    const operationType = document.querySelector('input[name="operationType"]:checked')?.value || '';
+    const price = document.getElementById('price').value;
+    const rooms = document.getElementById('rooms').value;
+    const bathrooms = document.getElementById('bathrooms').value;
+    const parking = document.getElementById('parking').value;
+    const area = document.getElementById('area').value;
+    const location = document.getElementById('location').value;
+    const propertyDetails = document.getElementById('propertyDetails').value;
 
-            const message = `*Detalles de la propiedad:*
-%0A- Usuario: ${userRole}
-%0A- Tipo de propiedad: ${selectedType}
-%0A- Operación: ${type}
-%0A- Precio: $${price}
-%0A- Habitaciones: ${rooms}
-%0A- Baños: ${bathrooms}
-%0A- Parqueos: ${parking}
-%0A- Metros cuadrados: ${area}
-%0A- Detalles: ${details}
-%0A- Ubicación: ${location}`;
+    // Reemplaza saltos de línea en el texto de detalles
+    const formattedDetails = encodeURIComponent(propertyDetails.replace(/\n/g, '%0A'));
+
+    // Crear el mensaje
+    const message = `Detalles de la propiedad:%0A` +
+        `Rol: ${role}%0A` +
+        `Tipo de propiedad: ${selectedType}%0A` +
+        `Propósito: ${operationType}%0A` +
+        `Precio: RD$ ${price}%0A` +
+        `Habitaciones: ${rooms}%0A` +
+        `Baños: ${bathrooms}%0A` +
+        `Parqueos: ${parking}%0A` +
+        `Área: ${area} m²%0A` +
+        `Ubicación: ${location}%0A` +
+        `Detalles adicionales: %0A${formattedDetails}`;
 
             const phoneNumber = "18299605566";
             window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
         }
 
     </script>
-
-<script>
-    const textarea = document.getElementById("propertyDetails");
-    const output = document.getElementById("formattedOutput");
-
-    textarea.addEventListener("input", () => {
-        output.textContent = textarea.value;
-    });
-</script>
 
 </body>
 
