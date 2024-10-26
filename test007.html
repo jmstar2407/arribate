@@ -138,10 +138,13 @@
         <h2>Formulario de Propiedad</h2>
 
         <label>¿Usted es?</label>
-        <div class="radio-group">
-            <label><input type="radio" name="role" value="Propietario" required> Propietario</label>
-            <label><input type="radio" name="role" value="Administrador"> Administrador</label>
-            <label><input type="radio" name="role" value="Agente Inmobiliario"> Agente Inmobiliario</label>
+        <div class="radio-group" style="display: flex;flex-direction: column;margin-top: -3px;">
+            <label id="alqvend"><input id="inputalq" type="radio" name="operationType" value="Alquilar"
+                    onchange="updatePriceLabel()" required>Propietario</label>
+            <label id="alqvend" style="margin-top: -8px;"><input id="inputalq" type="radio" name="operationType"
+                    value="Vender" onchange="updatePriceLabel()">Administrador</label>
+            <label id="alqvend" style="margin-top: -8px;"><input id="inputalq" type="radio" name="operationType"
+                    value="Vender" onchange="updatePriceLabel()">Agente inmobiliario</label>
         </div>
 
         <label>Tipo de propiedad</label>
@@ -182,9 +185,6 @@
 
         <label>Ubicación de la propiedad (Coordenadas)</label>
         <input type="text" id="location" placeholder="Seleccione en el mapa" readonly required>
-
-        <label>Detalles de la propiedad:</label>
-        <textarea id="propertyDetails" rows="4" placeholder="Escriba aquí detalles adicionales..."></textarea>
 
         <div id="map"></div>
 
@@ -276,20 +276,16 @@
             alert("No se pudo acceder a tu ubicación.");
         });
 
-
         function sendToWhatsApp() {
-            const userRole = document.getElementById('userRole').value;
             const type = document.querySelector('input[name="operationType"]:checked').value;
             const price = document.getElementById('price').value;
             const rooms = document.getElementById('rooms').value;
             const bathrooms = document.getElementById('bathrooms').value;
             const parking = document.getElementById('parking').value;
             const area = document.getElementById('area').value;
-            const details = document.getElementById('propertyDetails').value;
             const location = document.getElementById('location').value;
 
             const message = `Detalles de la propiedad:
-        %0A- Usuario: ${userRole}
         %0A- Tipo de propiedad: ${selectedType}
         %0A- Operación: ${type}
         %0A- Precio: $${price}
@@ -297,7 +293,6 @@
         %0A- Baños: ${bathrooms}
         %0A- Parqueos: ${parking}
         %0A- Metros cuadrados: ${area}
-        %0A- Detalles: ${details}
         %0A- Ubicación: ${location}`;
 
             const phoneNumber = "18299605566";
