@@ -86,23 +86,6 @@
             width: 24px;
             height: 24px;
         }
-
-                /* Botones personalizados para el mapa */
-                .leaflet-control-layer-toggle, .leaflet-control-locate {
-            background-color: white;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            width: 35px;
-            height: 35px;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .leaflet-control-layer-toggle img, .leaflet-control-locate img {
-            width: 24px;
-            height: 24px;
-        }
     </style>
 </head>
 <body>
@@ -167,10 +150,8 @@
         document.getElementById('priceLabel').textContent = operationType === 'Alquilar' ? 'Precio de renta de la propiedad' : 'Precio de la propiedad';
     }
 
-    // Inicializar el mapa
     const map = L.map('map').setView([18.735693, -70.162651], 8);
 
-    // Capas de mapa
     const normalLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 18,
         attribution: '© OpenStreetMap'
@@ -181,7 +162,6 @@
         attribution: '© OpenStreetMap'
     });
 
-    // Alternar capas con un solo botón
     const layerToggleButton = L.control({ position: 'topright' });
     layerToggleButton.onAdd = function() {
         const div = L.DomUtil.create('div', 'leaflet-control-layer-toggle');
@@ -205,7 +185,6 @@
         isSatelliteView = !isSatelliteView;
     }
 
-    // Botón de ubicación
     const locateButton = L.control({ position: 'topright' });
     locateButton.onAdd = function() {
         const div = L.DomUtil.create('div', 'leaflet-control-locate');
@@ -238,7 +217,13 @@
     });
 
     function sendToWhatsApp() {
-        const type = document.querySelector('input[name="operationType"]:checked').value;
+        const operationType = document.querySelector('input[name="operationType"]:checked');
+        if (!operationType || !selectedType) {
+            alert("Por favor, selecciona el tipo de propiedad y la operación.");
+            return;
+        }
+
+        const type = operationType.value;
         const price = document.getElementById('price').value;
         const rooms = document.getElementById('rooms').value;
         const bathrooms = document.getElementById('bathrooms').value;
@@ -246,18 +231,11 @@
         const area = document.getElementById('area').value;
         const location = document.getElementById('location').value;
 
-        const message = `Hola, estoy interesado en ${type} una ${selectedType} con las siguientes características:
-        %0A- Precio: RD$${price}
-        %0A- Habitaciones: ${rooms}
-        %0A- Baños: ${bathrooms}
-        %0A- Parqueos: ${parking}
-        %0A- Metros cuadrados: ${area}
-        %0A- Ubicación: ${location}`;
+        const message = `Propiedad para ${type.toLowerCase()}:\nTipo: ${selectedType}\nPrecio: ${price}\nHabitaciones: ${rooms}\nBaños: ${bathrooms}\nParqueos: ${parking}\nMetros cuadrados: ${area}\nUbicación: ${location}`;
 
-        const phoneNumber = "18299605566";
-        window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
+        window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
     }
 </script>
 
-</body> 
+</body>
 </html>
