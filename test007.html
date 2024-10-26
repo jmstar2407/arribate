@@ -279,11 +279,11 @@
         <label>Metros cuadrados</label>
         <input type="number" id="area" required>
 
-        <label>Ubicación de la propiedad (Coordenadas)</label>
-        <input type="text" id="location" placeholder="Seleccione en el mapa" readonly required>
-
         <label>Detalles de la propiedad:</label>
         <textarea id="propertyDetails" rows="4" placeholder="Escriba aquí detalles adicionales..."></textarea>
+
+        <label>Ubicación de la propiedad (Coordenadas)</label>
+        <input type="text" id="location" placeholder="Seleccione en el mapa" readonly required>
 
         <div id="map"></div>
 
@@ -396,7 +396,7 @@
 %0A- Baños: ${bathrooms}
 %0A- Parqueos: ${parking}
 %0A- Metros cuadrados: ${area}m²
-%0A- Detalles: ${details}
+%0A- Detalles: ${encodeURIComponent(details.replace(/\n/g, '%0A'))}
 %0A- Ubicación: ${location}`;
 
             const phoneNumber = "18299605566";
