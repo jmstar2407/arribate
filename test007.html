@@ -377,8 +377,10 @@
 
 
         function sendToWhatsApp() {
-    const role = document.querySelector('input[name="role"]:checked')?.value || '';
-    const operationType = document.querySelector('input[name="operationType"]:checked')?.value || '';
+    // Recoger todos los datos del formulario
+    const role = document.querySelector('input[name="role"]:checked').value;
+    const propertyType = selectedType;
+    const operationType = document.querySelector('input[name="operationType"]:checked').value;
     const price = document.getElementById('price').value;
     const rooms = document.getElementById('rooms').value;
     const bathrooms = document.getElementById('bathrooms').value;
@@ -387,21 +389,21 @@
     const location = document.getElementById('location').value;
     const propertyDetails = document.getElementById('propertyDetails').value;
 
-    // Reemplaza saltos de línea en el texto de detalles
-    const formattedDetails = encodeURIComponent(propertyDetails.replace(/\n/g, '%0A'));
+    // Crear el mensaje con formato para WhatsApp
+    const message = `*Detalles de la propiedad:*\n\n` +
+                    `*Rol:* ${role}\n` +
+                    `*Tipo de Propiedad:* ${propertyType}\n` +
+                    `*Propósito:* ${operationType}\n` +
+                    `*Precio:* RD$${price}\n` +
+                    `*Habitaciones:* ${rooms}\n` +
+                    `*Baños:* ${bathrooms}\n` +
+                    `*Parqueos:* ${parking}\n` +
+                    `*Metros cuadrados:* ${area} m²\n` +
+                    `*Ubicación:* ${location}\n\n` +
+                    `*Detalles adicionales:*\n${propertyDetails}`;
 
-    // Crear el mensaje
-    const message = `Detalles de la propiedad:%0A` +
-        `Rol: ${role}%0A` +
-        `Tipo de propiedad: ${selectedType}%0A` +
-        `Propósito: ${operationType}%0A` +
-        `Precio: RD$ ${price}%0A` +
-        `Habitaciones: ${rooms}%0A` +
-        `Baños: ${bathrooms}%0A` +
-        `Parqueos: ${parking}%0A` +
-        `Área: ${area} m²%0A` +
-        `Ubicación: ${location}%0A` +
-        `Detalles adicionales: %0A${formattedDetails}`;
+    // Convertir el mensaje a un formato compatible con la URL
+    const encodedMessage = encodeURIComponent(message);
 
             const phoneNumber = "18299605566";
             window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
