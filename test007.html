@@ -112,6 +112,7 @@
         /* Botones personalizados para el mapa */
         .leaflet-control-layer-toggle,
         .leaflet-control-locate {
+            top: 150px;
             background-color: white;
             border: 1px solid #ddd;
             border-radius: 4px;
@@ -139,13 +140,13 @@
         <label>Tipo de propiedad</label>
         <div class="property-type-group">
             <div class="property-type-btn" id="type-casa" onclick="selectPropertyType('Casa')">
-                🏠 Casa
+                🏠 </p>p>Casa
             </div>
             <div class="property-type-btn" id="type-apartamento" onclick="selectPropertyType('Apartamento')">
-                🏢 Apartamento
+                🏢 </p>Apartamento
             </div>
             <div class="property-type-btn" id="type-solar" onclick="selectPropertyType('Solar')">
-                🌄 Solar
+                🌄 </p>Solar
             </div>
         </div>
 
@@ -196,7 +197,7 @@
         }
 
         // Inicializar el mapa
-        const map = L.map('map').setView([18.735693, -70.162651], 8);
+        const map = L.map('map').setView([18.735693, -70.162651], 9);
 
         // Capas de mapa
         const normalLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -213,7 +214,7 @@
         const layerToggleButton = L.control({ position: 'topright' });
         layerToggleButton.onAdd = function () {
             const div = L.DomUtil.create('div', 'leaflet-control-layer-toggle');
-            div.innerHTML = '<img src="https://img.icons8.com/ios-filled/50/000000/satellite-dish.png"/>';
+            div.innerHTML = '<img src="./img/capasatelite2.png"/>';
             div.onclick = toggleLayer;
             return div;
         };
@@ -224,11 +225,11 @@
             if (isSatelliteView) {
                 map.removeLayer(satelliteLayer);
                 normalLayer.addTo(map);
-                document.querySelector('.leaflet-control-layer-toggle img').src = "https://img.icons8.com/ios-filled/50/000000/satellite-dish.png";
+                document.querySelector('.leaflet-control-layer-toggle img').src = "./img/capasatelite2.png";
             } else {
                 map.removeLayer(normalLayer);
                 satelliteLayer.addTo(map);
-                document.querySelector('.leaflet-control-layer-toggle img').src = "https://img.icons8.com/ios-filled/50/000000/map.png";
+                document.querySelector('.leaflet-control-layer-toggle img').src = "./img/capamapa2.png";
             }
             isSatelliteView = !isSatelliteView;
         }
