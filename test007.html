@@ -377,27 +377,30 @@
 
 
         function sendToWhatsApp() {
-            const userRole = document.querySelector('input[name="role"]:checked').value;
-            const type = document.querySelector('input[name="operationType"]:checked').value;
-            const price = document.getElementById('price').value;
-            const rooms = document.getElementById('rooms').value;
-            const bathrooms = document.getElementById('bathrooms').value;
-            const parking = document.getElementById('parking').value;
-            const area = document.getElementById('area').value;
-            const details = document.getElementById('propertyDetails').value;
-            const location = document.getElementById('location').value;
+        const userRole = document.querySelector('input[name="role"]:checked').value;
+        const type = document.querySelector('input[name="operationType"]:checked').value;
+        const price = document.getElementById('price').value;
+        const rooms = document.getElementById('rooms').value;
+        const bathrooms = document.getElementById('bathrooms').value;
+        const parking = document.getElementById('parking').value;
+        const area = document.getElementById('area').value;
+        const details = document.getElementById('propertyDetails').value;
+        const location = document.getElementById('location').value;
 
-            const message = `*Detalles de la propiedad:*
-%0A- Usuario: ${userRole}
-%0A- Tipo de propiedad: ${selectedType}
-%0A- Operación: ${type}
-%0A- Precio: $${price}
-%0A- Habitaciones: ${rooms}
-%0A- Baños: ${bathrooms}
-%0A- Parqueos: ${parking}
-%0A- Metros cuadrados: ${area}m²
-%0A- Detalles: ${details}
-%0A- Ubicación: ${location}`;
+        // Convertir detalles adicionales en formato compatible con WhatsApp
+        const formattedDetails = encodeURIComponent(details);
+
+        const message = `*Detalles de la propiedad:*
+        %0A- Usuario: ${userRole}
+        %0A- Tipo de propiedad: ${selectedType}
+        %0A- Operación: ${type}
+        %0A- Precio: ${price}
+        %0A- Habitaciones: ${rooms}
+        %0A- Baños: ${bathrooms}
+        %0A- Parqueos: ${parking}
+        %0A- Área: ${area} m²
+        %0A- Ubicación: ${location}
+        %0A- Detalles adicionales: ${formattedDetails}`;
 
             const phoneNumber = "18299605566";
             window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
