@@ -396,7 +396,7 @@
 %0A- Baños: ${bathrooms}
 %0A- Parqueos: ${parking}
 %0A- Metros cuadrados: ${area}m²
-%0A- Detalles: ${encodeURIComponent(details.replace(/\n/g, '%0A'))}
+%0A- Detalles: ${encodeURIComponent(details.replace(/\n/g, '%0A').replace(/ /g, '%20'))}
 %0A- Ubicación: ${location}`;
 
             const phoneNumber = "18299605566";
