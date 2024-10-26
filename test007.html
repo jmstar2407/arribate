@@ -403,16 +403,16 @@
         const formattedDetails = encodeURIComponent(details);
 
         const message = `*Detalles de la propiedad:*
-        %0A- Usuario: ${userRole}.
-        %0A- Tipo de propiedad: ${selectedType}.
-        %0A- Operación: ${type}.
-        %0A- Precio: ${currency}${price}.
-        %0A- Habitaciones: ${rooms}.
-        %0A- Baños: ${bathrooms}.
-        %0A- Parqueos: ${parking}.
-        %0A- Área: ${area}m².
-        %0A- Detalles adicionales: %0A${formattedDetails}.
-        %0A- Ubicación: ${location}`;
+        %0A- *Usuario:* ${userRole}
+        %0A- *Tipo de propiedad:* ${selectedType}
+        %0A- *Operación:* ${type}
+        %0A- *Precio:* ${currency}${price}
+        %0A- *Habitaciones:* ${rooms}
+        %0A- *Baños:* ${bathrooms}
+        %0A- *Parqueos:* ${parking}
+        %0A- *Área:* ${area}m²
+        %0A- *Detalles adicionales:* %0A${formattedDetails}
+        %0A- *Ubicación:* ${location}`;
 
             const phoneNumber = "18299605566";
             window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
