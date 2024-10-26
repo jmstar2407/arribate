@@ -217,6 +217,15 @@
                 background-position: 100% 50%;
             }
         }
+
+        #propertyDetails {
+    font-size: 16px;
+    color: #333;
+    padding: 10px;
+    line-height: 1.5;
+    font-family: Arial, sans-serif;
+}
+
     </style>
 </head>
 
@@ -284,6 +293,7 @@
 
         <label>Detalles de la propiedad:</label>
         <textarea id="propertyDetails" rows="4" placeholder="Escriba aquí detalles adicionales..."></textarea>
+        <div id="formattedOutput" style="white-space: pre-wrap; border: 1px solid #ccc; padding: 10px; margin-top: 10px;"></div>
 
         <div id="map"></div>
 
@@ -385,10 +395,9 @@
             const parking = document.getElementById('parking').value;
             const area = document.getElementById('area').value;
             const details = document.getElementById('propertyDetails').value;
-            const formattedDetails = encodeURIComponent(details.replace(/\n/g, '\n'));
             const location = document.getElementById('location').value;
 
-            const message = `Detalles de la propiedad:
+            const message = `*Detalles de la propiedad:*
 %0A- Usuario: ${userRole}
 %0A- Tipo de propiedad: ${selectedType}
 %0A- Operación: ${type}
@@ -405,6 +414,15 @@
         }
 
     </script>
+
+<script>
+    const textarea = document.getElementById("propertyDetails");
+    const output = document.getElementById("formattedOutput");
+
+    textarea.addEventListener("input", () => {
+        output.textContent = textarea.value;
+    });
+</script>
 
 </body>
 
