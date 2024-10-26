@@ -1,20 +1,22 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulario de Propiedad</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
     <style>
-body {
-    font-family: Arial, sans-serif;
-    /* display: flex; */
-    /* justify-content: center; */
-    /* align-items: center; */
-    height: 100vh;
-    margin: 0;
-    background-color: #f5f5f5;
-}
+        body {
+            font-family: Arial, sans-serif;
+            /* display: flex; */
+            /* justify-content: center; */
+            /* align-items: center; */
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+
         form {
             background-color: #fff;
             padding: 20px;
@@ -23,24 +25,29 @@ body {
             max-width: 400px;
             width: 100%;
         }
+
         label {
             display: block;
             margin-top: 10px;
         }
+
         #alqvend {
             display: block;
         }
 
-        #inputalq{
+        #inputalq {
             width: auto;
         }
+
         input {
-    width: 95%;
-    padding: 8px;
-    margin-top: 5px;
-    border-radius: 4px;
-    border: 1px solid #ddd;
-}
+            width: 95%;
+            padding: 8px;
+            margin-top: 5px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+
+        }
+
         button {
             background-color: #25D366;
             color: white;
@@ -51,14 +58,18 @@ body {
             margin-top: 15px;
             width: 100%;
         }
+
         button:hover {
             background-color: #128c7e;
         }
-        .radio-group, .property-type-group {
+
+        .radio-group,
+        .property-type-group {
             display: flex;
             gap: 10px;
             margin-top: 10px;
         }
+
         .property-type-btn {
             padding: 10px;
             border: 1px solid #ddd;
@@ -67,17 +78,20 @@ body {
             text-align: center;
             width: 100%;
         }
+
         .property-type-btn.active {
             background-color: #25D366;
             color: white;
             border-color: #128c7e;
         }
+
         #map {
             height: 250px;
             margin-top: 10px;
             border-radius: 4px;
             position: relative;
         }
+
         .leaflet-control-locate {
             background-color: white;
             border: 1px solid #ddd;
@@ -89,13 +103,15 @@ body {
             justify-content: center;
             align-items: center;
         }
+
         .leaflet-control-locate img {
             width: 24px;
             height: 24px;
         }
 
-                /* Botones personalizados para el mapa */
-                .leaflet-control-layer-toggle, .leaflet-control-locate {
+        /* Botones personalizados para el mapa */
+        .leaflet-control-layer-toggle,
+        .leaflet-control-locate {
             background-color: white;
             border: 1px solid #ddd;
             border-radius: 4px;
@@ -106,155 +122,161 @@ body {
             justify-content: center;
             align-items: center;
         }
-        .leaflet-control-layer-toggle img, .leaflet-control-locate img {
+
+        .leaflet-control-layer-toggle img,
+        .leaflet-control-locate img {
             width: 24px;
             height: 24px;
         }
     </style>
 </head>
+
 <body>
 
-<form id="propertyForm">
-    <h2>Formulario de Propiedad</h2>
+    <form id="propertyForm">
+        <h2>Formulario de Propiedad</h2>
 
-    <label>Tipo de propiedad</label>
-    <div class="property-type-group">
-        <div class="property-type-btn" id="type-casa" onclick="selectPropertyType('Casa')">
-            🏠 Casa
+        <label>Tipo de propiedad</label>
+        <div class="property-type-group">
+            <div class="property-type-btn" id="type-casa" onclick="selectPropertyType('Casa')">
+                🏠 Casa
+            </div>
+            <div class="property-type-btn" id="type-apartamento" onclick="selectPropertyType('Apartamento')">
+                🏢 Apartamento
+            </div>
+            <div class="property-type-btn" id="type-solar" onclick="selectPropertyType('Solar')">
+                🌄 Solar
+            </div>
         </div>
-        <div class="property-type-btn" id="type-apartamento" onclick="selectPropertyType('Apartamento')">
-            🏢 Apartamento
+
+        <label>¿La propiedad es para alquilar o vender?</label>
+        <div class="radio-group" style="display: flex;flex-direction: column;margin-top: -3px;">
+            <label id="alqvend"><input id="inputalq" type="radio" name="operationType" value="Alquilar"
+                    onchange="updatePriceLabel()" required> Alquilar</label>
+            <label id="alqvend" style="margin-top: -8px;"><input id="inputalq" type="radio" name="operationType"
+                    value="Vender" onchange="updatePriceLabel()"> Vender</label>
         </div>
-        <div class="property-type-btn" id="type-solar" onclick="selectPropertyType('Solar')">
-            🌄 Solar
-        </div>
-    </div>
 
-    <label>¿La propiedad es para alquilar o vender?</label>
-    <div class="radio-group" style="display: flex;flex-direction: column;margin-top: -3px;">
-        <label id="alqvend"><input id="inputalq" type="radio" name="operationType" value="Alquilar" onchange="updatePriceLabel()" required> Alquilar</label>
-        <label id="alqvend" style="margin-top: -8px;"><input id="inputalq" type="radio" name="operationType" value="Vender" onchange="updatePriceLabel()"> Vender</label>
-    </div>
+        <label id="priceLabel">Precio de la propiedad</label>
+        <input type="number" id="price" required>
 
-    <label id="priceLabel">Precio de la propiedad</label>
-    <input type="number" id="price" required>
+        <label>Cantidad de habitaciones</label>
+        <input type="number" id="rooms" required>
 
-    <label>Cantidad de habitaciones</label>
-    <input type="number" id="rooms" required>
+        <label>Baños</label>
+        <input type="number" id="bathrooms" required>
 
-    <label>Baños</label>
-    <input type="number" id="bathrooms" required>
+        <label>Parqueos</label>
+        <input type="number" id="parking" required>
 
-    <label>Parqueos</label>
-    <input type="number" id="parking" required>
+        <label>Metros cuadrados</label>
+        <input type="number" id="area" required>
 
-    <label>Metros cuadrados</label>
-    <input type="number" id="area" required>
+        <label>Ubicación de la propiedad (Coordenadas)</label>
+        <input type="text" id="location" placeholder="Seleccione en el mapa" readonly required>
 
-    <label>Ubicación de la propiedad (Coordenadas)</label>
-    <input type="text" id="location" placeholder="Seleccione en el mapa" readonly required>
+        <div id="map"></div>
 
-    <div id="map"></div>
+        <button type="button" onclick="sendToWhatsApp()">Enviar a WhatsApp</button>
+    </form>
 
-    <button type="button" onclick="sendToWhatsApp()">Enviar a WhatsApp</button>
-</form>
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script>
+        let selectedType = '';
 
-<script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
-<script>
-    let selectedType = '';
-
-    function selectPropertyType(type) {
-        document.querySelectorAll('.property-type-btn').forEach(btn => btn.classList.remove('active'));
-        document.getElementById(`type-${type.toLowerCase()}`).classList.add('active');
-        selectedType = type;
-    }
-
-    function updatePriceLabel() {
-        const operationType = document.querySelector('input[name="operationType"]:checked').value;
-        document.getElementById('priceLabel').textContent = operationType === 'Alquilar' ? 'Precio de renta de la propiedad' : 'Precio de la propiedad';
-    }
-
-    // Inicializar el mapa
-    const map = L.map('map').setView([18.735693, -70.162651], 8);
-
-    // Capas de mapa
-    const normalLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 18,
-        attribution: '© OpenStreetMap'
-    }).addTo(map);
-
-    const satelliteLayer = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
-        maxZoom: 18,
-        attribution: '© OpenStreetMap'
-    });
-
-    // Alternar capas con un solo botón
-    const layerToggleButton = L.control({ position: 'topright' });
-    layerToggleButton.onAdd = function() {
-        const div = L.DomUtil.create('div', 'leaflet-control-layer-toggle');
-        div.innerHTML = '<img src="https://img.icons8.com/ios-filled/50/000000/satellite-dish.png"/>';
-        div.onclick = toggleLayer;
-        return div;
-    };
-    layerToggleButton.addTo(map);
-
-    let isSatelliteView = false;
-    function toggleLayer() {
-        if (isSatelliteView) {
-            map.removeLayer(satelliteLayer);
-            normalLayer.addTo(map);
-            document.querySelector('.leaflet-control-layer-toggle img').src = "https://img.icons8.com/ios-filled/50/000000/satellite-dish.png";
-        } else {
-            map.removeLayer(normalLayer);
-            satelliteLayer.addTo(map);
-            document.querySelector('.leaflet-control-layer-toggle img').src = "https://img.icons8.com/ios-filled/50/000000/map.png";
+        function selectPropertyType(type) {
+            document.querySelectorAll('.property-type-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`type-${type.toLowerCase()}`).classList.add('active');
+            selectedType = type;
         }
-        isSatelliteView = !isSatelliteView;
-    }
 
-    // Botón de ubicación
-    const locateButton = L.control({ position: 'topright' });
-    locateButton.onAdd = function() {
-        const div = L.DomUtil.create('div', 'leaflet-control-locate');
-        div.innerHTML = '<img src="https://img.icons8.com/ios-filled/50/000000/marker.png"/>';
-        div.onclick = locateUser;
-        return div;
-    };
-    locateButton.addTo(map);
+        function updatePriceLabel() {
+            const operationType = document.querySelector('input[name="operationType"]:checked').value;
+            document.getElementById('priceLabel').textContent = operationType === 'Alquilar' ? 'Precio de renta de la propiedad' : 'Precio de la propiedad';
+        }
 
-    let marker;
-    map.on('click', function(e) {
-        const { lat, lng } = e.latlng;
-        if (marker) marker.remove();
-        marker = L.marker([lat, lng]).addTo(map);
-        document.getElementById('location').value = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
-    });
+        // Inicializar el mapa
+        const map = L.map('map').setView([18.735693, -70.162651], 8);
 
-    function locateUser() {
-        map.locate({ setView: true, maxZoom: 16 });
-    }
+        // Capas de mapa
+        const normalLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
 
-    map.on('locationfound', function(e) {
-        if (marker) marker.remove();
-        marker = L.marker(e.latlng).addTo(map);
-        document.getElementById('location').value = `${e.latlng.lat.toFixed(6)}, ${e.latlng.lng.toFixed(6)}`;
-    });
+        const satelliteLayer = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: '© OpenStreetMap'
+        });
 
-    map.on('locationerror', function() {
-        alert("No se pudo acceder a tu ubicación.");
-    });
+        // Alternar capas con un solo botón
+        const layerToggleButton = L.control({ position: 'topright' });
+        layerToggleButton.onAdd = function () {
+            const div = L.DomUtil.create('div', 'leaflet-control-layer-toggle');
+            div.innerHTML = '<img src="https://img.icons8.com/ios-filled/50/000000/satellite-dish.png"/>';
+            div.onclick = toggleLayer;
+            return div;
+        };
+        layerToggleButton.addTo(map);
 
-    function sendToWhatsApp() {
-        const type = document.querySelector('input[name="operationType"]:checked').value;
-        const price = document.getElementById('price').value;
-        const rooms = document.getElementById('rooms').value;
-        const bathrooms = document.getElementById('bathrooms').value;
-        const parking = document.getElementById('parking').value;
-        const area = document.getElementById('area').value;
-        const location = document.getElementById('location').value;
+        let isSatelliteView = false;
+        function toggleLayer() {
+            if (isSatelliteView) {
+                map.removeLayer(satelliteLayer);
+                normalLayer.addTo(map);
+                document.querySelector('.leaflet-control-layer-toggle img').src = "https://img.icons8.com/ios-filled/50/000000/satellite-dish.png";
+            } else {
+                map.removeLayer(normalLayer);
+                satelliteLayer.addTo(map);
+                document.querySelector('.leaflet-control-layer-toggle img').src = "https://img.icons8.com/ios-filled/50/000000/map.png";
+            }
+            isSatelliteView = !isSatelliteView;
+        }
 
-        const message = `Detalles de la propiedad ${type}:
-        %0A- Operación: ${selectedType}
+        // Botón de ubicación
+        const locateButton = L.control({ position: 'topright' });
+        locateButton.onAdd = function () {
+            const div = L.DomUtil.create('div', 'leaflet-control-locate');
+            div.innerHTML = '<img src="https://img.icons8.com/ios-filled/50/000000/marker.png"/>';
+            div.onclick = locateUser;
+            return div;
+        };
+        locateButton.addTo(map);
+
+        let marker;
+        map.on('click', function (e) {
+            const { lat, lng } = e.latlng;
+            if (marker) marker.remove();
+            marker = L.marker([lat, lng]).addTo(map);
+            document.getElementById('location').value = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+        });
+
+        function locateUser() {
+            map.locate({ setView: true, maxZoom: 16 });
+        }
+
+        map.on('locationfound', function (e) {
+            if (marker) marker.remove();
+            marker = L.marker(e.latlng).addTo(map);
+            document.getElementById('location').value = `${e.latlng.lat.toFixed(6)}, ${e.latlng.lng.toFixed(6)}`;
+        });
+
+        map.on('locationerror', function () {
+            alert("No se pudo acceder a tu ubicación.");
+        });
+
+        function sendToWhatsApp() {
+            const type = document.querySelector('input[name="operationType"]:checked').value;
+            const price = document.getElementById('price').value;
+            const rooms = document.getElementById('rooms').value;
+            const bathrooms = document.getElementById('bathrooms').value;
+            const parking = document.getElementById('parking').value;
+            const area = document.getElementById('area').value;
+            const location = document.getElementById('location').value;
+
+            const message = `Detalles de la propiedad:
+        %0A- Tipo de propiedad: ${selectedType}
+        %0A- Operación: ${type}
         %0A- Precio: $${price}
         %0A- Habitaciones: ${rooms}
         %0A- Baños: ${bathrooms}
@@ -262,10 +284,11 @@ body {
         %0A- Metros cuadrados: ${area}
         %0A- Ubicación: ${location}`;
 
-        const phoneNumber = "18299605566";
-        window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
-    }
-</script>
+            const phoneNumber = "18299605566";
+            window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
+        }
+    </script>
 
-</body> 
+</body>
+
 </html>
