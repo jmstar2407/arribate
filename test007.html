@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Propiedad</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        button {
+            background-color: #25D366;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 15px;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #128c7e;
+        }
+        .radio-group {
+            display: flex;
+            gap: 10px;
+        }
+        #map {
+            height: 200px;
+            margin-top: 10px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<form id="propertyForm">
+    <h2>Formulario de Propiedad</h2>
+
+    <label>¿La propiedad es para alquilar o vender?</label>
+    <div class="radio-group">
+        <label><input type="radio" name="type" value="Alquilar" required> Alquilar</label>
+        <label><input type="radio" name="type" value="Vender"> Vender</label>
+    </div>
+
+    <label>Precio de la propiedad</label>
+    <input type="number" id="price" required>
+
+    <label>Cantidad de habitaciones</label>
+    <input type="number" id="rooms" required>
+
+    <label>Baños</label>
+    <input type="number" id="bathrooms" required>
+
+    <label>Parqueos</label>
+    <input type="number" id="parking" required>
+
+    <label>Metros cuadrados</label>
+    <input type="number" id="area" required>
+
+    <label>Ubicación de la propiedad (Coordenadas)</label>
+    <input type="text" id="location" placeholder="Seleccione en el mapa" readonly required>
+
+    <div id="map"></div>
+
+    <button type="button" onclick="sendToWhatsApp()">Enviar a WhatsApp</button>
+</form>
+
+<script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+<script>
+    // Inicializar el mapa
+    const map = L.map('map').setView([18.735693, -70.162651], 8); // Coordenadas de República Dominicana
+
+    // Añadir el mapa de OpenStreetMap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        attribution: '© OpenStreetMap'
+    }).addTo(map);
+
+    // Crear marcador y actualizar ubicación en el formulario al seleccionar
+    let marker;
+    map.on('click', function(e) {
+        const { lat, lng } = e.latlng;
+        if (marker) marker.remove();  // Quitar marcador anterior si existe
+        marker = L.marker([lat, lng]).addTo(map);  // Añadir nuevo marcador
+        document.getElementById('location').value = `${lat.toFixed(6)}, ${lng.toFixed(6)}`; // Mostrar coordenadas en el campo
+    });
+
+    function sendToWhatsApp() {
+        // Obtener valores del formulario
+        const type = document.querySelector('input[name="type"]:checked').value;
+        const price = document.getElementById('price').value;
+        const rooms = document.getElementById('rooms').value;
+        const bathrooms = document.getElementById('bathrooms').value;
+        const parking = document.getElementById('parking').value;
+        const area = document.getElementById('area').value;
+        const location = document.getElementById('location').value;
+
+        // Crear el mensaje para WhatsApp
+        const message = `Hola, estoy interesado en ${type} una propiedad con las siguientes características:
+        %0A- Precio: RD$${price}
+        %0A- Habitaciones: ${rooms}
+        %0A- Baños: ${bathrooms}
+        %0A- Parqueos: ${parking}
+        %0A- Metros cuadrados: ${area}
+        %0A- Ubicación: ${location}`;
+
+        // Número de WhatsApp de la empresa en formato internacional
+        const phoneNumber = "18299149394"; // Reemplaza con el número de tu negocio
+
+        // Redirigir a WhatsApp con el mensaje
+        window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
+    }
+</script>
+
+</body>
+</html>
