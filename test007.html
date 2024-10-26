@@ -390,8 +390,8 @@
         function sendToWhatsApp() {
         const userRole = document.querySelector('input[name="role"]:checked').value;
         const type = document.querySelector('input[name="operationType"]:checked').value;
-    const price = document.getElementById("price").value;
-    const currency = document.getElementById("currency").value;
+        const price = document.getElementById("price").value;
+        const currency = document.querySelector('input[name="currency"]:checked').value;
         const rooms = document.getElementById('rooms').value;
         const bathrooms = document.getElementById('bathrooms').value;
         const parking = document.getElementById('parking').value;
@@ -403,15 +403,15 @@
         const formattedDetails = encodeURIComponent(details);
 
         const message = `*Detalles de la propiedad:*
-        %0A- Usuario: ${userRole}
-        %0A- Tipo de propiedad: ${selectedType}
-        %0A- Operación: ${type}
-        %0A- La propiedad tiene un precio de ${currency}${price}
-        %0A- Habitaciones: ${rooms}
-        %0A- Baños: ${bathrooms}
-        %0A- Parqueos: ${parking}
-        %0A- Área: ${area}m²
-        %0A- Detalles adicionales: %0A${formattedDetails}
+        %0A- Usuario: ${userRole}.
+        %0A- Tipo de propiedad: ${selectedType}.
+        %0A- Operación: ${type}.
+        %0A- Precio: ${currency}${price}.
+        %0A- Habitaciones: ${rooms}.
+        %0A- Baños: ${bathrooms}.
+        %0A- Parqueos: ${parking}.
+        %0A- Área: ${area}m².
+        %0A- Detalles adicionales: %0A${formattedDetails}.
         %0A- Ubicación: ${location}`;
 
             const phoneNumber = "18299605566";
