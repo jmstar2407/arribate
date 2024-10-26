@@ -6,15 +6,15 @@
     <title>Formulario de Propiedad</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f5f5f5;
-        }
+body {
+    font-family: Arial, sans-serif;
+    /* display: flex; */
+    /* justify-content: center; */
+    /* align-items: center; */
+    height: 100vh;
+    margin: 0;
+    background-color: #f5f5f5;
+}
         form {
             background-color: #fff;
             padding: 20px;
@@ -27,8 +27,11 @@
             display: block;
             margin-top: 10px;
         }
+        #alqvend {
+            display: block;
+        }
         input, select {
-            width: 100%;
+            /*width: 100%;*/
             padding: 8px;
             margin-top: 5px;
             border-radius: 4px;
@@ -124,9 +127,9 @@
     </div>
 
     <label>¿La propiedad es para alquilar o vender?</label>
-    <div class="radio-group">
-        <label><input type="radio" name="operationType" value="Alquilar" onchange="updatePriceLabel()" required> Alquilar</label>
-        <label><input type="radio" name="operationType" value="Vender" onchange="updatePriceLabel()"> Vender</label>
+    <div class="radio-group" style="display: flex;flex-direction: column;margin-top: -3px;">
+        <label id="alqvend"><input type="radio" name="operationType" value="Alquilar" onchange="updatePriceLabel()" required> Alquilar</label>
+        <label id="alqvend" style="margin-top: -8px;"><input type="radio" name="operationType" value="Vender" onchange="updatePriceLabel()"> Vender</label>
     </div>
 
     <label id="priceLabel">Precio de la propiedad</label>
@@ -237,27 +240,8 @@
         alert("No se pudo acceder a tu ubicación.");
     });
 
-    function updatePriceLabel() {
-        const operationType = document.querySelector('input[name="operationType"]:checked').value;
-        document.getElementById('priceLabel').textContent = operationType === 'Alquilar' ? 'Precio de renta de la propiedad' : 'Precio de venta de la propiedad';
-    }
-
-    function formatCurrency(input) {
-        let num = input.value.replace(/\./g, ''); // Eliminar puntos existentes
-        if (!isNaN(num)) {
-            num = num.toString().split('').reverse().join('').replace(/(?=\d*\.?)(\d{3})/g, '$1.');
-            num = num.split('').reverse().join('').replace(/^[\.]/, '');
-            input.value = num;
-        } else {
-            alert('Solo se permiten números');
-            input.value = input.value.replace(/[^\d\.]*/g, '');
-        }
-    }
-
-    function   
- sendToWhatsApp() {
-        const propertyType = document.getElementById('propertyType').value;
-        const operationType = document.querySelector('input[name="operationType"]:checked').value;
+    function sendToWhatsApp() {
+        const type = document.querySelector('input[name="operationType"]:checked').value;
         const price = document.getElementById('price').value;
         const rooms = document.getElementById('rooms').value;
         const bathrooms = document.getElementById('bathrooms').value;
@@ -265,15 +249,15 @@
         const area = document.getElementById('area').value;
         const location = document.getElementById('location').value;
 
-        const message = `Hola, estoy interesado en ${operationType} una ${propertyType} con las siguientes características:
-        %0A- ${operationType === 'Alquilar' ? 'Precio de renta' : 'Precio'}: RD$${price}
+        const message = `Hola, estoy interesado en ${type} una ${selectedType} con las siguientes características:
+        %0A- Precio: RD$${price}
         %0A- Habitaciones: ${rooms}
         %0A- Baños: ${bathrooms}
         %0A- Parqueos: ${parking}
         %0A- Metros cuadrados: ${area}
         %0A- Ubicación: ${location}`;
 
-        const phoneNumber = "18299605566"; // Reemplaza con tu número de WhatsApp
+        const phoneNumber = "18299605566";
         window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
     }
 </script>
