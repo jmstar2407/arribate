@@ -47,14 +47,61 @@
         button:hover {
             background-color: #128c7e;
         }
-        .radio-group {
+        .radio-group, .property-type-group {
             display: flex;
             gap: 10px;
+            margin-top: 10px;
+        }
+        .property-type-btn {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            width: 100%;
+        }
+        .property-type-btn.active {
+            background-color: #25D366;
+            color: white;
+            border-color: #128c7e;
         }
         #map {
-            height: 200px;
+            height: 250px;
             margin-top: 10px;
             border-radius: 4px;
+            position: relative;
+        }
+        .leaflet-control-locate {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 35px;
+            height: 35px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .leaflet-control-locate img {
+            width: 24px;
+            height: 24px;
+        }
+
+                /* Botones personalizados para el mapa */
+                .leaflet-control-layer-toggle, .leaflet-control-locate {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 35px;
+            height: 35px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .leaflet-control-layer-toggle img, .leaflet-control-locate img {
+            width: 24px;
+            height: 24px;
         }
     </style>
 </head>
@@ -63,13 +110,26 @@
 <form id="propertyForm">
     <h2>Formulario de Propiedad</h2>
 
-    <label>¿La propiedad es para alquilar o vender?</label>
-    <div class="radio-group">
-        <label><input type="radio" name="type" value="Alquilar" required> Alquilar</label>
-        <label><input type="radio" name="type" value="Vender"> Vender</label>
+    <label>Tipo de propiedad</label>
+    <div class="property-type-group">
+        <div class="property-type-btn" id="type-casa" onclick="selectPropertyType('Casa')">
+            🏠 Casa
+        </div>
+        <div class="property-type-btn" id="type-apartamento" onclick="selectPropertyType('Apartamento')">
+            🏢 Apartamento
+        </div>
+        <div class="property-type-btn" id="type-solar" onclick="selectPropertyType('Solar')">
+            🌄 Solar
+        </div>
     </div>
 
-    <label>Precio de la propiedad</label>
+    <label>¿La propiedad es para alquilar o vender?</label>
+    <div class="radio-group">
+        <label><input type="radio" name="operationType" value="Alquilar" onchange="updatePriceLabel()" required> Alquilar</label>
+        <label><input type="radio" name="operationType" value="Vender" onchange="updatePriceLabel()"> Vender</label>
+    </div>
+
+    <label id="priceLabel">Precio de la propiedad</label>
     <input type="number" id="price" required>
 
     <label>Cantidad de habitaciones</label>
@@ -94,27 +154,91 @@
 
 <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
 <script>
-    // Inicializar el mapa
-    const map = L.map('map').setView([18.735693, -70.162651], 8); // Coordenadas de República Dominicana
+    let selectedType = '';
 
-    // Añadir el mapa de OpenStreetMap
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    function selectPropertyType(type) {
+        document.querySelectorAll('.property-type-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(`type-${type.toLowerCase()}`).classList.add('active');
+        selectedType = type;
+    }
+
+    function updatePriceLabel() {
+        const operationType = document.querySelector('input[name="operationType"]:checked').value;
+        document.getElementById('priceLabel').textContent = operationType === 'Alquilar' ? 'Precio de renta de la propiedad' : 'Precio de la propiedad';
+    }
+
+    // Inicializar el mapa
+    const map = L.map('map').setView([18.735693, -70.162651], 8);
+
+    // Capas de mapa
+    const normalLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 18,
         attribution: '© OpenStreetMap'
     }).addTo(map);
 
-    // Crear marcador y actualizar ubicación en el formulario al seleccionar
+    const satelliteLayer = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        attribution: '© OpenStreetMap'
+    });
+
+    // Alternar capas con un solo botón
+    const layerToggleButton = L.control({ position: 'topright' });
+    layerToggleButton.onAdd = function() {
+        const div = L.DomUtil.create('div', 'leaflet-control-layer-toggle');
+        div.innerHTML = '<img src="https://img.icons8.com/ios-filled/50/000000/satellite-dish.png"/>';
+        div.onclick = toggleLayer;
+        return div;
+    };
+    layerToggleButton.addTo(map);
+
+    let isSatelliteView = false;
+    function toggleLayer() {
+        if (isSatelliteView) {
+            map.removeLayer(satelliteLayer);
+            normalLayer.addTo(map);
+            document.querySelector('.leaflet-control-layer-toggle img').src = "https://img.icons8.com/ios-filled/50/000000/satellite-dish.png";
+        } else {
+            map.removeLayer(normalLayer);
+            satelliteLayer.addTo(map);
+            document.querySelector('.leaflet-control-layer-toggle img').src = "https://img.icons8.com/ios-filled/50/000000/map.png";
+        }
+        isSatelliteView = !isSatelliteView;
+    }
+
+    // Botón de ubicación
+    const locateButton = L.control({ position: 'topright' });
+    locateButton.onAdd = function() {
+        const div = L.DomUtil.create('div', 'leaflet-control-locate');
+        div.innerHTML = '<img src="https://img.icons8.com/ios-filled/50/000000/marker.png"/>';
+        div.onclick = locateUser;
+        return div;
+    };
+    locateButton.addTo(map);
+
     let marker;
     map.on('click', function(e) {
         const { lat, lng } = e.latlng;
-        if (marker) marker.remove();  // Quitar marcador anterior si existe
-        marker = L.marker([lat, lng]).addTo(map);  // Añadir nuevo marcador
-        document.getElementById('location').value = `${lat.toFixed(6)}, ${lng.toFixed(6)}`; // Mostrar coordenadas en el campo
+        if (marker) marker.remove();
+        marker = L.marker([lat, lng]).addTo(map);
+        document.getElementById('location').value = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+    });
+
+    function locateUser() {
+        map.locate({ setView: true, maxZoom: 16 });
+    }
+
+    map.on('locationfound', function(e) {
+        if (marker) marker.remove();
+        marker = L.marker(e.latlng).addTo(map);
+        document.getElementById('location').value = `${e.latlng.lat.toFixed(6)}, ${e.latlng.lng.toFixed(6)}`;
+    });
+
+    map.on('locationerror', function() {
+        alert("No se pudo acceder a tu ubicación.");
     });
 
     function sendToWhatsApp() {
-        // Obtener valores del formulario
-        const type = document.querySelector('input[name="type"]:checked').value;
+        const type = document.querySelector('input[name="operationType"]:checked').value;
         const price = document.getElementById('price').value;
         const rooms = document.getElementById('rooms').value;
         const bathrooms = document.getElementById('bathrooms').value;
@@ -122,8 +246,7 @@
         const area = document.getElementById('area').value;
         const location = document.getElementById('location').value;
 
-        // Crear el mensaje para WhatsApp
-        const message = `Hola, estoy interesado en ${type} una propiedad con las siguientes características:
+        const message = `Hola, estoy interesado en ${type} una ${selectedType} con las siguientes características:
         %0A- Precio: RD$${price}
         %0A- Habitaciones: ${rooms}
         %0A- Baños: ${bathrooms}
@@ -131,13 +254,10 @@
         %0A- Metros cuadrados: ${area}
         %0A- Ubicación: ${location}`;
 
-        // Número de WhatsApp de la empresa en formato internacional
-        const phoneNumber = "18299149394"; // Reemplaza con el número de tu negocio
-
-        // Redirigir a WhatsApp con el mensaje
+        const phoneNumber = "1xxxxxxxxxx";
         window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
     }
 </script>
 
-</body>
+</body> 
 </html>
