@@ -115,10 +115,18 @@
         .property-type-btn {
             padding: 10px;
             border: 1px solid #ddd;
-            border-radius: 4px;
+            border-radius: 10px;
             cursor: pointer;
             text-align: center;
             width: 100%;
+            transition: 0.3s;
+        }
+
+        .property-type-btn:hover {
+            background-color: #d1fde1;
+            color: rgb(0, 0, 0);
+            border-color: #128c7e;
+            transition: 0.3s;
         }
 
         .property-type-btn.active {
@@ -253,6 +261,29 @@
             animation: gradientMove linear 7s infinite;
         }
 
+        @media (min-width: 900px) {
+
+            /* Estilos para Chrome, Safari y Edge */
+            #propertyForm::-webkit-scrollbar {
+                width: 8px;
+                /* Ancho de la barra de desplazamiento */
+            }
+
+            #propertyForm::-webkit-scrollbar-track {
+                background: #f1f1f1;
+                /* Color de fondo del track */
+            }
+
+            #propertyForm::-webkit-scrollbar-thumb {
+                background: #00000041;
+                border-radius: 4px;
+            }
+
+            #propertyForm::-webkit-scrollbar-thumb:hover {
+                background: #a7a7a7;
+            }
+        }
+
         @keyframes gradientMove {
             0% {
                 background-position: 0% 50%;
@@ -291,6 +322,12 @@
 
         <form id="propertyForm">
             <h2 style="text-align: center;">Formulario de Propiedad</h2>
+
+            <label><strong>Nombre Completo:</strong></label>
+            <input type="text" id="FullName" placeholder="Nombre/Apellido" required>
+
+            <label><strong>Número de contacto:</strong></label>
+            <input type="text" id="ContactNumber" placeholder="#" required>
 
             <label id="titlelabel"><strong>¿Usted es?</strong></label>
             <div class="radio-group" style="display: flex;flex-direction: column;margin-top: -3px;">
@@ -331,10 +368,10 @@
 
             <label id="titlelabel"><strong>Precio de propiedad:</strong></label>
             <div class="radio-group" style="display: flex; flex-direction: column; margin-top: -3px;">
-                <label id="alqvend"><input id="inputalq" type="radio" id="currencyRD" name="currency"
-                        value="RD$">RD$</label>
-                <label id="alqvend"><input id="inputalq" type="radio" id="currencyUSD" name="currency"
-                        value="USD$">USD$</label>
+                <label id="alqvend"><input id="inputalq" type="radio" id="currencyRD" name="currency" value="RD$">RD$
+                    (Peso Dominicano)</label>
+                <label id="alqvend"><input id="inputalq" type="radio" id="currencyUSD" name="currency" value="USD$">USD
+                    (Dólar Estadounidense)</label>
 
                 <input type="number" id="price" placeholder="$" name="price" required>
             </div>
@@ -462,6 +499,8 @@
 
 
         function sendToWhatsApp() {
+            const FullName = document.getElementById("FullName").value;
+            const ContactNumber = document.getElementById("ContactNumber").value;
             const userRole = document.querySelector('input[name="role"]:checked').value;
             const type = document.querySelector('input[name="operationType"]:checked').value;
             const price = document.getElementById("price").value;
@@ -477,6 +516,8 @@
             const formattedDetails = encodeURIComponent(details);
 
             const message = `*Detalles de la propiedad:*
+        %0A- Nombre: ${FullName}
+        %0A- Contacto: ${ContactNumber}
         %0A- Usuario: ${userRole}
         %0A- Tipo de propiedad: ${selectedType}
         %0A- Operación: ${type}
