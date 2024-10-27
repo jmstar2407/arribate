@@ -72,7 +72,7 @@
         button {
             background-color: #25D366;
             color: white;
-            padding: 7px;
+            padding: 10px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
@@ -122,42 +122,63 @@
             position: relative;
         }
 
+        .leaflet-control-locate img {
+            width: 24px;
+            height: 24px;
+        }
+
+        .leaflet-right {
+            background: #ff000000;
+            bottom: 0px;
+            top: auto;
+        }
+
         .leaflet-control-locate {
             background-color: white;
             border: 1px solid #ddd;
-            border-radius: 4px;
+            border-radius: 9px;
             width: 35px;
             height: 35px;
             cursor: pointer;
             display: flex;
             justify-content: center;
             align-items: center;
+            right: 6px;
+            margin-bottom: 30px;
         }
 
-        .leaflet-control-locate img {
-            width: 24px;
-            height: 24px;
-        }
-
-        /* Botones personalizados para el mapa */
-        .leaflet-control-layer-toggle,
-        .leaflet-control-locate {
-            top: 150px;
+        .leaflet-control-layer-toggle {
             background-color: white;
             border: 1px solid #ddd;
-            border-radius: 4px;
-            width: 35px;
-            height: 35px;
+            border-radius: 12px;
+            width: 50px;
+            height: 50px;
+            overflow: hidden;
             cursor: pointer;
             display: flex;
             justify-content: center;
             align-items: center;
+            border: none;
+            bottom: 30px;
+            box-shadow: 0px 0px 0px 2px rgb(255 255 255);
         }
 
-        .leaflet-control-layer-toggle img,
+        .leaflet-control-layer-toggle img {
+            height: 100%;
+        }
+
+
         .leaflet-control-locate img {
             width: 24px;
             height: 24px;
+        }
+
+        .form-divisor {
+            position: relative;
+            height: 1px;
+            width: 100%;
+            margin: 24px 0px;
+            background: #ebebeb;
         }
 
         .logonombre {
@@ -220,15 +241,6 @@
             animation: gradientMove linear 7s infinite;
         }
 
-
-        .form-divisor {
-            position: relative;
-            height: 1px;
-            width: 100%;
-            margin: 24px 0px;
-            background: #ebebeb;
-        }
-
         @keyframes gradientMove {
             0% {
                 background-position: 0% 50%;
@@ -262,8 +274,8 @@
                 Propietario</label>
             <label id="alqvend"><input id="inputalq" type="radio" name="role" value="Administrador">
                 Administrador</label>
-            <label id="alqvend"><input id="inputalq" type="radio" name="role" value="Agente Inmobiliario"> Agente
-                Inmobiliario</label>
+            <label id="alqvend"><input id="inputalq" type="radio" name="role" value="Agente Inmobiliario">
+                Agente Inmobiliario</label>
         </div>
 
         <div class="form-divisor"></div> <!-- Divisor -->
@@ -358,40 +370,17 @@
             attribution: '© OpenStreetMap'
         }).addTo(map);
 
-        const satelliteLayer = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+        const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
             maxZoom: 18,
             attribution: '© OpenStreetMap'
         });
 
-        // Alternar capas con un solo botón
-        const layerToggleButton = L.control({ position: 'topright' });
-        layerToggleButton.onAdd = function () {
-            const div = L.DomUtil.create('div', 'leaflet-control-layer-toggle');
-            div.innerHTML = '<img src="./img/capasatelite2.png"/>';
-            div.onclick = toggleLayer;
-            return div;
-        };
-        layerToggleButton.addTo(map);
-
-        let isSatelliteView = false;
-        function toggleLayer() {
-            if (isSatelliteView) {
-                map.removeLayer(satelliteLayer);
-                normalLayer.addTo(map);
-                document.querySelector('.leaflet-control-layer-toggle img').src = "./img/capasatelite2.png";
-            } else {
-                map.removeLayer(normalLayer);
-                satelliteLayer.addTo(map);
-                document.querySelector('.leaflet-control-layer-toggle img').src = "./img/capamapa2.png";
-            }
-            isSatelliteView = !isSatelliteView;
-        }
 
         // Botón de ubicación
         const locateButton = L.control({ position: 'topright' });
         locateButton.onAdd = function () {
             const div = L.DomUtil.create('div', 'leaflet-control-locate');
-            div.innerHTML = '<img src="https://img.icons8.com/ios-filled/50/000000/marker.png"/>';
+            div.innerHTML = '<img src="./img/icons/location6.png"/>';
             div.onclick = locateUser;
             return div;
         };
@@ -417,7 +406,33 @@
 
         map.on('locationerror', function () {
             alert("No se pudo acceder a tu ubicación.");
-        });
+        });     // Botón de ubicación FIN
+
+
+        // Alternar capas con un solo botón
+        const layerToggleButton = L.control({ position: 'topright' });
+        layerToggleButton.onAdd = function () {
+            const div = L.DomUtil.create('div', 'leaflet-control-layer-toggle');
+            div.innerHTML = '<img src="./img/capasatelite2.png"/>';
+            div.onclick = toggleLayer;
+            return div;
+        };
+        layerToggleButton.addTo(map);
+
+        let isSatelliteView = false;
+        function toggleLayer() {
+            if (isSatelliteView) {
+                map.removeLayer(satelliteLayer);
+                normalLayer.addTo(map);
+                document.querySelector('.leaflet-control-layer-toggle img').src = "./img/capasatelite2.png";
+            } else {
+                map.removeLayer(normalLayer);
+                satelliteLayer.addTo(map);
+                document.querySelector('.leaflet-control-layer-toggle img').src = "./img/capamapa2.png";
+            }
+            isSatelliteView = !isSatelliteView;
+        } // alternas capas FIN
+
 
 
         function sendToWhatsApp() {
@@ -450,6 +465,21 @@
             const phoneNumber = "18299605566";
             window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
         }
+
+
+
+        //Bloquear interacion de mpa con el boton de capas y ubicacion
+        // Selecciona el elemento div
+        const divElement = document.querySelector('.leaflet-top.leaflet-right');
+
+        // Agrega un event listener para el evento 'click'
+        divElement.addEventListener('click', function (event) {
+            // Detiene la propagación del evento
+            event.stopPropagation();
+
+            // Aquí puedes agregar el código para la funcionalidad del botón
+            console.log('Botón clickeado!');
+        });        //Bloquear interacion de mpa con el boton de capas y ubicacion FIN
 
     </script>
 
