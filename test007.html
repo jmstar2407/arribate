@@ -9,31 +9,41 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            /* display: flex; */
-            /* justify-content: center; */
-            /* align-items: center; */
+            display: flex;
+            justify-content: center;
+            align-items: center;
             height: 100vh;
             margin: 0;
             background-color: #f5f5f5;
         }
 
+        .master-cube {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            width: 80%;
+            max-width: 900px;
+        }
+
         .menu-master {
-            position: fixed;
+            position: relative;
             height: 60px;
             width: 100%;
             background: rgb(255, 255, 255);
             border-bottom: 1px solid hsl(142.41deg 41.04% 86.89%);
-            z-index: 9;
             text-align: center;
         }
 
         form {
             background-color: #fff;
-            padding: 60px 20px 20px 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            max-width: 400px;
             width: 100%;
+            overflow: auto;
+            flex: 1;
+            padding: 0px 30px;
+            box-sizing: border-box;
         }
 
         label {
@@ -55,16 +65,16 @@
         }
 
         input {
-            width: 95%;
+            width: 98%;
             padding: 8px;
             margin-top: 5px;
             border-radius: 4px;
             border: 1px solid #ddd;
-
         }
 
+
         #propertyDetails {
-            width: 100%;
+            width: 99%;
             height: 100px;
             border-radius: 8px;
         }
@@ -250,102 +260,116 @@
                 background-position: 100% 50%;
             }
         }
+
+        @media (max-width: 700px) {
+    .master-cube {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    max-width: 900px;
+}
+}
     </style>
 </head>
 
 <body>
 
-    <div class="menu-master">
-        <div class="logonombre">
-            <div class="logo1"></div>
-            <div style="margin-left: 10px;">
-                <h1>ArríbaTe</h1>
-                <span>República Dominicana</span>
+    <div class="master-cube">
+        <div class="menu-master">
+            <div class="logonombre">
+                <div class="logo1"></div>
+                <div style="margin-left: 10px;">
+                    <h1>ArríbaTe</h1>
+                    <span>República Dominicana</span>
+                </div>
             </div>
         </div>
+
+        <form id="propertyForm">
+            <h2 style="text-align: center;">Formulario de Propiedad</h2>
+
+            <label id="titlelabel"><strong>¿Usted es?</strong></label>
+            <div class="radio-group" style="display: flex;flex-direction: column;margin-top: -3px;">
+                <label id="alqvend"><input id="inputalq" type="radio" name="role" value="Propietario" required>
+                    Propietario</label>
+                <label id="alqvend"><input id="inputalq" type="radio" name="role" value="Administrador">
+                    Administrador</label>
+                <label id="alqvend"><input id="inputalq" type="radio" name="role" value="Agente Inmobiliario">
+                    Agente Inmobiliario</label>
+            </div>
+
+            <div class="form-divisor"></div> <!-- Divisor -->
+
+            <label><strong>Tipo de propiedad</strong></label>
+            <div class="property-type-group">
+                <div class="property-type-btn" id="type-casa" onclick="selectPropertyType('Casa')">
+                    🏠 </p>Casa
+                </div>
+                <div class="property-type-btn" id="type-apartamento" onclick="selectPropertyType('Apartamento')">
+                    🏢 </p>Apartamento
+                </div>
+                <div class="property-type-btn" id="type-solar" onclick="selectPropertyType('Solar')">
+                    🌄 </p>Solar
+                </div>
+            </div>
+
+            <div class="form-divisor"></div> <!-- Divisor -->
+
+            <label id="titlelabel"><strong>Proposito de la propiedad</strong></label>
+            <div class="radio-group" style="display: flex;flex-direction: column;margin-top: -3px;">
+                <label id="alqvend"><input id="inputalq" type="radio" name="operationType" value="Alquilar"
+                        onchange="updatePriceLabel()" required>Alquilar</label>
+                <label id="alqvend" style="margin-top: -8px;"><input id="inputalq" type="radio" name="operationType"
+                        value="Vender" onchange="updatePriceLabel()">Vender</label>
+            </div>
+
+            <div class="form-divisor"></div> <!-- Divisor -->
+
+            <label id="titlelabel"><strong>Precio de propiedad:</strong></label>
+            <div class="radio-group" style="display: flex; flex-direction: column; margin-top: -3px;">
+                <label id="alqvend"><input id="inputalq" type="radio" id="currencyRD" name="currency"
+                        value="RD$">RD$</label>
+                <label id="alqvend"><input id="inputalq" type="radio" id="currencyUSD" name="currency"
+                        value="USD$">USD$</label>
+
+                <input type="number" id="price" placeholder="$" name="price" required>
+            </div>
+
+
+            <div class="form-divisor"></div> <!-- Divisor -->
+
+            <label><strong>Cantidad de habitaciones:</strong></label>
+            <input type="number" id="rooms" placeholder="0" required>
+
+            <label><strong>Cantidad de Baños:</strong></label>
+            <input type="number" id="bathrooms" placeholder="0" required>
+
+            <label><strong>Cantidad de Parqueos:</strong></label>
+            <input type="number" id="parking" placeholder="0" required>
+
+            <label><strong>Metros cuadrados (m²):</strong></label>
+            <input type="number" id="area" placeholder="0" required>
+
+            <label><strong>Detalles de la propiedad:</strong></label>
+            <textarea id="propertyDetails" rows="4" placeholder="Escriba aquí detalles adicionales..."></textarea>
+
+            <div class="form-divisor"></div> <!-- Divisor -->
+
+            <label><strong>Ubicación de la propiedad (Coordenadas)</strong></label>
+            <input type="text" id="location" placeholder="Seleccione en el mapa" readonly required>
+
+            <div id="map"></div>
+
+            <div class="form-divisor"></div> <!-- Divisor -->
+
+            <button type="button" onclick="sendToWhatsApp()"><img src="img/icons/whatsapp2.png"
+                    style="height: 24px;margin-right: 5px;">
+                <p>Enviar a ArríbaTe</p>
+            </button>
+        </form>
     </div>
-
-    <form id="propertyForm">
-        <h2 style="text-align: center;">Formulario de Propiedad</h2>
-
-        <label id="titlelabel"><strong>¿Usted es?</strong></label>
-        <div class="radio-group" style="display: flex;flex-direction: column;margin-top: -3px;">
-            <label id="alqvend"><input id="inputalq" type="radio" name="role" value="Propietario" required>
-                Propietario</label>
-            <label id="alqvend"><input id="inputalq" type="radio" name="role" value="Administrador">
-                Administrador</label>
-            <label id="alqvend"><input id="inputalq" type="radio" name="role" value="Agente Inmobiliario">
-                Agente Inmobiliario</label>
-        </div>
-
-        <div class="form-divisor"></div> <!-- Divisor -->
-
-        <label><strong>Tipo de propiedad</strong></label>
-        <div class="property-type-group">
-            <div class="property-type-btn" id="type-casa" onclick="selectPropertyType('Casa')">
-                🏠 </p>Casa
-            </div>
-            <div class="property-type-btn" id="type-apartamento" onclick="selectPropertyType('Apartamento')">
-                🏢 </p>Apartamento
-            </div>
-            <div class="property-type-btn" id="type-solar" onclick="selectPropertyType('Solar')">
-                🌄 </p>Solar
-            </div>
-        </div>
-
-        <div class="form-divisor"></div> <!-- Divisor -->
-
-        <label id="titlelabel"><strong>Proposito de la propiedad</strong></label>
-        <div class="radio-group" style="display: flex;flex-direction: column;margin-top: -3px;">
-            <label id="alqvend"><input id="inputalq" type="radio" name="operationType" value="Alquilar"
-                    onchange="updatePriceLabel()" required>Alquilar</label>
-            <label id="alqvend" style="margin-top: -8px;"><input id="inputalq" type="radio" name="operationType"
-                    value="Vender" onchange="updatePriceLabel()">Vender</label>
-        </div>
-
-        <div class="form-divisor"></div> <!-- Divisor -->
-
-        <label id="titlelabel"><strong>Precio de propiedad:</strong></label>
-        <div class="radio-group" style="display: flex; flex-direction: column; margin-top: -3px;">
-            <label id="alqvend"><input id="inputalq" type="radio" id="currencyRD" name="currency"
-                    value="RD$">RD$</label>
-            <label id="alqvend"><input id="inputalq" type="radio" id="currencyUSD" name="currency"
-                    value="USD$">USD$</label>
-
-            <input type="number" id="price" placeholder="$" name="price" required>
-        </div>
-
-
-        <div class="form-divisor"></div> <!-- Divisor -->
-
-        <label><strong>Cantidad de habitaciones:</strong></label>
-        <input type="number" id="rooms" placeholder="0" required>
-
-        <label><strong>Cantidad de Baños:</strong></label>
-        <input type="number" id="bathrooms" placeholder="0" required>
-
-        <label><strong>Cantidad de Parqueos:</strong></label>
-        <input type="number" id="parking" placeholder="0" required>
-
-        <label><strong>Metros cuadrados (m²):</strong></label>
-        <input type="number" id="area" placeholder="0" required>
-
-        <label><strong>Detalles de la propiedad:</strong></label>
-        <textarea id="propertyDetails" rows="4" placeholder="Escriba aquí detalles adicionales..."></textarea>
-
-        <div class="form-divisor"></div> <!-- Divisor -->
-
-        <label><strong>Ubicación de la propiedad (Coordenadas)</strong></label>
-        <input type="text" id="location" placeholder="Seleccione en el mapa" readonly required>
-
-        <div id="map"></div>
-
-        <button type="button" onclick="sendToWhatsApp()"><img src="img/icons/whatsapp2.png"
-                style="height: 24px;margin-right: 5px;">
-            <p>Enviar a ArríbaTe</p>
-        </button>
-    </form>
-
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
     <script>
         let selectedType = '';
