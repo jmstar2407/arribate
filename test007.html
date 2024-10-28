@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ArríbaTe | Formulario de Propiedad</title>
+    <link rel="icon" href="./img/icon_favicon_arribate.svg" type="image/svg+xml">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
     <style>
         body {
@@ -14,17 +15,20 @@
             align-items: center;
             height: 100%;
             margin: 0;
-            background-color: #f5f5f5;
+            background-color: #c96363;
         }
 
         .master-cube {
-            top: 0px;
+            top: 25px;
             position: absolute;
             display: flex;
             flex-direction: column;
-            height: 100%;
             width: 80%;
             max-width: 900px;
+            height: calc(100% - 50px);
+            min-height: 60px;
+            border-radius: 15px;
+            overflow: hidden;
         }
 
         .menu-master {
@@ -38,7 +42,6 @@
 
         form {
             background-color: #fff;
-            border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             width: 100%;
             overflow: auto;
@@ -78,6 +81,7 @@
             width: 99%;
             height: 100px;
             border-radius: 8px;
+            resize: none;
         }
 
         button {
@@ -93,6 +97,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            -webkit-tap-highlight-color: transparent;
         }
 
         button p {
@@ -261,28 +266,27 @@
             animation: gradientMove linear 7s infinite;
         }
 
-        @media (min-width: 900px) {
 
-            /* Estilos para Chrome, Safari y Edge */
-            #propertyForm::-webkit-scrollbar {
-                width: 8px;
-                /* Ancho de la barra de desplazamiento */
-            }
-
-            #propertyForm::-webkit-scrollbar-track {
-                background: #f1f1f1;
-                /* Color de fondo del track */
-            }
-
-            #propertyForm::-webkit-scrollbar-thumb {
-                background: #00000041;
-                border-radius: 4px;
-            }
-
-            #propertyForm::-webkit-scrollbar-thumb:hover {
-                background: #a7a7a7;
-            }
+        /* Estilos para Chrome, Safari y Edge */
+        #propertyForm::-webkit-scrollbar {
+            width: 8px;
+            /* Ancho de la barra de desplazamiento */
         }
+
+        #propertyForm::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            /* Color de fondo del track */
+        }
+
+        #propertyForm::-webkit-scrollbar-thumb {
+            background: #00000041;
+            border-radius: 4px;
+        }
+
+        #propertyForm::-webkit-scrollbar-thumb:hover {
+            background: #a7a7a7;
+        }
+
 
         @keyframes gradientMove {
             0% {
@@ -295,13 +299,14 @@
         }
 
         @media (max-width: 700px) {
+            body {
+            background-color: #ffffff;
+        }
             .master-cube {
-                position: absolute;
-                display: flex;
-                flex-direction: column;
+                top: 0px;
                 height: 100%;
                 width: 100%;
-                max-width: 900px;
+                border-radius: 0px;
             }
         }
     </style>
@@ -314,8 +319,7 @@
             <div class="logonombre">
                 <div class="logo1"></div>
                 <div style="margin-left: 10px;">
-                    <h1>ArríbaTe</h1>
-                    <span>República Dominicana</span>
+                    <h1>ArríbaTe</h1><span>República Dominicana</span>
                 </div>
             </div>
         </div>
@@ -369,9 +373,9 @@
             <label id="titlelabel"><strong>Precio de propiedad:</strong></label>
             <div class="radio-group" style="display: flex; flex-direction: column; margin-top: -3px;">
                 <label id="alqvend"><input id="inputalq" type="radio" id="currencyRD" name="currency" value="RD$">RD$
-                    (Peso Dominicano)</label>
+                    (peso dominicano)</label>
                 <label id="alqvend"><input id="inputalq" type="radio" id="currencyUSD" name="currency" value="USD$">USD
-                    (Dólar Estadounidense)</label>
+                    (dólar estadounidense)</label>
 
                 <input type="number" id="price" placeholder="$" name="price" required>
             </div>
@@ -409,6 +413,11 @@
             </button>
         </form>
     </div>
+
+
+
+
+
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
     <script>
         let selectedType = '';
