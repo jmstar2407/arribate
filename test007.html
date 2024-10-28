@@ -421,10 +421,10 @@
                     (dólar estadounidense)</label>
 
                 <div class="coin-input">
-                    <select id="CountryCoin" onfocus="expandOptions()" onblur="shortenOptions()">
-                        <option value="RD$ (peso)" data-flag="do">RD$</option>
-                        <option value="USD (dolar)" data-flag="us">USD</option>
-                    </select>
+<select id="CountryCoin" style="width: 52px;height: 31px;">
+  <option value="RD$ (peso)" data-flag="do">RD$</option> 
+  <option value="USD (dolar)" data-flag="us">USD</option>
+</select>
                     <input type="number" id="price" placeholder="$" name="price" required>
                 </div>
             </div>
@@ -605,16 +605,6 @@
 
 
 
-        const selectElement = document.getElementById('CountryCoin');
-
-
-
-        // Evento que se dispara al abrir y cerrar el select
-        selectElement.addEventListener('mousedown', function () {
-            actualizarOpcionesSelect();
-        });
-
-
 
         //Bloquear interacion de mapa con el boton de capas y ubicacion
         // Selecciona el elemento div
@@ -631,19 +621,36 @@
     </script>
 
 
-    <script>
-        function expandOptions() {
-            const select = document.getElementById("CountryCoin");
-            select.options[0].text = "RD$ (peso dominicano)";
-            select.options[1].text = "USD (dólar estadounidense)";
-        }
+<script>
+  const selectElement = document.getElementById('CountryCoin');
 
-        function shortenOptions() {
-            const select = document.getElementById("CountryCoin");
-            select.options[0].text = "RD$";
-            select.options[1].text = "USD";
-        }
-    </script>
+  // Función para abreviar las opciones
+  function abreviarOpciones() {
+    for (let i = 0; i < selectElement.options.length; i++) {
+      let optionText = selectElement.options[i].text;
+      if (optionText.includes(' (')) {
+        selectElement.options[i].text = optionText.split(' (')[0];
+      }
+    }
+  }
+
+  // Función para mostrar el nombre completo
+  function mostrarNombreCompleto() {
+    for (let i = 0; i < selectElement.options.length; i++) {
+      selectElement.options[i].text = selectElement.options[i].value;
+    }
+  }
+
+  // Abreviar las opciones al cargar la página
+  abreviarOpciones();
+
+  // Evento para mostrar el nombre completo al abrir el select
+  selectElement.addEventListener('focus', mostrarNombreCompleto);
+
+  // Evento para abreviar las opciones al cerrar el select
+  selectElement.addEventListener('blur', abreviarOpciones);
+</script>
+
 
 </body>
 
