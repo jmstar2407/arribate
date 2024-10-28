@@ -415,10 +415,10 @@
                 <label id="alqvend"><input id="inputalq" type="radio" id="currencyUSD" name="currency" value="USD$">USD
                     (dólar estadounidense)</label>
 
-                    <select id="CountryCoin">
+                    <select id="CountryCoin" onfocus="expandOptions()" onblur="shortenOptions()">
                         <option value="RD$ (peso)" data-flag="do">RD$</option> 
-                        <option value="USD" data-flag="us">USD (dolar)</option>
-                        </select>
+                        <option value="USD (dolar)" data-flag="us">USD</option>
+                    </select>
                 <input type="number" id="price" placeholder="$" name="price" required>
             </div>
 
@@ -599,6 +599,17 @@ function sendToWhatsApp() {
 
 
 
+const selectElement = document.getElementById('CountryCoin');
+
+
+
+// Evento que se dispara al abrir y cerrar el select
+selectElement.addEventListener('mousedown', function() {
+  actualizarOpcionesSelect();
+});
+
+
+
 //Bloquear interacion de mapa con el boton de capas y ubicacion
 // Selecciona el elemento div
 const divElement = document.querySelector('.leaflet-top.leaflet-right');
@@ -612,6 +623,21 @@ divElement.addEventListener('click', function (event) {
   console.log('Botón clickeado!');
 });    //Bloquear interacion de mapa con el boton de capas y ubicacion FIN
     </script>
+
+
+<script>
+    function expandOptions() {
+        const select = document.getElementById("CountryCoin");
+        select.options[0].text = "RD$ (peso dominicano)";
+        select.options[1].text = "USD (dólar estadounidense)";
+    }
+
+    function shortenOptions() {
+        const select = document.getElementById("CountryCoin");
+        select.options[0].text = "RD$";
+        select.options[1].text = "USD";
+    }
+</script>
 
 </body>
 
