@@ -548,6 +548,6 @@ function formatNumber(num) {
 }
 
 // Inicializar el filtro con el rango para alquileres
-toggleMarkers('alquiler');
+toggleMarkers('venta');
 
 // Filtros FIN
