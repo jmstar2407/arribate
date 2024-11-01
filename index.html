@@ -60,8 +60,8 @@
                 <div class="linediv"></div>
 
                 <div class="botonbox">
-                    <button id="alquilerButton" class="toggle-button active vibrar-button">Alquiler</button>
                     <button id="ventaButton" class="toggle-button vibrar-button">Venta</button>
+                    <button id="alquilerButton" class="toggle-button active vibrar-button">Alquiler</button>
                 </div>
 
 
@@ -74,11 +74,12 @@
             <!-- Menu respon -->
             <div class="botonbox2">
 
-                <div><button id="alquilerButton-rpsv" class="toggle-button vibrar-button">
-                        <h3>Alquiler</h3>
-                    </button>
+                <div>
                     <button id="ventaButton-rpsv" class="toggle-button vibrar-button">
                         <h3>Venta</h3>
+                    </button>
+                    <button id="alquilerButton-rpsv" class="toggle-button vibrar-button">
+                        <h3>Alquiler</h3>
                     </button>
                 </div>
 
@@ -1295,7 +1296,7 @@ rectangle._path.style.pointerEvents = "none";
         }
 
         // Asegurar que 'alquilerButton-rpsv' esté activo al cargar la página
-        activateGroup('alquiler');
+        activateGroup('venta');
 
         // Botones alquiler-venta con su .active FIN
 
@@ -1309,7 +1310,7 @@ rectangle._path.style.pointerEvents = "none";
 
 
         // Inicialmente mostrar solo los alquileres
-        toggleMarkers('alquiler');
+        toggleMarkers('venta');
     </script>
 
     <script>
