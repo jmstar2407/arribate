@@ -1185,11 +1185,12 @@ body {
     }
 
     #alquilerButton-rpsv {
-        box-shadow: 0px 35px 0px 0px rgb(250 249 253) inset, 100px 0px 0px 0px #e9e9e9 inset, 100px 0px 0px 0px #cd1025 inset;
+        box-shadow: 0px 35px 0px 0px rgb(250 249 253) inset, -100px 0px 0px 0px #e9e9e9 inset, 100px 0px 0px 0px #cd1025 inset;
     }
 
     #ventaButton-rpsv {
-        box-shadow: 0px 35px 0px 0px rgb(250 249 253) inset, -100px 0px 0px 0px #e9e9e9 inset, 100px 0px 0px 0px #cd1025 inset;
+
+        box-shadow: 0px 35px 0px 0px rgb(250 249 253) inset, 100px 0px 0px 0px #e9e9e9 inset, 100px 0px 0px 0px #cd1025 inset;
     }
 
     #alquilerButton-rpsv h3,
@@ -1210,7 +1211,6 @@ body {
         box-shadow: 0px 35px 0px 0px rgb(250 249 253) inset, 0px 0px 0px 0px #e9e9e9 inset, 100px 0px 0px 0px #cd1025 inset;
         color: #096caf;
     }
-
 
     .layer-button {
         height: 70px;
