@@ -5,17 +5,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ArríbaTe | Formulario de Propiedad</title>
-
-    <meta property="og:url" content="https://arribate.com" />
+    <meta name="description" content="Arríbate, el mapa de propiedades en República Dominicana. Alquila, vende o encuentra propiedades con nuestra herramienta fácil de usar, mapa interactivo y atención personalizada. ¡Eleva tu búsqueda de propiedades con ARRIBATE!">
+    <meta property="og:url" content="https://arribate.com/PropertyForm.html" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="ArríbaTe | Propiedades en República Dominicana" />
-    <meta property="og:description" content="Arríbate es la plataforma para encontrar propiedades en la República Dominicana en alquiler y venta. Descubre tu próximo hogar con nuestra herramienta fácil de usar, mapa interactivo y atención personalizada. ¡Eleva tu búsqueda de propiedades con ARRIBATE!" />
-    <meta property="og:image" content="https://arribate.com/img/logo2.png" />
+    <meta property="og:title" content="ArríbaTe | Formulario de propiedades" />
+    <meta property="og:description" content="Arríbate, el mapa de propiedades en República Dominicana. Alquila, vende o encuentra propiedades con nuestra herramienta fácil de usar, mapa interactivo y atención personalizada. ¡Eleva tu búsqueda de propiedades con ARRIBATE!" />
+    <meta property="og:image" content="https://arribate.com/img/og_image_form_property1_.jpg" />
 
-    
+
     <link rel="icon" href="./img/icon_favicon_arribate.svg" type="image/svg+xml">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -319,6 +319,18 @@
                 width: 100%;
                 border-radius: 0px;
             }
+
+            input {
+                width: 96%;
+            }
+        }
+
+        .iti {
+            width: 100%;
+        }
+
+        #ContactNumber {
+            width: 100%;
         }
     </style>
 </head>
@@ -338,11 +350,11 @@
         <form id="propertyForm">
             <h2 style="text-align: center;">Formulario de Propiedad</h2>
 
-            <label><strong>Nombre Completo:</strong></label>
+            <label><strong>Nombre:</strong></label>
             <input type="text" id="FullName" placeholder="Nombre/Apellido" required>
 
             <label><strong>Número de contacto:</strong></label>
-            <input type="tel" id="ContactNumber" placeholder="#" required>
+            <input type="tel" id="ContactNumber" placeholder="000-000-0000" required>
 
             <label id="titlelabel"><strong>¿Usted es?</strong></label>
             <div class="radio-group" style="display: flex;flex-direction: column;margin-top: -3px;">
@@ -369,9 +381,30 @@
                 </div>
             </div>
 
+
+
+
+
+
+
             <div class="form-divisor"></div> <!-- Divisor -->
 
-            <label id="titlelabel"><strong>Proposito de la propiedad</strong></label>
+
+                <label><strong>Imágenes de la propiedad:</strong></label>
+                <input type="file" id="propertyImages" accept="image/*" multiple> 
+                <div id="imagePreview"></div> 
+
+
+              <div class="form-divisor"></div> <!-- Divisor -->
+
+
+
+
+
+
+
+
+            <label id="titlelabel"><strong>Propósito de la propiedad</strong></label>
             <div class="radio-group" style="display: flex;flex-direction: column;margin-top: -3px;">
                 <label id="alqvend"><input id="inputalq" type="radio" name="operationType" value="Alquilar"
                         onchange="updatePriceLabel()" required>Alquilar</label>
@@ -381,14 +414,14 @@
 
             <div class="form-divisor"></div> <!-- Divisor -->
 
-            <label id="titlelabel"><strong>Precio de propiedad:</strong></label>
+            <label id="titlelabel"><strong>Precio de la propiedad:</strong></label>
             <div class="radio-group" style="display: flex; flex-direction: column; margin-top: -3px;">
                 <label id="alqvend"><input id="inputalq" type="radio" id="currencyRD" name="currency" value="RD$">RD$
                     (peso dominicano)</label>
                 <label id="alqvend"><input id="inputalq" type="radio" id="currencyUSD" name="currency" value="USD$">USD
                     (dólar estadounidense)</label>
 
-                <input type="number" id="price" placeholder="$" name="price" required>
+                <input type="number" id="price" placeholder="Precio" name="price" required>
             </div>
 
 
@@ -432,120 +465,149 @@
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
     <script>
-let selectedType = '';
+        let selectedType = '';
 
-function selectPropertyType(type) {
-  document.querySelectorAll('.property-type-btn').forEach(btn => btn.classList.remove('active'));
-  document.getElementById(`type-${type.toLowerCase()}`).classList.add('active');
-  selectedType = type;
-}
+        function selectPropertyType(type) {
+            document.querySelectorAll('.property-type-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`type-${type.toLowerCase()}`).classList.add('active');
+            selectedType = type;
+        }
 
-function updatePriceLabel() {
-  const operationType = document.querySelector('input[name="operationType"]:checked').value;
-  document.getElementById('priceLabel').textContent = operationType === 'Alquilar' ? 'Precio de renta de la propiedad' : 'Precio de la propiedad';
-}
+        function updatePriceLabel() {
+            const operationType = document.querySelector('input[name="operationType"]:checked').value;
+            document.getElementById('priceLabel').textContent = operationType === 'Alquilar' ? 'Precio de renta de la propiedad' : 'Precio de la propiedad';
+        }
 
-// Inicializar el mapa
-const map = L.map('map').setView([18.735693, -70.162651], 7);
+        // Inicializar el mapa
+        const map = L.map('map').setView([18.735693, -70.162651], 7);
 
-// Capas de mapa
-const normalLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  maxZoom: 18,
-  attribution: '© OpenStreetMap'
-}).addTo(map);
+        // Capas de mapa
+        const normalLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
 
-const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-  maxZoom: 18,
-  attribution: '© OpenStreetMap'
-});
-
-
-// Botón de ubicación
-const locateButton = L.control({ position: 'topright' });
-locateButton.onAdd = function () {
-  const div = L.DomUtil.create('div', 'leaflet-control-locate');
-  div.innerHTML = '<img src="./img/icons/location6.png"/>';
-  div.onclick = locateUser;
-  return div;
-};
-locateButton.addTo(map);
-
-let marker;
-map.on('click', function (e) {
-  const { lat, lng } = e.latlng;
-  if (marker) marker.remove();
-  marker = L.marker([lat, lng]).addTo(map);
-  document.getElementById('location').value = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
-});
-
-function locateUser() {
-  map.locate({ setView: true, maxZoom: 16 });
-}
-
-map.on('locationfound', function (e) {
-  if (marker) marker.remove();
-  marker = L.marker(e.latlng).addTo(map);
-  document.getElementById('location').value = `${e.latlng.lat.toFixed(6)}, ${e.latlng.lng.toFixed(6)}`;
-});
-
-map.on('locationerror', function () {
-  alert("No se pudo acceder a tu ubicación.");
-});  // Botón de ubicación FIN
+        const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            maxZoom: 18,
+            attribution: '© OpenStreetMap'
+        });
 
 
-// Alternar capas con un solo botón
-const layerToggleButton = L.control({ position: 'topright' });
-layerToggleButton.onAdd = function () {
-  const div = L.DomUtil.create('div', 'leaflet-control-layer-toggle');
-  div.innerHTML = '<img src="./img/capasatelite2.png"/>';
-  div.onclick = toggleLayer;
-  return div;
-};
-layerToggleButton.addTo(map);
+        // Botón de ubicación
+        const locateButton = L.control({ position: 'topright' });
+        locateButton.onAdd = function () {
+            const div = L.DomUtil.create('div', 'leaflet-control-locate');
+            div.innerHTML = '<img src="./img/icons/location6.png"/>';
+            div.onclick = locateUser;
+            return div;
+        };
+        locateButton.addTo(map);
 
-let isSatelliteView = false;
-function toggleLayer() {
-  if (isSatelliteView) {
-    map.removeLayer(satelliteLayer);
-    normalLayer.addTo(map);
-    document.querySelector('.leaflet-control-layer-toggle img').src = "./img/capasatelite2.png";
-  } else {
-    map.removeLayer(normalLayer);
-    satelliteLayer.addTo(map);
-    document.querySelector('.leaflet-control-layer-toggle img').src = "./img/capamapa2.png";
+        let marker;
+        map.on('click', function (e) {
+            const { lat, lng } = e.latlng;
+            if (marker) marker.remove();
+            marker = L.marker([lat, lng]).addTo(map);
+            document.getElementById('location').value = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+        });
+
+        function locateUser() {
+            map.locate({ setView: true, maxZoom: 16 });
+        }
+
+        map.on('locationfound', function (e) {
+            if (marker) marker.remove();
+            marker = L.marker(e.latlng).addTo(map);
+            document.getElementById('location').value = `${e.latlng.lat.toFixed(6)}, ${e.latlng.lng.toFixed(6)}`;
+        });
+
+        map.on('locationerror', function () {
+            alert("No se pudo acceder a tu ubicación.");
+        });  // Botón de ubicación FIN
+
+
+        // Alternar capas con un solo botón
+        const layerToggleButton = L.control({ position: 'topright' });
+        layerToggleButton.onAdd = function () {
+            const div = L.DomUtil.create('div', 'leaflet-control-layer-toggle');
+            div.innerHTML = '<img src="./img/capasatelite2.png"/>';
+            div.onclick = toggleLayer;
+            return div;
+        };
+        layerToggleButton.addTo(map);
+
+        let isSatelliteView = false;
+        function toggleLayer() {
+            if (isSatelliteView) {
+                map.removeLayer(satelliteLayer);
+                normalLayer.addTo(map);
+                document.querySelector('.leaflet-control-layer-toggle img').src = "./img/capasatelite2.png";
+            } else {
+                map.removeLayer(normalLayer);
+                satelliteLayer.addTo(map);
+                document.querySelector('.leaflet-control-layer-toggle img').src = "./img/capamapa2.png";
+            }
+            isSatelliteView = !isSatelliteView;
+        } // alternas capas FIN
+
+
+
+
+        const propertyImagesInput = document.getElementById('propertyImages');
+const imagePreview = document.getElementById('imagePreview');
+
+propertyImagesInput.addEventListener('change', (event) => {
+  const files = event.target.files;
+  imagePreview.innerHTML = ''; 
+
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    const imageUrl = URL.createObjectURL(file);
+
+    const imageElement = document.createElement('img');
+    imageElement.src = imageUrl;
+    imageElement.style.maxWidth = '100px'; 
+    imageElement.style.maxHeight = '100px'; 
+    imageElement.style.marginRight = '10px'; 
+    imagePreview.appendChild(imageElement);
   }
-  isSatelliteView = !isSatelliteView;
-} // alternas capas FIN
-
-
-// Inicializar intl-tel-input
-const input = document.querySelector("#ContactNumber");
-const iti = window.intlTelInput(input, {
-  initialCountry: "do", // Código de país predeterminado para República Dominicana
-  separateDialCode: true, // Mostrar el código de área por separado
-  utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js" // Ruta al script utils.js
 });
 
 
-function sendToWhatsApp() {
-  const FullName = document.getElementById("FullName").value;
-  // Obtener el número de teléfono con el código de área
-  const ContactNumber = iti.getNumber();
-  const userRole = document.querySelector('input[name="role"]:checked').value;
-  const type = document.querySelector('input[name="operationType"]:checked').value;
-  const price = document.getElementById("price").value;
-  const currency = document.querySelector('input[name="currency"]:checked').value;
-  const rooms = document.getElementById('rooms').value;
-  const bathrooms = document.getElementById('bathrooms').value;
-  const parking = document.getElementById('parking').value;
-  const area = document.getElementById('area').value;
-  const details = document.getElementById('propertyDetails').value;
-  const location = document.getElementById('location').value;
 
-  // Convertir detalles adicionales en formato compatible con WhatsApp
-  const formattedDetails = encodeURIComponent(details);
 
-  const message = `*Detalles de la propiedad:*
+
+        // Inicializar intl-tel-input
+        const input = document.querySelector("#ContactNumber");
+        const iti = window.intlTelInput(input, {
+            initialCountry: "do", // Código de país predeterminado para República Dominicana
+            separateDialCode: true, // Mostrar el código de área por separado
+            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js" // Ruta al script utils.js
+        });
+
+
+        function sendToWhatsApp() {
+            const FullName = document.getElementById("FullName").value;
+            // Obtener el número de teléfono con el código de área
+            const ContactNumber = iti.getNumber();
+            const userRole = document.querySelector('input[name="role"]:checked').value;
+            const type = document.querySelector('input[name="operationType"]:checked').value;
+            const price = document.getElementById("price").value;
+            const currency = document.querySelector('input[name="currency"]:checked').value;
+            const rooms = document.getElementById('rooms').value;
+            const bathrooms = document.getElementById('bathrooms').value;
+            const parking = document.getElementById('parking').value;
+            const area = document.getElementById('area').value;
+            const details = document.getElementById('propertyDetails').value;
+            const location = document.getElementById('location').value;
+            
+            const propertyImagesInput = document.getElementById('propertyImages');
+            const files = propertyImagesInput.files;
+
+            // Convertir detalles adicionales en formato compatible con WhatsApp
+            const formattedDetails = encodeURIComponent(details);
+
+            const message = `*Detalles de la propiedad:*
   %0A- Nombre: ${FullName}
   %0A- Contacto: ${ContactNumber}
   %0A- Usuario: ${userRole}
@@ -557,26 +619,27 @@ function sendToWhatsApp() {
   %0A- Parqueos: ${parking}
   %0A- Área: ${area}m²
   %0A- Detalles adicionales: %0A${formattedDetails}
-  %0A- Ubicación: ${location}`;
+  %0A- Ubicación: ${location}
+  %0A- Imágenes: ${imageUrls.join('%0A')}`;
 
-  const phoneNumber = "18299605566";
-  window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
-}
+            const phoneNumber = "18299605566";
+            window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
+        }
 
 
 
-//Bloquear interacion de mapa con el boton de capas y ubicacion
-// Selecciona el elemento div
-const divElement = document.querySelector('.leaflet-top.leaflet-right');
+        //Bloquear interacion de mapa con el boton de capas y ubicacion
+        // Selecciona el elemento div
+        const divElement = document.querySelector('.leaflet-top.leaflet-right');
 
-// Agrega un event listener para el evento 'click'
-divElement.addEventListener('click', function (event) {
-  // Detiene la propagación del evento
-  event.stopPropagation();
+        // Agrega un event listener para el evento 'click'
+        divElement.addEventListener('click', function (event) {
+            // Detiene la propagación del evento
+            event.stopPropagation();
 
-  // Aquí puedes agregar el código para la funcionalidad del botón
-  console.log('Botón clickeado!');
-});    //Bloquear interacion de mapa con el boton de capas y ubicacion FIN
+            // Aquí puedes agregar el código para la funcionalidad del botón
+            console.log('Botón clickeado!');
+        });    //Bloquear interacion de mapa con el boton de capas y ubicacion FIN
     </script>
 
 </body>
