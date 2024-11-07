@@ -24,6 +24,13 @@
     <link rel="stylesheet" href="./css/stylesmenu.css" />
     <link rel="stylesheet" href="./css/stylespublicate.css" />
     <link rel="stylesheet" href="./css/stylesterminos.css" />
+    <style>
+
+.leaflet-marker-icon {
+  transition: opacity 0.3s ease-in-out; 
+}
+
+    </style>
 </head>
 
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-NMJVZCLFQV"></script>
@@ -1236,12 +1243,6 @@ rectangle._path.style.pointerEvents = "none";
 
 
 
-
-
-
-
-
-
         var alquilerMarkers = [];
         var ventaMarkers = [];
 
@@ -1273,31 +1274,45 @@ rectangle._path.style.pointerEvents = "none";
 
 
 
+// Función para verificar si un marcador está dentro del rango de visibilidad con márgenes personalizados en porcentaje
+function isInViewport(marker, topMarginPercent = 0, bottomMarginPercent = 0, leftMarginPercent = 0, rightMarginPercent = 0) {
+    // Obtén los límites del mapa en coordenadas de píxeles
+    const mapBounds = map.getBounds();
+    const mapSize = map.getSize();
 
+    // Calcula los márgenes en píxeles a partir de los porcentajes
+    const topMargin = mapSize.y * (topMarginPercent / 100);
+    const bottomMargin = mapSize.y * (bottomMarginPercent / 100);
+    const leftMargin = mapSize.x * (leftMarginPercent / 100);
+    const rightMargin = mapSize.x * (rightMarginPercent / 100);
 
+    // Convierte los márgenes en píxeles a coordenadas geográficas para el ajuste
+    const topLeft = map.containerPointToLatLng([leftMargin, topMargin]);
+    const bottomRight = map.containerPointToLatLng([mapSize.x - rightMargin, mapSize.y - bottomMargin]);
 
+    // Define los límites ajustados
+    const adjustedBounds = L.latLngBounds(topLeft, bottomRight);
 
-// Función para verificar si un marcador está dentro del rango de visibilidad
-function isInViewport(marker) {
-    // Define un margen alrededor del centro de la pantalla
-    const mapCenter = map.getCenter();
-    const bounds = map.getBounds().pad(-0.2); // Reduce el área visible en un 20%
-
-    return bounds.contains(marker.getLatLng());
+    // Verifica si el marcador está dentro de los límites ajustados
+    return adjustedBounds.contains(marker.getLatLng());
 }
 
 // Función para actualizar la opacidad de los marcadores
 function updateMarkerOpacity() {
+    const topMarginPercent = 25;    // Margen superior en porcentaje
+    const bottomMarginPercent = 10; // Margen inferior en porcentaje
+    const sideMarginPercent = 20;    // Márgenes laterales en porcentaje (izquierda y derecha)
+
     alquilerMarkers.forEach(marker => {
-        if (isInViewport(marker)) {
+        if (isInViewport(marker, topMarginPercent, bottomMarginPercent, sideMarginPercent, sideMarginPercent)) {
             marker.setOpacity(1); // Opacidad total si está en el rango
         } else {
-            marker.setOpacity(0.2); // 50% de transparencia si está fuera del rango
+            marker.setOpacity(0.2); // 20% de transparencia si está fuera del rango
         }
     });
 
     ventaMarkers.forEach(marker => {
-        if (isInViewport(marker)) {
+        if (isInViewport(marker, topMarginPercent, bottomMarginPercent, sideMarginPercent, sideMarginPercent)) {
             marker.setOpacity(1);
         } else {
             marker.setOpacity(0.2);
@@ -1310,9 +1325,6 @@ updateMarkerOpacity();
 
 // Actualiza la opacidad de los marcadores cuando el mapa se mueve
 map.on('move', updateMarkerOpacity);
-
-
-
 
 
 
