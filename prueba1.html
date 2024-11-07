@@ -1299,9 +1299,9 @@ function isInViewport(marker, topMarginPercent = 0, bottomMarginPercent = 0, lef
 
 // Función para actualizar la opacidad de los marcadores
 function updateMarkerOpacity() {
-    const topMarginPercent = 25;    // Margen superior en porcentaje
-    const bottomMarginPercent = 10; // Margen inferior en porcentaje
-    const sideMarginPercent = 20;    // Márgenes laterales en porcentaje (izquierda y derecha)
+    const topMarginPercent = 35;    // Margen superior en porcentaje
+    const bottomMarginPercent = 35; // Margen inferior en porcentaje
+    const sideMarginPercent = 25;    // Márgenes laterales en porcentaje (izquierda y derecha)
 
     alquilerMarkers.forEach(marker => {
         if (isInViewport(marker, topMarginPercent, bottomMarginPercent, sideMarginPercent, sideMarginPercent)) {
