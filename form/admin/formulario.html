@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Propiedades</title>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+        import { getFirestore, collection, query, orderBy, limit, getDocs, addDoc, where } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js";
+
+        // Configuración de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBRjDso4IPrh9WLvWWMYoPiJxNFD6Vt3RU",
+            authDomain: "arribate-com.firebaseapp.com",
+            projectId: "arribate-com",
+            storageBucket: "arribate-com.appspot.com",
+            messagingSenderId: "46945634270",
+            appId: "1:46945634270:web:c74fd6781ac1fab5da7f4f",
+            measurementId: "G-Y4J11MBYKQ"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // Verificar si el usuario está autenticado
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                // Si el usuario no está autenticado, redirigir a auth.html
+                window.location.href = "auth.html";
+            }
+        });
+
+        // Función para obtener el siguiente ID
+        async function generarID(categoria, tipoPropiedad) {
+            const letraInicial = categoria === "venta" ? "v" : "a";
+            const letraTipo = {
+                casa: "c",
+                apartamento: "a",
+                terreno: "t",
+                villa: "v",
+                penthouse: "p",
+                local: "l"
+            }[tipoPropiedad];
+
+            const prefijo = `${letraInicial}${letraTipo}`;
+            const propiedadesRef = collection(db, categoria === "venta" ? "ventas" : "alquileres");
+
+            const q = query(
+                propiedadesRef,
+                where("id", ">=", prefijo),
+                where("id", "<", prefijo + "~"),
+                orderBy("id", "desc"),
+                limit(1)
+            );
+
+            const querySnapshot = await getDocs(q);
+
+            let siguienteNumero = 1;
+            querySnapshot.forEach((doc) => {
+                const ultimoID = doc.data().id;
+                const numeroActual = parseInt(ultimoID.slice(2));
+                siguienteNumero = numeroActual + 1;
+            });
+
+            return `${prefijo}${String(siguienteNumero).padStart(5, "0")}`;
+        }
+
+        // Función para manejar cambios en el formulario
+        async function actualizarID() {
+            const categoria = document.getElementById("categoria").value;
+            const tipoPropiedad = document.getElementById("tipoPropiedad").value;
+
+            if (categoria && tipoPropiedad) {
+                const idGenerado = await generarID(categoria, tipoPropiedad);
+                document.getElementById("idPropiedad").value = idGenerado;
+            }
+        }
+
+        // Función para obtener la fecha actual en formato día/mes/año hora:minuto
+        function obtenerFechaActual() {
+            const fecha = new Date();
+            const dia = String(fecha.getDate()).padStart(2, '0');
+            const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+            const año = fecha.getFullYear();
+            const hora = String(fecha.getHours()).padStart(2, '0');
+            const minuto = String(fecha.getMinutes()).padStart(2, '0');
+            return `${dia}/${mes}/${año} ${hora}:${minuto}`;
+        }
+
+        // Función para manejar el envío del formulario
+        async function agregarPropiedad(e) {
+            e.preventDefault();
+
+            const categoria = document.getElementById("categoria").value;
+            const tipoPropiedad = document.getElementById("tipoPropiedad").value;
+            let idPropiedad = document.getElementById("idPropiedad").value;
+            
+            // Genera un nuevo ID antes de guardar para confirmar que sigue siendo único
+            const idGenerado = await generarID(categoria, tipoPropiedad);
+            if (idPropiedad !== idGenerado) {
+                idPropiedad = idGenerado;
+                document.getElementById("idPropiedad").value = idPropiedad;
+            }
+
+            const area = parseInt(document.getElementById("area").value);
+            const baños = parseInt(document.getElementById("baños").value);
+            const habitaciones = parseInt(document.getElementById("habitaciones").value);
+            const icono = document.getElementById("icono").value;
+            const latLng = document.getElementById("latLng").value;
+            const parqueo = parseInt(document.getElementById("parqueo").value);
+            const precio = parseInt(document.getElementById("precio").value);
+            const titulo = document.getElementById("titulo").value;
+            const caracteristicas = document.getElementById("caracteristicas").value;
+            const imagecount = parseInt(document.getElementById("imagecount").value);
+            const imagefolder = document.getElementById("imagefolder").value;
+
+            const piscina = document.getElementById("piscina").checked;
+            const jacuzzi = document.getElementById("jacuzzi").checked;
+            const FechaDePublicacion = obtenerFechaActual();
+
+            const nuevaPropiedad = {
+                id: idPropiedad,
+                area,
+                baños,
+                habitaciones,
+                icono,
+                latLng,
+                parqueo,
+                precio,
+                titulo,
+                caracteristicas,
+                imagecount,
+                imagefolder,
+                piscina,
+                jacuzzi,
+                FechaDePublicacion
+            };
+
+            const coleccion = categoria === "venta" ? "ventas" : "alquileres";
+            try {
+                await addDoc(collection(db, coleccion), nuevaPropiedad);
+                alert(`Propiedad guardada correctamente con ID: ${idPropiedad}`);
+                document.getElementById("formulario-propiedades").reset();
+            } catch (e) {
+                console.error("Error al guardar los datos: ", e);
+                alert("Ocurrió un error al guardar los datos.");
+            }
+        }
+
+        // Función para cerrar sesión
+        function cerrarSesion() {
+            signOut(auth).then(() => {
+                window.location.href = "auth.html";
+            }).catch((error) => {
+                alert("Error al cerrar sesión: " + error.message);
+            });
+        }
+
+        // Asignar eventos
+        window.onload = () => {
+            document.getElementById("categoria").addEventListener("change", actualizarID);
+            document.getElementById("tipoPropiedad").addEventListener("change", actualizarID);
+            document.getElementById("formulario-propiedades").addEventListener("submit", agregarPropiedad);
+            document.getElementById("logout-button").addEventListener("click", cerrarSesion);
+        };
+    </script>
+</head>
+<body>
+    <h1>Agregar Propiedad</h1>
+    <form id="formulario-propiedades">
+        <label for="categoria">Categoría:</label>
+        <select id="categoria" required>
+            <option value="">Seleccione</option>
+            <option value="venta">Venta</option>
+            <option value="alquiler">Alquiler</option>
+        </select>
+        <br><br>
+
+        <label for="tipoPropiedad">Tipo de Propiedad:</label>
+        <select id="tipoPropiedad" required>
+            <option value="">Seleccione</option>
+            <option value="casa">Casa</option>
+            <option value="apartamento">Apartamento</option>
+            <option value="terreno">Terreno</option>
+            <option value="villa">Villa</option>
+            <option value="penthouse">Penthouse</option>
+            <option value="local">Local</option>
+        </select>
+        <br><br>
+
+        <label for="idPropiedad">ID de la Propiedad:</label>
+        <input type="text" id="idPropiedad" readonly>
+        <br><br>
+
+        <!-- Otros campos del formulario -->
+        <label for="area">Área:</label>
+        <input type="number" id="area" required>
+        <br><br>
+
+        <label for="baños">Baños:</label>
+        <input type="number" id="baños" required>
+        <br><br>
+
+        <label for="habitaciones">Habitaciones:</label>
+        <input type="number" id="habitaciones" required>
+        <br><br>
+
+        <label for="icono">Ícono:</label>
+        <input type="text" id="icono" required>
+        <br><br>
+
+        <label for="latLng">LatLng (coordenadas):</label>
+        <input type="text" id="latLng" placeholder="Ej: 18.54,-69.90" required>
+        <br><br>
+
+        <label for="parqueo">Parqueo:</label>
+        <input type="number" id="parqueo" required>
+        <br><br>
+
+        <label for="precio">Precio:</label>
+        <input type="number" id="precio" required>
+        <br><br>
+
+        <label for="titulo">Título:</label>
+        <input type="text" id="titulo" required>
+        <br><br>
+
+        <label for="caracteristicas">Características:</label>
+        <textarea id="caracteristicas" required></textarea>
+        <br><br>
+
+        <label for="imagecount">Cantidad de Imágenes:</label>
+        <input type="number" id="imagecount" required>
+        <br><br>
+
+        <label for="imagefolder">Carpeta de Imágenes:</label>
+        <input type="text" id="imagefolder">
+        <br><br>
+
+        <!-- Nuevos campos de piscina y jacuzzi -->
+        <label for="piscina">Piscina:</label>
+        <input type="checkbox" id="piscina">
+        <br><br>
+
+        <label for="jacuzzi">Jacuzzi:</label>
+        <input type="checkbox" id="jacuzzi">
+        <br><br>
+
+        <button type="submit">Guardar Propiedad</button>
+    </form>
+
+    <button id="logout-button">Cerrar sesión</button>
+</body>
+</html>
