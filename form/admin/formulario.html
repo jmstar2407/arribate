@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +8,8 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
         import { getFirestore, collection, query, orderBy, limit, getDocs, addDoc, where } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js";
-
+        import { getStorage, ref, uploadBytes } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-storage.js";
+        
         // Configuración de Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyBRjDso4IPrh9WLvWWMYoPiJxNFD6Vt3RU",
@@ -24,55 +24,27 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
+        const storage = getStorage(app);
         let correoUsuario = "";
 
-        // Configuración de tiempo de inactividad en milisegundos (5 minutos = 300000 ms)
-        const tiempoInactividad = 3000000;
-        let temporizadorInactividad;
-
-        // Función para redirigir al usuario tras la inactividad
-        function cerrarPorInactividad() {
-            alert("Sesión cerrada por inactividad.");
-            signOut(auth).then(() => {
-                window.location.href = "auth.html";
-            }).catch((error) => {
-                console.error("Error al cerrar sesión por inactividad: ", error);
-            });
-        }
-
-        // Función para resetear el temporizador
-        function resetearTemporizador() {
-            clearTimeout(temporizadorInactividad);
-            temporizadorInactividad = setTimeout(cerrarPorInactividad, tiempoInactividad);
-        }
-
-        // Verificar si el usuario está autenticado y mostrar el contenido si lo está
+        // Verificar si el usuario está autenticado y obtener su nombre o correo
         onAuthStateChanged(auth, (user) => {
-            const contentDiv = document.getElementById("content");
             if (user) {
-                // Mostrar el contenedor solo si el usuario está autenticado
-                contentDiv.style.display = "block";
-
                 const welcomeMessage = document.getElementById("welcome-message");
                 let userName;
 
-                // Extrae el nombre del correo en caso de que no haya displayName
                 if (user.displayName) {
                     userName = user.displayName;
                 } else if (user.email) {
                     const emailNamePart = user.email.split('@')[0].split('.')[0];
                     userName = emailNamePart.toUpperCase();
                 } else {
-                    userName = "Usuario";  // En caso de no tener displayName ni correo
+                    userName = "Usuario";
                 }
 
                 welcomeMessage.textContent = `Bienvenid@, ${userName}`;
-                correoUsuario = user.email;  // Guarda el correo del usuario para la propiedad
-
-                // Iniciar el temporizador de inactividad
-                resetearTemporizador();
+                correoUsuario = user.email;
             } else {
-                // Si el usuario no está autenticado, redirigir a auth.html
                 window.location.href = "auth.html";
             }
         });
@@ -101,8 +73,8 @@
             );
 
             const querySnapshot = await getDocs(q);
-
             let siguienteNumero = 1;
+
             querySnapshot.forEach((doc) => {
                 const ultimoID = doc.data().id;
                 const numeroActual = parseInt(ultimoID.slice(2));
@@ -134,6 +106,22 @@
             return `${dia}/${mes}/${año} ${hora}:${minuto}`;
         }
 
+        // Función para subir imágenes en orden
+        async function subirImagenes(imagenes, carpeta) {
+            for (let i = 0; i < imagenes.length; i++) {
+                const imagen = imagenes[i];
+                const nombreImagen = `${i + 1}.jpg`;
+                const imagenRef = ref(storage, `${carpeta}/${nombreImagen}`);
+
+                try {
+                    await uploadBytes(imagenRef, imagen);
+                    console.log(`Imagen ${nombreImagen} subida exitosamente.`);
+                } catch (error) {
+                    console.error(`Error al subir ${nombreImagen}:`, error);
+                }
+            }
+        }
+
         // Función para manejar el envío del formulario
         async function agregarPropiedad(e) {
             e.preventDefault();
@@ -141,8 +129,8 @@
             const categoria = document.getElementById("categoria").value;
             const tipoPropiedad = document.getElementById("tipoPropiedad").value;
             let idPropiedad = document.getElementById("idPropiedad").value;
+            const imagefolder = document.getElementById("imagefolder").value || "imagenes_propiedades";
 
-            // Genera un nuevo ID antes de guardar para confirmar que sigue siendo único
             const idGenerado = await generarID(categoria, tipoPropiedad);
             if (idPropiedad !== idGenerado) {
                 idPropiedad = idGenerado;
@@ -159,8 +147,6 @@
             const titulo = document.getElementById("titulo").value;
             const caracteristicas = document.getElementById("caracteristicas").value;
             const imagecount = parseInt(document.getElementById("imagecount").value);
-            const imagefolder = document.getElementById("imagefolder").value;
-
             const piscina = document.getElementById("piscina").checked;
             const jacuzzi = document.getElementById("jacuzzi").checked;
             const FechaDePublicacion = obtenerFechaActual();
@@ -181,13 +167,22 @@
                 piscina,
                 jacuzzi,
                 FechaDePublicacion,
-                usuario: correoUsuario  // Guardar el correo del usuario
+                usuario: correoUsuario
             };
 
             const coleccion = categoria === "venta" ? "ventas" : "alquileres";
+
             try {
+                const imagenes = document.getElementById("imagenes").files;
+                if (imagenes.length === 0) {
+                    alert("Por favor, selecciona al menos una imagen.");
+                    return;
+                }
+
+                await subirImagenes(imagenes, imagefolder);
+
                 await addDoc(collection(db, coleccion), nuevaPropiedad);
-                alert(`Propiedad guardada correctamente con ID: ${idPropiedad}`);
+                alert(`Propiedad y sus imágenes guardadas correctamente con ID: ${idPropiedad}`);
                 document.getElementById("formulario-propiedades").reset();
             } catch (e) {
                 console.error("Error al guardar los datos: ", e);
@@ -204,212 +199,125 @@
             });
         }
 
-        // Asignar eventos de interacción para resetear el temporizador
+        // Mostrar imágenes seleccionadas y habilitar orden
+        document.getElementById("imagenes").addEventListener("change", (event) => {
+            const lista = document.getElementById("lista-imagenes");
+            lista.innerHTML = "";
+
+            Array.from(event.target.files).forEach((file, index) => {
+                const listItem = document.createElement("li");
+                listItem.textContent = file.name;
+                listItem.dataset.index = index;
+                lista.appendChild(listItem);
+            });
+
+            new Sortable(lista, {
+                animation: 150,
+                onUpdate: function () {
+                    const sortedFiles = Array.from(lista.querySelectorAll("li"))
+                        .map((li) => event.target.files[li.dataset.index]);
+
+                    event.target.files = new FileList(...sortedFiles);
+                }
+            });
+        });
+
+        // Asignar eventos
         window.onload = () => {
             document.getElementById("categoria").addEventListener("change", actualizarID);
             document.getElementById("tipoPropiedad").addEventListener("change", actualizarID);
             document.getElementById("formulario-propiedades").addEventListener("submit", agregarPropiedad);
-            document.getElementById("logout-button").addEventListener("click", cerrarSesion);
-
-            // Escuchar eventos de interacción de mouse, teclado, clics y scroll
-            document.addEventListener("mousemove", resetearTemporizador);
-            document.addEventListener("keypress", resetearTemporizador);
-            document.addEventListener("click", resetearTemporizador);
-            document.addEventListener("scroll", resetearTemporizador);
-
-            // Escuchar eventos de interacción de toque en dispositivos móviles
-            document.addEventListener("touchstart", resetearTemporizador);
-            document.addEventListener("touchmove", resetearTemporizador);
         };
     </script>
 </head>
-
 <body>
-    <div id="content" style="display: none;">
-        <h2 id="welcome-message"></h2> <!-- Mensaje de bienvenida -->
-        <h1>Agregar Propiedad</h1>
-        <form id="formulario-propiedades">
-            <label for="categoria">Categoría:</label>
-            <select id="categoria" required>
-                <option value="">Seleccione</option>
-                <option value="venta">Venta</option>
-                <option value="alquiler">Alquiler</option>
-            </select>
-            <br><br>
+    <h1 id="welcome-message">Bienvenid@</h1>
+    <form id="formulario-propiedades">
+        <label for="categoria">Categoría:</label>
+        <select id="categoria" required>
+            <option value="">Selecciona</option>
+            <option value="venta">Venta</option>
+            <option value="alquiler">Alquiler</option>
+        </select>
+        <br><br>
+        
+        <label for="tipoPropiedad">Tipo de Propiedad:</label>
+        <select id="tipoPropiedad" required>
+            <option value="">Selecciona</option>
+            <option value="casa">Casa</option>
+            <option value="apartamento">Apartamento</option>
+            <option value="terreno">Terreno</option>
+            <option value="villa">Villa</option>
+            <option value="penthouse">Penthouse</option>
+            <option value="local">Local</option>
+        </select>
+        <br><br>
 
-            <label for="tipoPropiedad">Tipo de Propiedad:</label>
-            <select id="tipoPropiedad" required>
-                <option value="">Seleccione</option>
-                <option value="casa">Casa</option>
-                <option value="apartamento">Apartamento</option>
-                <option value="terreno">Terreno</option>
-                <option value="villa">Villa</option>
-                <option value="penthouse">Penthouse</option>
-                <option value="local">Local</option>
-            </select>
-            <br><br>
+        <label for="idPropiedad">ID de Propiedad:</label>
+        <input type="text" id="idPropiedad" readonly required>
+        <br><br>
 
-            <label for="idPropiedad">ID de la Propiedad:</label>
-            <input type="text" id="idPropiedad" readonly>
-            <br><br>
+        <label for="area">Área:</label>
+        <input type="number" id="area" required>
+        <br><br>
 
-            <label for="area">Área:</label>
-            <input type="number" id="area" required>
-            <br><br>
+        <label for="baños">Baños:</label>
+        <input type="number" id="baños" required>
+        <br><br>
 
-            <label for="baños">Baños:</label>
-            <input type="number" id="baños" required>
-            <br><br>
+        <label for="habitaciones">Habitaciones:</label>
+        <input type="number" id="habitaciones" required>
+        <br><br>
 
-            <label for="habitaciones">Habitaciones:</label>
-            <input type="number" id="habitaciones" required>
-            <br><br>
+        <label for="icono">Ícono:</label>
+        <input type="text" id="icono" required>
+        <br><br>
 
-            <label for="icono">Ícono:</label>
-            <input type="text" id="icono" required>
-            <br><br>
+        <label for="latLng">Latitud y Longitud:</label>
+        <input type="text" id="latLng" required>
+        <br><br>
 
-            <label for="parqueo">Parqueo:</label>
-            <input type="number" id="parqueo" required>
-            <br><br>
+        <label for="parqueo">Parqueo:</label>
+        <input type="number" id="parqueo" required>
+        <br><br>
 
-            <label for="precio">Precio:</label>
-            <input type="number" id="precio" required>
-            <br><br>
+        <label for="precio">Precio:</label>
+        <input type="number" id="precio" required>
+        <br><br>
 
-            <label for="titulo">Título:</label>
-            <input type="text" id="titulo" required>
-            <br><br>
+        <label for="titulo">Título:</label>
+        <input type="text" id="titulo" required>
+        <br><br>
 
-            <label for="imagecount">Cantidad de Imágenes:</label>
-            <input type="number" id="imagecount" required>
-            <br><br>
+        <label for="caracteristicas">Características:</label>
+        <input type="text" id="caracteristicas" required>
+        <br><br>
 
-            <label for="imagefolder">Carpeta de Imágenes:</label>
-            <input type="text" id="imagefolder">
-            <br><br>
+        <label for="imagecount">Número de Imágenes:</label>
+        <input type="number" id="imagecount" required>
+        <br><br>
 
-            <label for="piscina">Piscina:</label>
-            <input type="checkbox" id="piscina">
-            <br><br>
+        <label for="imagefolder">Carpeta de Imágenes:</label>
+        <input type="text" id="imagefolder">
+        <br><br>
 
-            <label for="jacuzzi">Jacuzzi:</label>
-            <input type="checkbox" id="jacuzzi">
-            <br><br>
+        <label for="imagenes">Subir Imágenes:</label>
+        <input type="file" id="imagenes" multiple required>
+        <ul id="lista-imagenes"></ul>
+        <br><br>
 
-            <label for="caracteristicas">Características:</label>
-            <textarea id="caracteristicas" required></textarea>
-            <br><br>
+        <label for="piscina">Piscina:</label>
+        <input type="checkbox" id="piscina">
+        <br><br>
 
+        <label for="jacuzzi">Jacuzzi:</label>
+        <input type="checkbox" id="jacuzzi">
+        <br><br>
 
-            <!-- <label for="latLng">LatLng (coordenadas):</label>
-            <input type="text" id="latLng" placeholder="Ej: 18.54,-69.90" required> -->
+        <button type="submit">Agregar Propiedad</button>
+    </form>
+    <button onclick="cerrarSesion()">Cerrar Sesión</button>
 
-            <label for="latLng">Coordenadas (Lat, Lng):</label>
-            <input type="text" id="latLng" readonly>
-            <div id="map" style="width: 100%; height: 400px; margin-top: 10px;"></div>
-
-            <br><br>
-
-            <button type="submit">Guardar Propiedad</button>
-        </form>
-
-        <button id="logout-button">Cerrar sesión</button>
-    </div>
-
-    <script>
-        let map;
-        let marker;
-
-        function initMap() {
-        // Configuración inicial del mapa
-        map = new google.maps.Map(document.getElementById("map"), {
-            center: { lat: 19.011018, lng: -70.348341 }, // Coordenadas iniciales (Santo Domingo)
-            zoom: 8,
-        });
-
-            // Inicializa el marcador
-            marker = new google.maps.Marker({
-                map: map,
-                draggable: true, // Permitir arrastrar el marcador
-            });
-
-            // Evento para actualizar las coordenadas al hacer clic en el mapa
-            map.addListener("click", (event) => {
-                updateLatLng(event.latLng);
-            });
-
-            // Evento para actualizar las coordenadas al arrastrar el marcador
-            marker.addListener("dragend", (event) => {
-                updateLatLng(event.latLng);
-            });
-
-// Barra de búsqueda de Google Places
-const input = document.createElement("input");
-input.type = "text";
-input.placeholder = "Buscar lugares...";
-input.style = "width: 100%; margin-bottom: 10px;";
-document.getElementById("map").insertAdjacentElement("beforebegin", input);
-
-// Configura las restricciones por país (República Dominicana)
-const options = {
-    componentRestrictions: { country: "DO" }, // Limitar a República Dominicana
-    fields: ["geometry", "name"], // Campos que quieres en los resultados
-    strictBounds: true, // Opcional: restringir los resultados al área visible
-};
-
-const autocomplete = new google.maps.places.Autocomplete(input, options);
-autocomplete.bindTo("bounds", map); // Vincula el área visible del mapa
-
-autocomplete.addListener("place_changed", () => {
-    const place = autocomplete.getPlace();
-    if (!place.geometry || !place.geometry.location) return;
-
-    // Centra el mapa y coloca el marcador
-    map.setCenter(place.geometry.location);
-    marker.setPosition(place.geometry.location);
-    updateLatLng(place.geometry.location);
-});
-            const searchBox = new google.maps.places.SearchBox(input);
-
-            // Ajustar límites del mapa a los resultados de búsqueda
-            searchBox.addListener("places_changed", () => {
-                const places = searchBox.getPlaces();
-                if (places.length === 0) return;
-
-                const place = places[0];
-                if (!place.geometry || !place.geometry.location) return;
-
-                map.setCenter(place.geometry.location);
-                marker.setPosition(place.geometry.location);
-                updateLatLng(place.geometry.location);
-            });
-        }
-
-        // Función para actualizar las coordenadas en el formulario
-        function updateLatLng(latLng) {
-            const lat = latLng.lat().toFixed(6);
-            const lng = latLng.lng().toFixed(6);
-            document.getElementById("latLng").value = `${lat}, ${lng}`;
-            marker.setPosition(latLng);
-        }
-
-        // Llama a la función para inicializar el mapa cuando cargue la página
-        window.onload = () => {
-            initMap();
-        };
-    </script>
-
-
-<script
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAnl6BmNpeFzqsmxapeB316ZFO4oIQQRZk&libraries=places&callback=initMap"
-    async
-    defer>
-</script>
-
-
-
-
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.10.2/Sortable.min.js"></script>
 </body>
-
 </html>
