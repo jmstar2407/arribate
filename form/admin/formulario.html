@@ -178,22 +178,23 @@
             const coleccion = categoria === "venta" ? "ventas" : "alquileres";
 
             try {
-                const imagenes = document.getElementById("imagenes").files;
-                if (imagenes.length === 0) {
-                    alert("Por favor, selecciona al menos una imagen.");
-                    return;
-                }
-
-                await subirImagenes(imagenes, imagefolder);
-
-                await addDoc(collection(db, coleccion), nuevaPropiedad);
-                alert(`Propiedad y sus imágenes guardadas correctamente con ID: ${idPropiedad}`);
-                document.getElementById("formulario-propiedades").reset();
-            } catch (e) {
-                console.error("Error al guardar los datos: ", e);
-                alert("Ocurrió un error al guardar los datos.");
-            }
+        if (orderedImages.length === 0) {
+            alert("Por favor, selecciona al menos una imagen.");
+            return;
         }
+
+        // Subir las imágenes en el orden visualmente organizado
+        await subirImagenes(orderedImages, imagefolder);
+
+        // Guardar los datos de la propiedad en Firestore
+        await addDoc(collection(db, coleccion), nuevaPropiedad);
+        alert(`Propiedad y sus imágenes guardadas correctamente con ID: ${idPropiedad}`);
+        document.getElementById("formulario-propiedades").reset();
+    } catch (e) {
+        console.error("Error al guardar los datos: ", e);
+        alert("Ocurrió un error al guardar los datos.");
+    }
+}
 
         // Función para cerrar sesión
         function cerrarSesion() {
@@ -295,7 +296,7 @@ new Sortable(lista, {
 </head>
 
 <body>
-    <h1 id="welcome-message">Bienvenid@</h1>
+    <h1 id="welcome-message">Bienvenid@6</h1>
     <form id="formulario-propiedades">
         <label for="categoria">Categoría:</label>
         <select id="categoria" required>
