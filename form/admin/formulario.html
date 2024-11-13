@@ -195,7 +195,7 @@ async function guardarPropiedad(e) {
             });
         }
 
-// Evento para manejar la carga y reordenación de imágenes
+/// Evento para manejar la carga y reordenación de imágenes
 document.getElementById("imagenes").addEventListener("change", (event) => {
     const lista = document.getElementById("lista-imagenes");
     lista.innerHTML = "";
@@ -213,7 +213,7 @@ document.getElementById("imagenes").addEventListener("change", (event) => {
         const img = document.createElement("img");
         img.classList.add("image-preview");
         img.src = URL.createObjectURL(file);
-        img.alt = `Imagen ${index + 1}`;
+        img.alt = `Imagen ${index + 1}`;  // Inicialmente asigna el número de orden en el alt
 
         // Crear etiqueta con el número de orden
         const label = document.createElement("span");
@@ -235,9 +235,12 @@ document.getElementById("imagenes").addEventListener("change", (event) => {
                 return orderedImages[parseInt(li.dataset.index)];
             });
 
-            // Actualizar los números visuales después de reordenar
+            // Actualizar los números visuales y el atributo alt después de reordenar
             lista.querySelectorAll("li").forEach((li, index) => {
+                // Actualizar el número de orden visual
                 li.querySelector(".image-order-label").textContent = index + 1;
+                // Actualizar el alt de la imagen
+                li.querySelector("img").alt = `Imagen ${index + 1}`;
             });
         }
     });
@@ -323,7 +326,7 @@ window.onload = () => {
 </head>
 
 <body>
-    <h1 id="welcome-message">Bienvenid@77</h1>
+    <h1 id="welcome-message">Bienvenid@777</h1>
     <form id="formulario-propiedades">
         <label for="categoria">Categoría:</label>
         <select id="categoria" required>
