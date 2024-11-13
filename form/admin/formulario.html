@@ -113,17 +113,24 @@
 
         // Función para subir imágenes en orden con numeración
         async function subirImagenes(imagenes, carpeta) {
-    for (let i = 0; i < orderedImages.length; i++) { // <- Cambiar 'imagenes' por 'orderedImages'
+    for (let i = 0; i < orderedImages.length; i++) {
         const imagen = orderedImages[i]; 
         const nombreImagen = `${i + 1}.jpg`; 
         const imagenRef = ref(storage, `${carpeta}/${nombreImagen}`);
 
-        try {
-            await uploadBytes(imagenRef, imagen);
-            console.log(`Imagen ${nombreImagen} subida exitosamente.`);
-        } catch (error) {
-            console.error(`Error al subir ${nombreImagen}:`, error);
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const blob = new Blob([e.target.result], { type: imagen.type }); 
+
+            uploadBytes(imagenRef, blob)
+                .then(() => {
+                    console.log(`Imagen ${nombreImagen} subida exitosamente.`);
+                })
+                .catch((error) => {
+                    console.error(`Error al subir ${nombreImagen}:`, error);
+                });
         }
+        reader.readAsArrayBuffer(imagen); 
     }
 }
 
