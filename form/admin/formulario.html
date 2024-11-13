@@ -16,7 +16,7 @@
             apiKey: "AIzaSyBRjDso4IPrh9WLvWWMYoPiJxNFD6Vt3RU",
             authDomain: "arribate-com.firebaseapp.com",
             projectId: "arribate-com",
-            storageBucket: "arribate-com.firebasestorage.app",
+            storageBucket: "arribate-com.appspot.com",
             messagingSenderId: "46945634270",
             appId: "1:46945634270:web:c74fd6781ac1fab5da7f4f",
             measurementId: "G-Y4J11MBYKQ"
@@ -27,85 +27,19 @@
         const auth = getAuth(app);
         const storage = getStorage(app);
         let correoUsuario = "";
+        let orderedImages = [];
 
-        // Verificar si el usuario está autenticado y obtener su nombre o correo
+        // Verificar si el usuario está autenticado
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 const welcomeMessage = document.getElementById("welcome-message");
-                let userName;
-
-                if (user.displayName) {
-                    userName = user.displayName;
-                } else if (user.email) {
-                    const emailNamePart = user.email.split('@')[0].split('.')[0];
-                    userName = emailNamePart.toUpperCase();
-                } else {
-                    userName = "Usuario";
-                }
-
+                const userName = user.displayName || user.email.split('@')[0].toUpperCase();
                 welcomeMessage.textContent = `Bienvenid@, ${userName}`;
                 correoUsuario = user.email;
             } else {
                 window.location.href = "auth.html";
             }
         });
-
-        // Función para obtener el siguiente ID
-        async function generarID(categoria, tipoPropiedad) {
-            const letraInicial = categoria === "venta" ? "v" : "a";
-            const letraTipo = {
-                casa: "c",
-                apartamento: "a",
-                terreno: "t",
-                villa: "v",
-                penthouse: "p",
-                local: "l"
-            }[tipoPropiedad];
-
-            const prefijo = `${letraInicial}${letraTipo}`;
-            const propiedadesRef = collection(db, categoria === "venta" ? "ventas" : "alquileres");
-
-            const q = query(
-                propiedadesRef,
-                where("id", ">=", prefijo),
-                where("id", "<", prefijo + "~"),
-                orderBy("id", "desc"),
-                limit(1)
-            );
-
-            const querySnapshot = await getDocs(q);
-            let siguienteNumero = 1;
-
-            querySnapshot.forEach((doc) => {
-                const ultimoID = doc.data().id;
-                const numeroActual = parseInt(ultimoID.slice(2));
-                siguienteNumero = numeroActual + 1;
-            });
-
-            return `${prefijo}${String(siguienteNumero).padStart(5, "0")}`;
-        }
-
-        // Función para manejar cambios en el formulario
-        async function actualizarID() {
-            const categoria = document.getElementById("categoria").value;
-            const tipoPropiedad = document.getElementById("tipoPropiedad").value;
-
-            if (categoria && tipoPropiedad) {
-                const idGenerado = await generarID(categoria, tipoPropiedad);
-                document.getElementById("idPropiedad").value = idGenerado;
-            }
-        }
-
-        // Función para obtener la fecha actual en formato día/mes/año hora:minuto
-        function obtenerFechaActual() {
-            const fecha = new Date();
-            const dia = String(fecha.getDate()).padStart(2, '0');
-            const mes = String(fecha.getMonth() + 1).padStart(2, '0');
-            const año = fecha.getFullYear();
-            const hora = String(fecha.getHours()).padStart(2, '0');
-            const minuto = String(fecha.getMinutes()).padStart(2, '0');
-            return `${dia}/${mes}/${año} ${hora}:${minuto}`;
-        }
 
         // Función para subir imágenes en orden
         async function subirImagenes(imagenes, carpeta) {
@@ -174,15 +108,8 @@
             const coleccion = categoria === "venta" ? "ventas" : "alquileres";
 
             try {
-                const imagenes = document.getElementById("imagenes").files;
-                if (imagenes.length === 0) {
-                    alert("Por favor, selecciona al menos una imagen.");
-                    return;
-                }
-
-                await subirImagenes(imagenes, imagefolder);
-
-                await addDoc(collection(db, coleccion), nuevaPropiedad);
+                await subirImagenes(orderedImages, imagefolder);
+                await addDoc(collection(db, categoria === "venta" ? "ventas" : "alquileres"), nuevaPropiedad);
                 alert(`Propiedad y sus imágenes guardadas correctamente con ID: ${idPropiedad}`);
                 document.getElementById("formulario-propiedades").reset();
             } catch (e) {
@@ -191,45 +118,64 @@
             }
         }
 
-        // Función para cerrar sesión
-        function cerrarSesion() {
-            signOut(auth).then(() => {
-                window.location.href = "auth.html";
-            }).catch((error) => {
-                alert("Error al cerrar sesión: " + error.message);
-            });
-        }
-
-        // Mostrar imágenes seleccionadas y habilitar orden
-        document.getElementById("imagenes").addEventListener("change", (event) => {
+       // Función para mostrar y reordenar imágenes con vistas previas
+       document.getElementById("imagenes").addEventListener("change", (event) => {
             const lista = document.getElementById("lista-imagenes");
             lista.innerHTML = "";
+            orderedImages = Array.from(event.target.files);
 
-            Array.from(event.target.files).forEach((file, index) => {
+            orderedImages.forEach((file, index) => {
                 const listItem = document.createElement("li");
-                listItem.textContent = file.name;
-                listItem.dataset.index = index;
+                listItem.classList.add("image-preview-item");
+
+                // Crear una imagen de vista previa
+                const img = document.createElement("img");
+                img.classList.add("image-preview");
+                img.src = URL.createObjectURL(file);
+                img.alt = `Imagen ${index + 1}`;
+                
+                // Añadir la imagen de vista previa al elemento de la lista
+                listItem.appendChild(img);
                 lista.appendChild(listItem);
             });
 
+            // Inicializar o actualizar Sortable
             new Sortable(lista, {
                 animation: 150,
-                onUpdate: function () {
-                    const sortedFiles = Array.from(lista.querySelectorAll("li"))
-                        .map((li) => event.target.files[li.dataset.index]);
-
-                    event.target.files = new FileList(...sortedFiles);
+                onUpdate: () => {
+                    orderedImages = Array.from(lista.querySelectorAll("li"))
+                        .map((li, idx) => orderedImages[li.dataset.index]);
                 }
             });
         });
 
-        // Asignar eventos
         window.onload = () => {
-            document.getElementById("categoria").addEventListener("change", actualizarID);
-            document.getElementById("tipoPropiedad").addEventListener("change", actualizarID);
             document.getElementById("formulario-propiedades").addEventListener("submit", agregarPropiedad);
         };
     </script>
+
+<style>
+    /* Estilos para la lista y las imágenes de vista previa */
+    .image-list {
+        list-style-type: none;
+        display: flex;
+        gap: 10px;
+        padding: 0;
+    }
+    .image-preview-item {
+        position: relative;
+        width: 100px;
+        height: 100px;
+        overflow: hidden;
+    }
+    .image-preview {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 5px;
+    }
+</style>
+
 </head>
 
 <body>
