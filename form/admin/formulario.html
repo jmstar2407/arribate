@@ -52,7 +52,7 @@
         });
 
 
-        
+
 
         // Función para obtener el siguiente ID
         async function generarID(categoria, tipoPropiedad) {
@@ -111,21 +111,21 @@
             return `${dia}/${mes}/${año} ${hora}:${minuto}`;
         }
 
-// Función para subir imágenes en orden con numeración
-async function subirImagenes(carpeta) {
-    for (let i = 0; i < orderedImages.length; i++) {
-        const imagen = orderedImages[i];
-        const nombreImagen = `${i + 1}.jpg`;  // Nombre de archivo según el nuevo orden
-        const imagenRef = ref(storage, `${carpeta}/${nombreImagen}`);
+        // Función para subir imágenes en orden con numeración
+        async function subirImagenes(imagenes, carpeta) {
+            for (let i = 0; i < imagenes.length; i++) {
+                const imagen = imagenes[i];
+                const nombreImagen = `${i + 1}.jpg`;  // Nombre de archivo según el orden
+                const imagenRef = ref(storage, `${carpeta}/${nombreImagen}`);
 
-        try {
-            await uploadBytes(imagenRef, imagen);
-            console.log(`Imagen ${nombreImagen} subida exitosamente.`);
-        } catch (error) {
-            console.error(`Error al subir ${nombreImagen}:`, error);
+                try {
+                    await uploadBytes(imagenRef, imagen);
+                    console.log(`Imagen ${nombreImagen} subida exitosamente.`);
+                } catch (error) {
+                    console.error(`Error al subir ${nombreImagen}:`, error);
+                }
+            }
         }
-    }
-}
 
         // Función para manejar el envío del formulario
         async function agregarPropiedad(e) {
@@ -177,7 +177,7 @@ async function subirImagenes(carpeta) {
 
             const coleccion = categoria === "venta" ? "ventas" : "alquileres";
 
-            
+
 
             try {
                 const imagenes = document.getElementById("imagenes").files;
@@ -216,13 +216,14 @@ async function subirImagenes(carpeta) {
             orderedImages.forEach((file, index) => {
                 const listItem = document.createElement("li");
                 listItem.classList.add("image-preview-item");
+                listItem.dataset.index = index; // Añade el índice original como atributo
 
                 // Crear imagen de vista previa
                 const img = document.createElement("img");
                 img.classList.add("image-preview");
                 img.src = URL.createObjectURL(file);
                 img.alt = `Imagen ${index + 1}`;
-                
+
                 // Crear etiqueta con el número de orden
                 const label = document.createElement("span");
                 label.classList.add("image-order-label");
@@ -234,15 +235,14 @@ async function subirImagenes(carpeta) {
                 lista.appendChild(listItem);
             });
 
-            // Inicializar o actualizar Sortable
             new Sortable(lista, {
                 animation: 150,
                 onUpdate: () => {
-                    // Reordenar `orderedImages` según el nuevo orden en la lista
+                    // Reorganiza `orderedImages` en el orden visual actual
                     orderedImages = Array.from(lista.querySelectorAll("li"))
                         .map((li) => orderedImages[li.dataset.index]);
-                    
-                    // Actualizar los números visuales después de reordenar
+
+                    // Actualiza los números visuales después de reordenar
                     lista.querySelectorAll("li").forEach((li, index) => {
                         li.querySelector(".image-order-label").textContent = index + 1;
                     });
@@ -258,26 +258,29 @@ async function subirImagenes(carpeta) {
         };
     </script>
 
-<style>
-    /* Estilos para la lista y las imágenes de vista previa */
-    .image-list {
+    <style>
+        /* Estilos para la lista y las imágenes de vista previa */
+        .image-list {
             list-style-type: none;
             display: flex;
             gap: 10px;
             padding: 0;
         }
+
         .image-preview-item {
             position: relative;
             width: 100px;
             height: 100px;
             overflow: hidden;
         }
+
         .image-preview {
             width: 100%;
             height: 100%;
             object-fit: cover;
             border-radius: 5px;
         }
+
         .image-order-label {
             position: absolute;
             top: 5px;
@@ -288,7 +291,7 @@ async function subirImagenes(carpeta) {
             border-radius: 3px;
             font-size: 0.8em;
         }
-</style>
+    </style>
 
 
 </head>
