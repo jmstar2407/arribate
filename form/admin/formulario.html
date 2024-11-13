@@ -177,8 +177,6 @@
 
             const coleccion = categoria === "venta" ? "ventas" : "alquileres";
 
-
-
             try {
                 const imagenes = document.getElementById("imagenes").files;
                 if (imagenes.length === 0) {
@@ -212,42 +210,42 @@
             lista.innerHTML = "";
             orderedImages = Array.from(event.target.files);
 
-            // Crear vista previa con número de orden
-            orderedImages.forEach((file, index) => {
-                const listItem = document.createElement("li");
-                listItem.classList.add("image-preview-item");
-                listItem.dataset.index = index; // Añade el índice original como atributo
+// Crear vista previa con número de orden
+orderedImages.forEach((file, index) => {
+    const listItem = document.createElement("li");
+    listItem.classList.add("image-preview-item");
+    listItem.dataset.index = index; // Añade el índice original como atributo
 
-                // Crear imagen de vista previa
-                const img = document.createElement("img");
-                img.classList.add("image-preview");
-                img.src = URL.createObjectURL(file);
-                img.alt = `Imagen ${index + 1}`;
+    // Crear imagen de vista previa
+    const img = document.createElement("img");
+    img.classList.add("image-preview");
+    img.src = URL.createObjectURL(file);
+    img.alt = `Imagen ${index + 1}`;
 
-                // Crear etiqueta con el número de orden
-                const label = document.createElement("span");
-                label.classList.add("image-order-label");
-                label.textContent = index + 1;
+    // Crear etiqueta con el número de orden
+    const label = document.createElement("span");
+    label.classList.add("image-order-label");
+    label.textContent = index + 1;
 
-                // Añadir la imagen y el número al elemento de lista
-                listItem.appendChild(img);
-                listItem.appendChild(label);
-                lista.appendChild(listItem);
-            });
+    // Añadir la imagen y el número al elemento de lista
+    listItem.appendChild(img);
+    listItem.appendChild(label);
+    lista.appendChild(listItem);
+});
 
-            new Sortable(lista, {
-                animation: 150,
-                onUpdate: () => {
-                    // Reorganiza `orderedImages` en el orden visual actual
-                    orderedImages = Array.from(lista.querySelectorAll("li"))
-                        .map((li) => orderedImages[li.dataset.index]);
+new Sortable(lista, {
+    animation: 150,
+    onUpdate: () => {
+        // Reorganiza `orderedImages` en el orden visual actual
+        orderedImages = Array.from(lista.querySelectorAll("li"))
+            .map((li) => orderedImages[li.dataset.index]);
 
-                    // Actualiza los números visuales después de reordenar
-                    lista.querySelectorAll("li").forEach((li, index) => {
-                        li.querySelector(".image-order-label").textContent = index + 1;
-                    });
-                }
-            });
+        // Actualiza los números visuales después de reordenar
+        lista.querySelectorAll("li").forEach((li, index) => {
+            li.querySelector(".image-order-label").textContent = index + 1;
+        });
+    }
+});
         });
 
         // Asignar eventos
