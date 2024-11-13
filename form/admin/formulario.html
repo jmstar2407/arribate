@@ -111,11 +111,15 @@
             return `${dia}/${mes}/${año} ${hora}:${minuto}`;
         }
 
-// Función para subir imágenes con el nombre de su 'alt'
-async function subirImagenes(imagenes, carpeta) {
-    for (let i = 0; i < imagenes.length; i++) {
+        // Función para subir imágenes en orden con numeración
+        async function subirImagenes(imagenes, carpeta) {
+    const lista = document.getElementById("lista-imagenes"); // Obtener la lista de imágenes
+    const imageElements = lista.querySelectorAll("li"); // Obtener todos los elementos li (imágenes)
+
+    for (let i = 0; i < imageElements.length; i++) {
         const imagen = imagenes[i];
-        const nombreImagen = orderedImages[i].alt || `imagen_${i + 1}.jpg`; // Usa el 'alt' o un nombre por defecto
+        const label = imageElements[i].querySelector(".image-order-label"); // Obtener el label de la imagen actual
+        const nombreImagen = `${label.textContent}.jpg`; // Usar el número del label para nombrar la imagen
         const imagenRef = ref(storage, `${carpeta}/${nombreImagen}`);
 
         try {
@@ -204,46 +208,49 @@ async function subirImagenes(imagenes, carpeta) {
             });
         }
 
-// Modificar el evento de cambio para establecer el 'alt' en orderedImages
-document.getElementById("imagenes").addEventListener("change", (event) => {
-    const lista = document.getElementById("lista-imagenes");
-    lista.innerHTML = "";
-    orderedImages = Array.from(event.target.files);
+        // Función para mostrar y reordenar imágenes con vistas previas y numeración
+        document.getElementById("imagenes").addEventListener("change", (event) => {
+            const lista = document.getElementById("lista-imagenes");
+            lista.innerHTML = "";
+            orderedImages = Array.from(event.target.files);
 
-    orderedImages.forEach((file, index) => {
-        const listItem = document.createElement("li");
-        listItem.classList.add("image-preview-item");
+            // Crear vista previa con número de orden
+            orderedImages.forEach((file, index) => {
+                const listItem = document.createElement("li");
+                listItem.classList.add("image-preview-item");
 
-        const img = document.createElement("img");
-        img.classList.add("image-preview");
-        img.src = URL.createObjectURL(file);
-        img.alt = file.name.split('.').slice(0, -1).join('.'); // Establece el 'alt' como el nombre original sin extensión
+                // Crear imagen de vista previa
+                const img = document.createElement("img");
+                img.classList.add("image-preview");
+                img.src = URL.createObjectURL(file);
+                img.alt = `Imagen ${index + 1}`;
+                
+                // Crear etiqueta con el número de orden
+                const label = document.createElement("span");
+                label.classList.add("image-order-label");
+                label.textContent = index + 1;
 
-        const label = document.createElement("span");
-        label.classList.add("image-order-label");
-        label.textContent = index + 1;
-
-        listItem.appendChild(img);
-        listItem.appendChild(label);
-        lista.appendChild(listItem);
-    });
-
-    new Sortable(lista, {
-        animation: 150,
-        onUpdate: () => {
-            orderedImages = Array.from(lista.querySelectorAll("li"))
-                .map((li, idx) => {
-                    const img = li.querySelector("img");
-                    img.alt = `Imagen_${idx + 1}`; // Actualiza el 'alt' al cambiar el orden
-                    return orderedImages[li.dataset.index];
-                });
-
-            lista.querySelectorAll("li").forEach((li, index) => {
-                li.querySelector(".image-order-label").textContent = index + 1;
+                // Añadir la imagen y el número al elemento de lista
+                listItem.appendChild(img);
+                listItem.appendChild(label);
+                lista.appendChild(listItem);
             });
-        }
-    });
-});
+
+            // Inicializar o actualizar Sortable
+            new Sortable(lista, {
+                animation: 150,
+                onUpdate: () => {
+                    // Reordenar `orderedImages` según el nuevo orden en la lista
+                    orderedImages = Array.from(lista.querySelectorAll("li"))
+                        .map((li) => orderedImages[li.dataset.index]);
+                    
+                    // Actualizar los números visuales después de reordenar
+                    lista.querySelectorAll("li").forEach((li, index) => {
+                        li.querySelector(".image-order-label").textContent = index + 1;
+                    });
+                }
+            });
+        });
 
         // Asignar eventos
         window.onload = () => {
