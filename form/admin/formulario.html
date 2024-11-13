@@ -111,90 +111,73 @@
             return `${dia}/${mes}/${año} ${hora}:${minuto}`;
         }
 
-// Función para subir imágenes usando el número en el label como nombre de archivo
-async function subirImagenes(carpeta) {
-    const lista = document.getElementById("lista-imagenes");
 
-    for (let i = 0; i < lista.children.length; i++) {
-        const listItem = lista.children[i];
-        const imagen = orderedImages[i];
-        
-        // Obtener el número de orden del label
-        const numeroImagen = listItem.querySelector(".image-order-label").textContent;
-        const nombreImagen = `${numeroImagen}.jpg`;
-        
-        const imagenRef = ref(storage, `${carpeta}/${nombreImagen}`);
 
-        try {
-            await uploadBytes(imagenRef, imagen);
-            console.log(`Imagen ${nombreImagen} subida exitosamente.`);
-        } catch (error) {
-            console.error(`Error al subir ${nombreImagen}:`, error);
-        }
+// Renombra la función si hay conflictos con el nombre
+async function guardarPropiedad(e) {
+    e.preventDefault();
+
+    const categoria = document.getElementById("categoria").value;
+    const tipoPropiedad = document.getElementById("tipoPropiedad").value;
+    let idPropiedad = document.getElementById("idPropiedad").value;
+    const imagefolder = document.getElementById("imagefolder").value || "imagenes_propiedades";
+
+    // Genera el ID si no coincide o si es nuevo
+    const idGenerado = await generarID(categoria, tipoPropiedad);
+    if (idPropiedad !== idGenerado) {
+        idPropiedad = idGenerado;
+        document.getElementById("idPropiedad").value = idPropiedad;
     }
-}
 
-        // Función para manejar el envío del formulario
-        async function agregarPropiedad(e) {
-            e.preventDefault();
+    // Recopilar todos los demás datos del formulario
+    const area = parseInt(document.getElementById("area").value);
+    const baños = parseInt(document.getElementById("baños").value);
+    const habitaciones = parseInt(document.getElementById("habitaciones").value);
+    const icono = document.getElementById("icono").value;
+    const latLng = document.getElementById("latLng").value;
+    const parqueo = parseInt(document.getElementById("parqueo").value);
+    const precio = parseInt(document.getElementById("precio").value);
+    const titulo = document.getElementById("titulo").value;
+    const caracteristicas = document.getElementById("caracteristicas").value;
+    const imagecount = parseInt(document.getElementById("imagecount").value);
+    const piscina = document.getElementById("piscina").checked;
+    const jacuzzi = document.getElementById("jacuzzi").checked;
+    const FechaDePublicacion = obtenerFechaActual();
 
-            const categoria = document.getElementById("categoria").value;
-            const tipoPropiedad = document.getElementById("tipoPropiedad").value;
-            let idPropiedad = document.getElementById("idPropiedad").value;
-            const imagefolder = document.getElementById("imagefolder").value || "imagenes_propiedades";
+    // Crear el objeto de propiedad con todos los datos
+    const nuevaPropiedad = {
+        id: idPropiedad,
+        area,
+        baños,
+        habitaciones,
+        icono,
+        latLng,
+        parqueo,
+        precio,
+        titulo,
+        caracteristicas,
+        imagecount,
+        imagefolder,
+        piscina,
+        jacuzzi,
+        FechaDePublicacion,
+        usuario: correoUsuario
+    };
 
-            const idGenerado = await generarID(categoria, tipoPropiedad);
-            if (idPropiedad !== idGenerado) {
-                idPropiedad = idGenerado;
-                document.getElementById("idPropiedad").value = idPropiedad;
-            }
-
-            const area = parseInt(document.getElementById("area").value);
-            const baños = parseInt(document.getElementById("baños").value);
-            const habitaciones = parseInt(document.getElementById("habitaciones").value);
-            const icono = document.getElementById("icono").value;
-            const latLng = document.getElementById("latLng").value;
-            const parqueo = parseInt(document.getElementById("parqueo").value);
-            const precio = parseInt(document.getElementById("precio").value);
-            const titulo = document.getElementById("titulo").value;
-            const caracteristicas = document.getElementById("caracteristicas").value;
-            const imagecount = parseInt(document.getElementById("imagecount").value);
-            const piscina = document.getElementById("piscina").checked;
-            const jacuzzi = document.getElementById("jacuzzi").checked;
-            const FechaDePublicacion = obtenerFechaActual();
-
-            const nuevaPropiedad = {
-                id: idPropiedad,
-                area,
-                baños,
-                habitaciones,
-                icono,
-                latLng,
-                parqueo,
-                precio,
-                titulo,
-                caracteristicas,
-                imagecount,
-                imagefolder,
-                piscina,
-                jacuzzi,
-                FechaDePublicacion,
-                usuario: correoUsuario
-            };
-
-            const coleccion = categoria === "venta" ? "ventas" : "alquileres";
-
-            try {
+    try {
+        // Verifica si hay imágenes seleccionadas antes de intentar subirlas
         if (orderedImages.length === 0) {
             alert("Por favor, selecciona al menos una imagen.");
             return;
         }
 
-        // Subir las imágenes en el orden visualmente organizado
-        await subirImagenes(orderedImages, imagefolder);
+        // Subir las imágenes a la carpeta especificada
+        await subirImagenes(imagefolder);
 
-        // Guardar los datos de la propiedad en Firestore
+        // Guarda la propiedad en Firestore
+        const coleccion = categoria === "venta" ? "ventas" : "alquileres";
         await addDoc(collection(db, coleccion), nuevaPropiedad);
+
         alert(`Propiedad y sus imágenes guardadas correctamente con ID: ${idPropiedad}`);
         document.getElementById("formulario-propiedades").reset();
     } catch (e) {
@@ -260,12 +243,45 @@ document.getElementById("imagenes").addEventListener("change", (event) => {
     });
 });
 
-        // Asignar eventos
-        window.onload = () => {
-            document.getElementById("categoria").addEventListener("change", actualizarID);
-            document.getElementById("tipoPropiedad").addEventListener("change", actualizarID);
-            document.getElementById("formulario-propiedades").addEventListener("submit", agregarPropiedad);
-        };
+// Función para subir imágenes usando el número en el label como nombre de archivo
+async function subirImagenes(carpeta) {
+    const lista = document.getElementById("lista-imagenes");
+
+    for (let i = 0; i < lista.children.length; i++) {
+        const listItem = lista.children[i];
+        const imagen = orderedImages[i];
+        
+        // Verificar que `imagen` es un archivo válido
+        if (!imagen || !(imagen instanceof File)) {
+            console.error(`El archivo en el índice ${i} no es válido.`);
+            continue;  // Saltar archivos no válidos
+        }
+
+        // Obtener el número de orden del label y usarlo para el nombre de archivo
+        const numeroImagen = listItem.querySelector(".image-order-label").textContent;
+        const nombreImagen = `${numeroImagen}.jpg`;
+        
+        // Crear referencia en la carpeta especificada en Firebase Storage
+        const imagenRef = ref(storage, `${carpeta}/${nombreImagen}`);
+        console.log(`Subiendo ${nombreImagen} a ${carpeta}`);
+
+        try {
+            await uploadBytes(imagenRef, imagen);
+            console.log(`Imagen ${nombreImagen} subida exitosamente a la carpeta ${carpeta}.`);
+        } catch (error) {
+            console.error(`Error al subir ${nombreImagen} a la carpeta ${carpeta}:`, error);
+        }
+    }
+}
+
+
+
+// Asignar eventos al cargar la página
+window.onload = () => {
+    document.getElementById("categoria").addEventListener("change", actualizarID);
+    document.getElementById("tipoPropiedad").addEventListener("change", actualizarID);
+    document.getElementById("formulario-propiedades").addEventListener("submit", guardarPropiedad); // Usar la función correcta
+};
     </script>
 
     <style>
