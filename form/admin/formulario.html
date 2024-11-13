@@ -213,7 +213,7 @@ document.getElementById("imagenes").addEventListener("change", (event) => {
         const img = document.createElement("img");
         img.classList.add("image-preview");
         img.src = URL.createObjectURL(file);
-        img.alt = `Imagen ${index + 1}`;  // Inicialmente asigna el número de orden en el alt
+        img.alt = `${index + 1}`;  // Inicialmente asigna el número de orden en el alt
 
         // Crear etiqueta con el número de orden
         const label = document.createElement("span");
@@ -246,7 +246,7 @@ document.getElementById("imagenes").addEventListener("change", (event) => {
     });
 });
 
-// Función para subir imágenes usando el número en el label como nombre de archivo
+// Función para subir imágenes usando el atributo alt como nombre de archivo
 async function subirImagenes(carpeta) {
     const lista = document.getElementById("lista-imagenes");
 
@@ -260,10 +260,9 @@ async function subirImagenes(carpeta) {
             continue;  // Saltar archivos no válidos
         }
 
-        // Obtener el número de orden del label y usarlo para el nombre de archivo
-        const numeroImagen = listItem.querySelector(".image-order-label").textContent;
-        const nombreImagen = `${numeroImagen}.jpg`;
-        
+        // Obtener el atributo alt del elemento img como nombre de archivo
+        const nombreImagen = listItem.querySelector("img").alt + ".jpg";
+
         // Crear referencia en la carpeta especificada en Firebase Storage
         const imagenRef = ref(storage, `${carpeta}/${nombreImagen}`);
         console.log(`Subiendo ${nombreImagen} a ${carpeta}`);
@@ -326,7 +325,7 @@ window.onload = () => {
 </head>
 
 <body>
-    <h1 id="welcome-message">Bienvenid@777</h1>
+    <h1 id="welcome-message">Bienvenid@7777</h1>
     <form id="formulario-propiedades">
         <label for="categoria">Categoría:</label>
         <select id="categoria" required>
