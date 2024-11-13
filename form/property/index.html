@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa de Propiedades RD</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        #map { width: 100%; height: 600px; }
+        .custom-marker .icon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        #menu {
+            padding: 10px;
+            background-color: #f8f9fa;
+            text-align: center;
+        }
+        #menu button {
+            margin: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            border: 1px solid #ddd;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+        }
+        #menu button.active {
+            background-color: #0056b3;
+        }
+        #modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        #modal .content {
+            background-color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 600px;
+            max-height: 90%;
+            overflow-y: auto;
+        }
+        .carousel img {
+            width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Menú para seleccionar Alquiler o Venta -->
+    <div id="menu">
+        <button onclick="changeType('alquileres')" id="alquileres-btn">Alquiler</button>
+        <button onclick="changeType('ventas')" id="ventas-btn">Venta</button>
+    </div>
+
+    <div id="map"></div>
+
+    <!-- Modal para mostrar información completa -->
+    <div id="modal">
+        <div class="content">
+            <span onclick="closeModal()" style="cursor: pointer; float: right;">&#10006;</span>
+            <div id="modal-content"></div>
+        </div>
+    </div>
+
+    <!-- Leaflet -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-database.js"></script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-database.js";
+
+        // Configuración de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyAknFI6Y-rYDE5ZRVa4K9uZghqqeM6Nelo",
+            authDomain: "map2rd.firebaseapp.com",
+            projectId: "map2rd",
+            storageBucket: "map2rd.firebasestorage.app",
+            messagingSenderId: "318178405063",
+            appId: "1:318178405063:web:00ad76ef98ec504026ace2",
+            databaseURL: "https://map2rd-default-rtdb.firebaseio.com/"
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase();
+
+        const map = L.map('map').setView([18.7357, -70.1627], 8);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Variables para control de tipo de propiedades y referencias
+        let tipoPropiedad = 'alquileres';
+        let propiedadesRef = ref(db, tipoPropiedad);
+        let markers = L.layerGroup().addTo(map);
+
+        // Cargar datos iniciales
+        loadProperties(tipoPropiedad);
+
+        // Función para cambiar tipo de propiedad y recargar mapa
+        function changeType(type) {
+            tipoPropiedad = type;
+            document.getElementById("alquileres-btn").classList.toggle("active", tipoPropiedad === 'alquileres');
+            document.getElementById("ventas-btn").classList.toggle("active", tipoPropiedad === 'ventas');
+            loadProperties(tipoPropiedad);
+        }
+
+        function loadProperties(type) {
+            markers.clearLayers();
+            propiedadesRef = ref(db, type);
+
+            onValue(propiedadesRef, (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    Object.values(data).forEach(propiedad => {
+                        const marker = L.marker([propiedad.lat, propiedad.lng], { icon: createIcon(propiedad.icon, propiedad.price) })
+                            .bindPopup(createPopupContent(propiedad))
+                            .on('click', () => showModal(propiedad));
+                        markers.addLayer(marker);
+                    });
+                }
+            });
+        }
+
+        function createIcon(iconType, price) {
+            return L.divIcon({
+                html: `<div class="icon" style="background-color: ${getColor(iconType)};">
+                        <span>RD$${price}</span>
+                       </div>`,
+                className: 'custom-marker',
+                iconSize: [50, 50],
+                iconAnchor: [25, 25]
+            });
+        }
+
+        function getColor(type) {
+            switch (type) {
+                case 'casa': return 'pink';
+                case 'apartamento': return 'blue';
+                case 'terreno': return 'green';
+                default: return 'gray';
+            }
+        }
+
+        function createPopupContent(propiedad) {
+            return `<b>${propiedad.title}</b><br>
+                    Precio: RD$ ${propiedad.price}<br>
+                    Habitaciones: ${propiedad.rooms}<br>
+                    Baños: ${propiedad.bathrooms}<br>
+                    Parqueos: ${propiedad.parking}<br>
+                    Metros cuadrados: ${propiedad.area}<br>
+                    <button onclick="showModal('${propiedad.id}')">Ver más</button>`;
+        }
+
+        function showModal(propiedad) {
+            const modalContent = `<h1>${propiedad.title}</h1>
+                                  <p>Precio: RD$${propiedad.price}</p>
+                                  <p>Habitaciones: ${propiedad.rooms}</p>
+                                  <p>Baños: ${propiedad.bathrooms}</p>
+                                  <p>Parqueos: ${propiedad.parking}</p>
+                                  <p>Metros cuadrados: ${propiedad.area}</p>
+                                  ${getAdditionalFeatures(propiedad)}
+                                  <div class="carousel">${getCarousel(propiedad.imageFolder, propiedad.imageCount)}</div>`;
+            document.getElementById("modal-content").innerHTML = modalContent;
+            document.getElementById("modal").style.display = 'flex';
+        }
+
+        function getCarousel(folder, count) {
+            let images = '';
+            for (let i = 1; i <= count; i++) {
+                images += `<img src="${folder}/image${i}.jpg" alt="Imagen ${i}">`;
+            }
+            return images;
+        }
+
+        function getAdditionalFeatures(propiedad) {
+            return `<p>Piscina: ${propiedad.piscina ? 'Sí' : 'No'}</p>
+                    <p>Jacuzzi: ${propiedad.jacuzzi ? 'Sí' : 'No'}</p>
+                    <p>Patio: ${propiedad.patio ? 'Sí' : 'No'}</p>`;
+        }
+
+        function closeModal() {
+            document.getElementById("modal").style.display = 'none';
+        }
+    </script>
+</body>
+</html>

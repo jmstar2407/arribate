@@ -1,0 +1,1277 @@
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo+Play:wght@200..1000&display=swap');
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.leaflet-interactive {
+    cursor: pointer;
+}
+
+.loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    flex-direction: column;
+    padding: 70px;
+    box-sizing: border-box;
+    animation: loaderFadeOut 3s forwards;
+}
+
+/* Puedes agregar más estilos para personalizar la apariencia del logo */
+.loader img {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    animation: loaderScale 3s forwards;
+
+}
+
+/*@media (prefers-color-scheme: dark) {
+        .loader {
+            background-color: #222222; color de fondo de pantalla de cargar para los temas
+        }
+    }
+*/
+
+.content {
+    display: none;
+    /* Oculta el contenido inicialmente */
+}
+
+.loader-logo {
+    position: relative;
+    margin-top: 0px;
+    height: auto;
+    width: 100%;
+    max-width: 400px;
+    aspect-ratio: 1 / 1;
+    background: #95282800;
+    background-image: url(../img/logo_de_Arribate_1.svg);
+    background-size: contain;
+    background-repeat: no-repeat;
+    overflow: hidden;
+    animation: loaderScale 3s 1;
+}
+
+/* Reflejo */
+.loader-logo::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -105%;
+    /* Inicia fuera del contenedor, a la izquierda */
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(120deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.3));
+    /* Simula un reflejo */
+    transform: skewX(-20deg);
+    /* Aplica un ángulo al reflejo */
+    animation: shine 1s 1.3s forwards;
+    will-change: transform; 
+    transform: skewX(-20deg) translateZ(0);
+}
+
+/* Animación de movimiento */
+@keyframes shine {
+    0% {
+        left: -100%;
+        /* Comienza fuera del contenedor, a la izquierda */
+    }
+
+    100% {
+        left: 100%;
+        /* Termina fuera del contenedor, a la derecha */
+    }
+}
+
+@keyframes loaderFadeOut {
+    0% {
+        opacity: 1;
+    }
+
+    80% {
+        opacity: 1;
+    }
+
+    90% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes loaderScale {
+    0% {
+        transform: scale(0);
+    }
+
+    40% {
+        transform: scale(1);
+    }
+
+    80% {
+        transform: scale(1);
+    }
+
+    100% {
+        transform: scale(5);
+    }
+}
+
+@keyframes loadernombre {
+    0% {
+        opacity: 0;
+    }
+
+    30% {
+        opacity: 0;
+    }
+
+    40% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+
+
+
+
+
+
+
+
+.boxmaster {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+}
+
+.mapbox {
+    position: absolute;
+    top: 0px;
+    height: 100%;
+    width: 100%;
+}
+
+#map {
+    height: 100%;
+    width: 100%;
+    position: relative;
+}
+
+.linediv {
+    position: relative;
+    top: 10px;
+    height: 40px;
+    width: 2px;
+    background: #afafaf;
+}
+
+.menumaster {
+    position: absolute;
+    top: 0px;
+    height: 60px;
+    width: 100%;
+    background: #ffffff00;
+    z-index: 1000;
+    display: inline-flex;
+}
+
+.botonbox {
+    position: relative;
+    display: inline-flex;
+    overflow: hidden;
+}
+
+.botonbox2 {
+    position: relative;
+    display: none;
+}
+
+.botonbox-in {
+    position: relative;
+    height: 100%;
+    margin: 0px 18px;
+    left: 0px;
+    background: #00000000;
+}
+
+.botonbox-in a {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    width: 100%;
+}
+
+.menumaster-in-left {
+    position: relative;
+    top: 0px;
+    height: 60px;
+    background: #ffffff;
+    box-shadow: 0px 8px 15px 0px rgb(0 0 0 / 7%);
+    display: inline-flex;
+    border-radius: 0px 0px 19px 0px;
+}
+
+.menumaster-in-right {
+    position: relative;
+    margin-left: auto;
+    padding-right: 20px;
+    background: #ffffff;
+    box-shadow: 0px 8px 15px 0px rgb(0 0 0 / 7%);
+    display: inline-flex;
+    border-radius: 0px 0px 0px 19px;
+    overflow: hidden;
+}
+
+.Menu-contacto-redes {
+    display: none;
+}
+
+.redes-box {
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px;
+}
+
+.redes-box-in {
+    text-align: center;
+    position: relative;
+    top: -5px;
+    width: 100%;
+}
+
+.redes-box-in p {
+    font-family: sans-serif;
+    font-size: 12px;
+    margin-block-start: 0px;
+    margin-block-end: 0px;
+}
+
+.redes-buttones {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.redes-button {
+    width: 30px;
+    height: 30px;
+    background-color: #ffffff;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 9px;
+    cursor: pointer;
+    background-image: url(../img/icons/instagram1.png);
+    background-size: 30px;
+}
+
+.redes-button a {
+    height: 100%;
+    width: 100%;
+}
+
+.layer-button {
+    position: absolute;
+    top: auto;
+    bottom: 37px;
+    right: 19px;
+    height: 100px;
+    width: 100px;
+    z-index: 1000;
+    background: #ffffff;
+    padding: 0px;
+    border-radius: 14px;
+    cursor: pointer;
+    border-style: none;
+    box-shadow: 0px 0px 0px 3px rgb(255 255 255), 2px 2px 4px 3px rgb(0 0 0 / 45%);
+    transition: 0.3s;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.layer-button:hover {
+    transform: scale(0.94);
+    transition: 0.3s;
+}
+
+.layer-button img {
+    width: 100%;
+    height: 100%;
+    border-radius: 14px;
+}
+
+.capasimgs {
+    height: 100%;
+    width: 100%;
+    background-image: url(../img/capasatelite3.png);
+    background-size: 165px;
+    background-position-x: 784px;
+    border-radius: 50px;
+    animation: capagiro 12s linear infinite;
+}
+
+.capasombra {
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    height: 102px;
+    width: 102px;
+    background: #8ca4eb00;
+    border-radius: 50px;
+    box-shadow: 7px 7px 11px -2px rgb(79 172 207 / 54%) inset, -7px -6px 21px 5px rgb(0 0 0 / 90%) inset;
+}
+
+@keyframes capagiro {
+    0% {
+        background-position-x: 0px;
+    }
+
+    100% {
+        background-position-x: 165px;
+    }
+}
+
+#fullscreenButton {
+    position: absolute;
+    height: 45px;
+    width: 45px;
+    border: none;
+    background: rgb(255 255 255);
+    background-image: url(../img/icons/fullscreen1.svg);
+    box-shadow: 1px 1px 3px 2px rgb(0 0 0 / 13%);
+    background-size: 28px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 50px;
+    top: auto;
+    bottom: 49px;
+    left: 14px;
+    cursor: pointer;
+    z-index: 999;
+    -webkit-tap-highlight-color: transparent;
+}
+
+#fullscreenButton.active {
+    background-image: url(../img/icons/fullscreen2.svg);
+}
+
+.leaflet-touch .leaflet-control-layers,
+.leaflet-touch .leaflet-bar {
+    background: #ff000000;
+    margin-left: 0px;
+    margin-top: 0px;
+    border: none;
+}
+
+
+.leaflet-top {
+    top: auto;
+    height: 88px;
+    background: red;
+    position: absolute;
+    width: 56px;
+    bottom: 26px;
+    display: none;
+}
+
+.leaflet-left {
+    top: auto;
+    bottom: 160px;
+    height: auto;
+    width: auto;
+    background: rgb(0 11 171 / 0%);
+    position: absolute;
+    right: 25px;
+    left: auto;
+    display: block;
+}
+
+.leaflet-touch .leaflet-bar a:first-child {
+    border-radius: 14px;
+    position: relative;
+    padding: 5px;
+    top: 0px;
+    margin-bottom: 12px;
+    background: #ffffffe8;
+    background-image: url(../img/icons/zoom-in.svg);
+    background-size: 25px;
+    background-position: center;
+    background-repeat: no-repeat;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.leaflet-touch .leaflet-bar a:last-child {
+    border-radius: 14px;
+    position: relative;
+    padding: 5px;
+    top: 0px;
+    background: #ffffffe8;
+    background-image: url(../img/icons/zoom-out.svg);
+    background-size: 25px;
+    background-position: center;
+    background-repeat: no-repeat;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.leaflet-touch .leaflet-bar a:first-child:active,
+.leaflet-touch .leaflet-bar a:last-child:active {
+    transform: scale(0.95);
+}
+
+.leaflet-touch .leaflet-bar a {
+    width: none;
+    height: none;
+    line-height: 30px;
+    border-bottom: none;
+    box-shadow: 1px 1px 3px 2px rgb(0 0 0 / 13%);
+    color: #00000000;
+}
+
+.leaflet-control-zoom a {
+    font-size: 0;
+}
+
+#locateButton {
+    display: none;
+    position: absolute;
+    top: auto;
+    bottom: 270px;
+    height: 50px;
+    width: 50px;
+    right: 20px;
+    background: #ffffffe8;
+    box-shadow: 1px 1px 3px 2px rgb(0 0 0 / 13%);
+    background-image: url(../img/icons/location6.png);
+    filter: grayscale(1);
+    background-size: 27px;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: none;
+    cursor: pointer;
+    z-index: 1000;
+    border-radius: 36px;
+    transition: 0.3s;
+    -webkit-tap-highlight-color: transparent;
+}
+
+#locateButton img {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    transform: scale(0.7);
+}
+
+#locateButton:hover {
+    background-color: #ffffffe8;
+    transform: scale(0.95);
+    transition: 0.3s;
+    filter: none;
+}
+
+.price-text {
+    font-weight: bold;
+    color: rgb(0, 0, 0);
+    font-size: 14px;
+    /* Agrega más estilos según lo necesites */
+}
+
+.barcontacto {
+    position: absolute;
+    height: 93px;
+    width: 165px;
+    background: #ffffff00;
+    top: 0px;
+    right: 0px;
+    z-index: 1000;
+    /* border-radius: 0px 0px 0px 19px; */
+    /* box-shadow: 0px 8px 15px 0px rgb(0 0 0 / 7%); */
+}
+
+.barcontactobtn {
+    position: relative;
+    /* left: 93px; */
+    margin-top: 7px;
+    height: 34px;
+    width: 110px;
+    background: #000000;
+    border-radius: 30px;
+    font-family: system-ui;
+    font-weight: bold;
+    font-size: 23px;
+    padding: 0px 10px 2px 15px;
+    color: #ffffff;
+}
+
+.barredesbtn {
+    margin-top: 3px;
+    margin-left: 7px;
+    height: 32px;
+    width: 32px;
+    background: red;
+    border-radius: 32px;
+    display: inline-flex;
+}
+
+.boton1 {
+    position: relative;
+    background: #18c8ff;
+    color: aliceblue;
+    font-family: system-ui;
+    font-weight: bold;
+    font-size: 24px;
+    padding: 0px 14px 5px 14px;
+    border-radius: 9px;
+    margin-top: 11px;
+}
+
+.logonombre {
+    position: relative;
+    display: inline-flex;
+    top: 0px;
+    font-family: system-ui;
+    font-weight: bold;
+    font-size: 27px;
+    color: #cd1025;
+    margin-top: 0px;
+    margin-left: 32px;
+    margin-right: 13px;
+    align-items: center;
+}
+
+.logonombre h1 {
+    font-family: system-ui;
+    position: relative;
+    top: 2px;
+    font-size: 30px;
+    margin-block-start: 0px;
+    margin-block-end: 0px;
+    font-weight: bold;
+    background: linear-gradient(90deg, #096caf, #096caf, #096caf, #096caf, #096caf, #096caf, #096caf, #096caf, #ffffff, #cd1025, #cd1025, #cd1025, #cd1025, #cd1025, #cd1025, #cd1025, #cd1025, #ffffff, #096caf, #096caf, #096caf, #096caf, #096caf, #096caf, #096caf, #096caf);
+    background-size: 400%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientMove linear 7s infinite;
+}
+
+.logonombre span {
+    position: relative;
+    top: -3px;
+    font-size: 10px;
+    color: #777777;
+    text-align: center;
+}
+
+.logonombre div {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    flex: 1;
+}
+
+@keyframes gradientMove {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    100% {
+        background-position: 100% 50%;
+    }
+}
+
+.logo1 {
+    position: relative;
+    margin-top: 0px;
+    height: 57px;
+    width: 57px;
+    background: #ff000000;
+    background-image: url(../img/logo2.svg);
+    background-size: 57px;
+    background-repeat: no-repeat;
+}
+
+/* Sobrescribir estilos de Leaflet */
+.leaflet-div-icon {
+    background: none !important;
+    border: none !important;
+}
+
+.leaflet-popup-tip-container {
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid #00000000;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    top: 0;
+}
+
+.price-tip {
+    border: 7px solid transparent;
+}
+
+.leaflet-marker-icon span,
+.leaflet-marker-icon img {
+    transition: 0.2s;
+}
+
+.leaflet-marker-icon:hover span {
+    transition: 0.2s;
+    transform: scale(1.24);
+}
+
+.leaflet-marker-icon:hover img {
+    transition: 0.2s;
+    transform: scale(1.24);
+    background: white;
+}
+
+.carousel {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    text-align: center;
+    height: 190px;
+    border-radius: 14px 14px 0px 0px;
+}
+
+.carousel-inner {
+    display: flex;
+    /* Mostramos las imágenes en una línea horizontal */
+    transition: transform 0.3s ease-in-out;
+    /* Agregamos una transición suave */
+    width: 100%;
+}
+
+/*.carousel img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    max-width: 100%;
+}*/
+
+.carousel img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* max-width: 100%; */
+    height: 190px;
+    width: 301px;
+}
+
+.carousel .indicators {
+    position: absolute;
+    bottom: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    background: #00000057;
+    border-radius: 8px;
+    padding: 3px;
+}
+
+.carousel .indicator {
+    position: relative;
+    top: 1px;
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background-color: #a9a9a9a8;
+    border-radius: 50%;
+    margin: 0 2px;
+    cursor: pointer;
+    pointer-events: auto;
+}
+
+.carousel .indicator.active {
+    background-color: #fff;
+    width: 10px;
+    height: 10px;
+    top: 0px;
+}
+
+.carousel .indicators {
+    position: absolute;
+    bottom: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+}
+
+.carousel button {
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0);
+    color: #e9e9e9d0;
+    font-weight: bold;
+    border: none;
+    padding: 15px 10px 15px 10px;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: 0.3s;
+}
+
+.botonmaximizar {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    width: 35px;
+    height: 35px;
+    border-radius: 60px;
+    margin: 7px;
+    background: #ffffff;
+    background-image: url(../img/icons/maximizar3.png);
+    background-size: 25px;
+    background-position: 5px 5px;
+    background-repeat: no-repeat;
+    z-index: 7;
+}
+
+.leaflet-popup-content:hover .carousel button {
+    background-color: rgba(255, 255, 255, 0.911);
+    color: #000000;
+    transition: 0.3s;
+}
+
+.carousel button.prev {
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-radius: 10px 4px 4px 10px;
+    transition: 0.3s;
+}
+
+.carousel button.next {
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-radius: 4px 10px 10px 4px;
+    transition: 0.3s;
+}
+
+.carousel button.prev:hover,
+.carousel button.next:hover {
+    transform: translateY(-50%) scale(1.2);
+    transition: 0.3s;
+}
+
+.carousel button.prev:active,
+.carousel button.next:active {
+    background-color: #adadad;
+}
+
+
+.leaflet-popup-content {
+    margin: 0;
+    line-height: 0;
+}
+
+.informacion-basica {
+    line-height: 1.4;
+    height: 100px;
+    padding: 0px 14px 0px 14px;
+}
+
+.price-text {
+    font-family: system-ui;
+    font-weight: bold;
+    color: rgb(0, 0, 0);
+    font-size: 20px;
+}
+
+.detalles-basicos {
+    position: relative;
+    top: 10px;
+    background: #ff000000;
+    font-size: 15px;
+    font-family: system-ui;
+    font-weight: bold;
+    pointer-events: none;
+}
+
+#vermodal {
+    position: absolute;
+    background: #ff000000;
+    top: 0px;
+    left: 0px;
+    height: 290px;
+    width: 100%;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+}
+
+#btncomollegar {
+    position: absolute;
+    background: #bbbbbbd4;
+    right: 5px;
+    cursor: pointer;
+    border: none;
+    padding: 4px 8px 4px 0px;
+    border-radius: 0px 0px 5px 5px;
+    transition: 0.3s;
+}
+
+#btncomollegar img {
+    position: relative;
+    width: 14px;
+    height: 14px;
+    margin: 0px 4px 0px 6px;
+}
+
+#btncomollegar:hover {
+    background: #8a8a8ad4;
+    transition: 0.3s;
+}
+
+.informacion-basica button {
+    cursor: pointer;
+}
+
+.leaflet-popup-content {
+    margin: 0;
+    line-height: 0;
+    width: 350px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.leaflet-popup-content-wrapper {
+    padding: 0;
+    text-align: left;
+    border-radius: 14px;
+    transition: 0.3s;
+}
+
+.leaflet-popup:hover {
+    transform: scale(1.04);
+    transition: 0.3s;
+}
+
+.leaflet-container a.leaflet-popup-close-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0;
+    margin: 7px;
+    border: none;
+    text-align: center;
+    width: 35px;
+    height: 35px;
+    font: 24px / 35px math;
+    color: #3f3f3f;
+    text-decoration: none;
+    font-weight: bold;
+    background: white;
+    border-radius: 50px;
+}
+
+.bar-redes {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    height: 100%;
+    width: 60px;
+    background: #00000000;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.bar-redes-in {
+    position: relative;
+    margin-right: auto;
+    margin-left: auto;
+    border-radius: 12px;
+    width: 50px;
+    background: #0000008c;
+    backdrop-filter: blur(9px);
+    top: 50%;
+    transform: translate(0%, -50%);
+    padding: 33px 0px 1px 0px;
+}
+
+.button-redes {
+    height: 39px;
+    width: 40px;
+    background: #0c0c0c5c;
+    /* backdrop-filter: blur(6px); */
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: 10px;
+    border-radius: 14px;
+    pointer-events: auto;
+}
+
+.custom-tooltip {
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 14px;
+    font-size: 12px;
+}
+
+
+.botonbox button {
+    position: relative;
+    height: 40px;
+    border-radius: 3px;
+    top: 50%;
+    padding: 0px 10px;
+    margin: 0px 15px;
+    transform: translateY(-50%);
+    background: #00000000;
+    color: #6f6f6f;
+    font-family: system-ui;
+    font-weight: bold;
+    font-size: 20px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0px 50px 0px 0px rgb(205 16 37), 0px 43px 0px 0px rgb(233 233 233);
+    transition: 0.3s;
+}
+
+#alquilerButton:hover,
+#ventaButton:hover {
+    color: #096caf;
+}
+
+#alquilerButton.active,
+#ventaButton.active {
+    box-shadow: 0px 43px 0px 0px rgb(205 16 37), 0px 43px 0px 0px rgb(233 233 233);
+    color: #096caf;
+}
+
+.center-button {
+    position: absolute;
+    top: auto;
+    bottom: 270px;
+    height: 50px;
+    width: 50px;
+    right: 20px;
+    background: #ffffffe8;
+    box-shadow: 1px 1px 3px 2px rgb(0 0 0 / 13%);
+    background-image: url(../img/icons/botoncenter1.svg);
+    background-size: 34px;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: none;
+    cursor: pointer;
+    z-index: 1000;
+    border-radius: 36px;
+    transition: 0.3s;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.coordinate-box {
+    position: absolute;
+    background-color: rgb(255 255 255);
+    padding: 10px;
+    border-radius: 16px;
+    z-index: 1000;
+    box-shadow: 5px 5px 14px rgb(0 0 0 / 27%);
+}
+
+.coordinate-box  h2 {
+    font-size: 15px;
+    margin-block-start: 9px;
+    margin-block-end: 24px;
+    text-align: center;
+}
+  
+.coordinate-box button {
+    background: #096caf;
+    box-shadow: 0px 0px 0px -2px rgb(205 16 37) inset;
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: 0.3s;
+}
+  
+  .coordinate-box button:hover {
+    box-shadow: 0px -3px 0px 0px rgb(205 16 37) inset;
+    transition: 0.3s;
+  }
+
+  .coordinate-popup .leaflet-popup-close-button {
+    display: none; 
+}
+
+#coordinateBox-cerrar {
+    background: #cfcfcf00;
+    position: absolute;
+    top: 7px;
+    right: 7px;
+    border-radius: 22px;
+    height: 27px;
+    width: 27px;
+    color: #2d2d2d00;
+    margin: 0px;
+    background-image: url(../img/icons/cerrar1.svg);
+    background-size: 13px;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.6;
+    transition: 0.3s;
+    box-shadow: none;
+}
+
+#coordinateBox-cerrar:hover {
+    background: #cfcfcf;
+    background-image: url(../img/icons/cerrar1.svg);
+    background-size: 13px;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 1;
+    transition: 0.3s;
+}
+
+#coordinateBox-copiar {
+    width: 85px;
+}
+
+@media screen and (max-width: 900px) {
+    .menumaster {
+        background: #faf9fd;
+        box-shadow: 0px 8px 15px 0px rgb(0 0 0 / 7%);
+        border-radius: 0px 0px 20px 20px;
+        overflow: hidden;
+    }
+
+    .redes-box {
+        display: none;
+    }
+
+    .menumaster-in-left {
+        box-shadow: 0px 8px 15px 0px rgba(0, 0, 0, 0);
+        background: #faf9fd;
+    }
+
+    .menumaster-in-right {
+        padding-right: 5px;
+        box-shadow: 0px 8px 15px 0px rgb(0 0 0 / 0%);
+        background: #faf9fd;
+    }
+
+    #locateButton {
+        display: block;
+    }
+    
+    .center-button {
+        bottom: 335px;
+    }  
+}
+
+@media (min-width: 750px) {
+#fullscreenButton {
+    bottom: 30px;
+}
+}
+
+
+@media (max-width: 700px) {
+
+    .botonbox {
+        display: none;
+    }
+
+    .linediv {
+        display: none;
+    }
+
+    .menumaster {
+        display: grid;
+        height: auto;
+    }
+
+    .leaflet-popup-content:hover .carousel button {
+        background-color: initial;
+        color: #e9e9e9d0;
+        transition: none;
+    }
+
+    .carousel button.prev:active,
+.carousel button.next:active {
+    background-color: #ffffffad;
+    color: #2b2b2bd0;
+}
+
+    .menumaster-in-left {
+        width: 100%;
+        border-radius: 0px;
+        border-bottom: 1px solid hsl(234.55deg 22.45% 90.39%);
+        height: 50px;
+        background: #faf9fd;
+    }
+
+    .logonombre {
+        margin-left: auto;
+        margin-right: auto;
+        top: 0px;
+        transform: scale(0.9);
+        height: 49px;
+    }
+
+    .menumaster-in-right {
+        position: absolute;
+        right: auto;
+        background: #ffffff00;
+        width: 100%;
+        border-radius: 0px;
+        margin-left: 5px;
+        left: 0px;
+        height: 50px;
+    }
+
+
+    .botonbox2 {
+        position: relative;
+        display: inline-flex;
+        justify-content: space-between;
+        height: 40px;
+        background: #faf9fd00;
+        margin-left: 8px;
+    }
+
+    #alquilerButton-rpsv,
+    #ventaButton-rpsv {
+        display: inline-flex;
+        background: #9f9f9f00;
+        border: none;
+        width: 100px;
+        height: 40px;
+        padding-inline: 4px;
+        margin: 0px 5px;
+        transition: 0.4s;
+        position: relative;
+        align-items: center;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #00000085;
+        /*box-shadow: 0px -7px 0px -2px rgb(233 233 233) inset;*/
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    #alquilerButton-rpsv {
+        box-shadow: 0px 35px 0px 0px rgb(250 249 253) inset, -100px 0px 0px 0px #e9e9e9 inset, 100px 0px 0px 0px #cd1025 inset;
+    }
+
+    #ventaButton-rpsv {
+
+        box-shadow: 0px 35px 0px 0px rgb(250 249 253) inset, 100px 0px 0px 0px #e9e9e9 inset, 100px 0px 0px 0px #cd1025 inset;
+    }
+
+    #alquilerButton-rpsv h3,
+    #ventaButton-rpsv h3 {
+        margin-block-start: 0px;
+        margin-block-end: 0px;
+        width: 100%;
+        text-align: center;
+        font-size: 1.2rem;
+    }
+
+    #alquilerButton-rpsv.active {
+        box-shadow: 0px 35px 0px 0px rgb(250 249 253) inset, 0px 0px 0px 0px #e9e9e9 inset, 100px 0px 0px 0px #cd1025 inset;
+        color: #096caf;
+    }
+
+    #ventaButton-rpsv.active {
+        box-shadow: 0px 35px 0px 0px rgb(250 249 253) inset, 0px 0px 0px 0px #e9e9e9 inset, 100px 0px 0px 0px #cd1025 inset;
+        color: #096caf;
+    }
+
+    .layer-button {
+        height: 70px;
+        width: 70px;
+        right: 10px;
+        overflow: hidden;
+        border-radius: 50px;
+    }
+
+    .leaflet-left {
+        bottom: 124px;
+    }
+
+    #locateButton {
+        bottom: 227px;
+    }
+
+    .center-button {
+        bottom: 288px;
+    }
+}
+
+
+
+
+@media (max-height: 420px) {
+    #locateButton {
+        display: none;
+    }
+}
+
+@media (max-height: 320px) {
+    .leaflet-left {
+        display: none;
+    }
+}
+
+@media (max-height: 300px) {
+    #changeLayerButton {
+        height: 70px;
+        width: 70px;
+    }
+}
+
+@media (max-height: 210px) {
+    #changeLayerButton {
+        display: none;
+    }
+}
+
+@media (max-height: 185px) {
+    #fullscreenButton {
+        display: none;
+    }
+}
+
+
+
+
+
+
+
+
+

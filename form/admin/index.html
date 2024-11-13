@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Generador de Código</title>
+</head>
+
+<style>
+  body {
+    background: #373737;
+    color: #26c1ff;
+    font-family: sans-serif;
+}
+</style>
+<body>
+
+<h1>Generar Código para Propiedad</h1>
+
+<form id="propertyForm">
+  <label for="id">ID:</label><br>
+  <input type="number" id="id" name="id" placeholder="000000" required><br><br>
+
+  <label for="latLng">Coordenadas:</label><br>
+  <input type="text" id="latLng" name="latLng" placeholder="18.42829, -69.63438" required><br><br>
+
+  <label for="title">Título:</label><br>
+  <input type="text" id="title" name="title" placeholder="Titulo" required><br><br>
+
+  <label for="price">Precio RD$:</label><br>
+  <input type="number" id="price" name="price" placeholder="Precio" required><br><br>
+
+  <label for="rooms">Habitaciones:</label><br>
+  <input type="number" id="rooms" name="rooms" placeholder="0" required><br><br>
+
+  <label for="bathrooms">Baños:</label><br>
+  <input type="number" id="bathrooms" name="bathrooms" placeholder="0" required><br><br>
+
+  <label for="parking">Parqueos:</label><br>
+  <input type="number" id="parking" name="parking" placeholder="0" required><br><br>
+
+  <label for="area">Área / Metros cuadrados (m²):</label><br>
+  <input type="number" id="area" name="area" placeholder="0" required><br><br>
+
+  <label for="imageCount">Cantidad de Imágenes:</label><br>
+  <input type="number" id="imageCount" name="imageCount" placeholder="0" required><br><br>
+
+  <label for="caracteristicas">Características:</label><br>
+  <textarea id="caracteristicas" placeholder="Características" name="caracteristicas"></textarea><br><br>
+
+  <button type="button" onclick="generarCodigo()">Generar Código</button>
+</form>
+
+<p id="codigoGenerado"></p>
+
+<script>
+function generarCodigo() {
+  var id = document.getElementById("id").value;
+  var latLng = document.getElementById("latLng").value;
+  var title = document.getElementById("title").value;
+  var price = document.getElementById("price").value;
+  var rooms = document.getElementById("rooms").value;
+  var bathrooms = document.getElementById("bathrooms").value;
+  var parking = document.getElementById("parking").value;
+  var area = document.getElementById("area").value;
+  var imageCount = document.getElementById("imageCount").value;
+  var caracteristicas = document.getElementById("caracteristicas").value;
+
+  var codigo = `{
+    id: ${id}, 
+    latLng: [${latLng}], 
+    title: '${title}', 
+    price: ${price}, 
+    icon: buildingIcon, 
+    rooms: ${rooms}, 
+    bathrooms: ${bathrooms}, 
+    parking: ${parking}, 
+    area: ${area}, 
+    imageFolder: './properties/alquiler/${id}/img/', 
+    imageCount: ${imageCount},
+    caracteristicas: '${caracteristicas}'
+  },`;
+
+  document.getElementById("codigoGenerado").textContent = codigo;
+}
+</script>
+
+</body>
+</html>
