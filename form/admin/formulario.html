@@ -113,13 +113,13 @@
 
         // Función para subir imágenes en orden con numeración
         async function subirImagenes(imagenes, carpeta) {
-    const lista = document.getElementById("lista-imagenes"); // Obtener la lista de imágenes
-    const imageElements = lista.querySelectorAll("li"); // Obtener todos los elementos li (imágenes)
+    const lista = document.getElementById("lista-imagenes");
+    const imageElements = lista.querySelectorAll("li");
 
     for (let i = 0; i < imageElements.length; i++) {
         const imagen = imagenes[i];
-        const label = imageElements[i].querySelector(".image-order-label"); // Obtener el label de la imagen actual
-        const nombreImagen = `${label.textContent}.jpg`; // Usar el número del label para nombrar la imagen
+        const label = imageElements[i].querySelector(".image-order-label");
+        const nombreImagen = `${label.textContent}.${imagen.name.split('.').pop()}`; // Usar el número del label y la extensión original
         const imagenRef = ref(storage, `${carpeta}/${nombreImagen}`);
 
         try {
@@ -296,7 +296,7 @@
 </head>
 
 <body>
-    <h1 id="welcome-message">Bienvenid@</h1>
+    <h1 id="welcome-message">Bienvenid@8</h1>
     <form id="formulario-propiedades">
         <label for="categoria">Categoría:</label>
         <select id="categoria" required>
@@ -367,7 +367,7 @@
         <br><br>
 
         <label for="imagenes">Subir Imágenes:</label>
-        <input type="file" id="imagenes" multiple required>
+        <input type="file" id="imagenes" multiple required accept="image/*">
         <ul id="lista-imagenes"></ul>
         <br><br>
 
