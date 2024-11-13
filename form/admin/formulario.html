@@ -111,21 +111,35 @@
             return `${dia}/${mes}/${año} ${hora}:${minuto}`;
         }
 
-        // Función para subir imágenes en orden con numeración
-        async function subirImagenes(imagenes, carpeta) {
-            for (let i = 0; i < imagenes.length; i++) {
-                const imagen = imagenes[i];
-                const nombreImagen = `${i + 1}.jpg`;  // Nombre de archivo según el orden
-                const imagenRef = ref(storage, `${carpeta}/${nombreImagen}`);
 
-                try {
-                    await uploadBytes(imagenRef, imagen);
-                    console.log(`Imagen ${nombreImagen} subida exitosamente.`);
-                } catch (error) {
-                    console.error(`Error al subir ${nombreImagen}:`, error);
-                }
-            }
+
+        
+
+        
+// Función para subir imágenes con el orden correcto y verificación de archivos
+async function subirImagenes(carpeta) {
+    for (let i = 0; i < orderedImages.length; i++) {
+        const imagen = orderedImages[i];
+
+        // Verifica que el archivo sea una imagen válida antes de subir
+        if (!imagen || !(imagen instanceof File)) {
+            console.error(`El archivo en el índice ${i} no es válido.`);
+            continue;  // Saltar archivos no válidos
         }
+
+        const nombreImagen = `${i + 1}.jpg`;
+        const imagenRef = ref(storage, `${carpeta}/${nombreImagen}`);
+
+        try {
+            await uploadBytes(imagenRef, imagen);
+            console.log(`Imagen ${nombreImagen} subida exitosamente.`);
+        } catch (error) {
+            console.error(`Error al subir ${nombreImagen}:`, error);
+        }
+    }
+}
+
+
 
         // Función para manejar el envío del formulario
         async function agregarPropiedad(e) {
@@ -177,23 +191,24 @@
 
             const coleccion = categoria === "venta" ? "ventas" : "alquileres";
 
+            
+
             try {
-                const imagenes = document.getElementById("imagenes").files;
-                if (imagenes.length === 0) {
-                    alert("Por favor, selecciona al menos una imagen.");
-                    return;
-                }
-
-                await subirImagenes(imagenes, imagefolder);
-
-                await addDoc(collection(db, coleccion), nuevaPropiedad);
-                alert(`Propiedad y sus imágenes guardadas correctamente con ID: ${idPropiedad}`);
-                document.getElementById("formulario-propiedades").reset();
-            } catch (e) {
-                console.error("Error al guardar los datos: ", e);
-                alert("Ocurrió un error al guardar los datos.");
-            }
+        if (orderedImages.length === 0) {
+            alert("Por favor, selecciona al menos una imagen.");
+            return;
         }
+
+        await subirImagenes(imagefolder);
+
+        // Continuación del código para guardar la propiedad
+        alert(`Propiedad y sus imágenes guardadas correctamente con ID: ${idPropiedad}`);
+        document.getElementById("formulario-propiedades").reset();
+    } catch (e) {
+        console.error("Error al guardar los datos: ", e);
+        alert("Ocurrió un error al guardar los datos.");
+    }
+}
 
         // Función para cerrar sesión
         function cerrarSesion() {
@@ -204,49 +219,54 @@
             });
         }
 
-        // Función para mostrar y reordenar imágenes con vistas previas y numeración
-        document.getElementById("imagenes").addEventListener("change", (event) => {
-            const lista = document.getElementById("lista-imagenes");
-            lista.innerHTML = "";
-            orderedImages = Array.from(event.target.files);
+        // Evento para manejar la carga y reordenación de imágenes
+document.getElementById("imagenes").addEventListener("change", (event) => {
+    const lista = document.getElementById("lista-imagenes");
+    lista.innerHTML = "";
 
-            // Crear vista previa con número de orden
-            orderedImages.forEach((file, index) => {
-                const listItem = document.createElement("li");
-                listItem.classList.add("image-preview-item");
+    // Convertir a Array y asignar directamente a `orderedImages`
+    orderedImages = Array.from(event.target.files);
 
-                // Crear imagen de vista previa
-                const img = document.createElement("img");
-                img.classList.add("image-preview");
-                img.src = URL.createObjectURL(file);
-                img.alt = `Imagen ${index + 1}`;
-                
-                // Crear etiqueta con el número de orden
-                const label = document.createElement("span");
-                label.classList.add("image-order-label");
-                label.textContent = index + 1;
+    // Crear vista previa de cada imagen con URL Blob
+    orderedImages.forEach((file, index) => {
+        const listItem = document.createElement("li");
+        listItem.classList.add("image-preview-item");
+        listItem.dataset.index = index;  // Guarda el índice para referencia
 
-                // Añadir la imagen y el número al elemento de lista
-                listItem.appendChild(img);
-                listItem.appendChild(label);
-                lista.appendChild(listItem);
+        // Crear imagen de vista previa
+        const img = document.createElement("img");
+        img.classList.add("image-preview");
+        img.src = URL.createObjectURL(file);
+        img.alt = `Imagen ${index + 1}`;
+
+        // Crear etiqueta con el número de orden
+        const label = document.createElement("span");
+        label.classList.add("image-order-label");
+        label.textContent = index + 1;
+
+        // Añadir la imagen y el número al elemento de lista
+        listItem.appendChild(img);
+        listItem.appendChild(label);
+        lista.appendChild(listItem);
+    });
+
+    // Inicializar Sortable para permitir la reordenación
+    new Sortable(lista, {
+        animation: 150,
+        onUpdate: () => {
+            // Reordenar `orderedImages` según el nuevo orden en la lista
+            orderedImages = Array.from(lista.querySelectorAll("li"))
+                .map((li) => orderedImages[li.dataset.index]);
+
+            // Actualizar los números visuales después de reordenar
+            lista.querySelectorAll("li").forEach((li, index) => {
+                li.querySelector(".image-order-label").textContent = index + 1;
             });
+        }
+    });
+});
 
-            // Inicializar o actualizar Sortable
-            new Sortable(lista, {
-                animation: 150,
-                onUpdate: () => {
-                    // Reordenar `orderedImages` según el nuevo orden en la lista
-                    orderedImages = Array.from(lista.querySelectorAll("li"))
-                        .map((li) => orderedImages[li.dataset.index]);
-                    
-                    // Actualizar los números visuales después de reordenar
-                    lista.querySelectorAll("li").forEach((li, index) => {
-                        li.querySelector(".image-order-label").textContent = index + 1;
-                    });
-                }
-            });
-        });
+
 
         // Asignar eventos
         window.onload = () => {
