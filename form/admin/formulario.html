@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,13 +10,13 @@
         import { getFirestore, collection, query, orderBy, limit, getDocs, addDoc, where } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js";
         import { getStorage, ref, uploadBytes } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-storage.js";
-        
+
         // Configuración de Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyBRjDso4IPrh9WLvWWMYoPiJxNFD6Vt3RU",
             authDomain: "arribate-com.firebaseapp.com",
             projectId: "arribate-com",
-            storageBucket: "arribate-com.appspot.com",
+            storageBucket: "arribate-com.firebasestorage.app",
             messagingSenderId: "46945634270",
             appId: "1:46945634270:web:c74fd6781ac1fab5da7f4f",
             measurementId: "G-Y4J11MBYKQ"
@@ -230,6 +231,7 @@
         };
     </script>
 </head>
+
 <body>
     <h1 id="welcome-message">Bienvenid@</h1>
     <form id="formulario-propiedades">
@@ -240,7 +242,7 @@
             <option value="alquiler">Alquiler</option>
         </select>
         <br><br>
-        
+
         <label for="tipoPropiedad">Tipo de Propiedad:</label>
         <select id="tipoPropiedad" required>
             <option value="">Selecciona</option>
@@ -320,4 +322,5 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.10.2/Sortable.min.js"></script>
 </body>
+
 </html>
