@@ -111,26 +111,19 @@
             return `${dia}/${mes}/${año} ${hora}:${minuto}`;
         }
 
-        // Función para subir imágenes en orden con numeración
-        async function subirImagenes(imagenes, carpeta) {
+// Función para subir imágenes en orden con numeración
+async function subirImagenes(carpeta) {
     for (let i = 0; i < orderedImages.length; i++) {
-        const imagen = orderedImages[i]; 
-        const nombreImagen = `${i + 1}.jpg`; 
+        const imagen = orderedImages[i];
+        const nombreImagen = `${i + 1}.jpg`;  // Nombre de archivo según el nuevo orden
         const imagenRef = ref(storage, `${carpeta}/${nombreImagen}`);
 
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const blob = new Blob([e.target.result], { type: imagen.type }); 
-
-            uploadBytes(imagenRef, blob)
-                .then(() => {
-                    console.log(`Imagen ${nombreImagen} subida exitosamente.`);
-                })
-                .catch((error) => {
-                    console.error(`Error al subir ${nombreImagen}:`, error);
-                });
+        try {
+            await uploadBytes(imagenRef, imagen);
+            console.log(`Imagen ${nombreImagen} subida exitosamente.`);
+        } catch (error) {
+            console.error(`Error al subir ${nombreImagen}:`, error);
         }
-        reader.readAsArrayBuffer(imagen); 
     }
 }
 
@@ -184,23 +177,24 @@
 
             const coleccion = categoria === "venta" ? "ventas" : "alquileres";
 
+            
+
             try {
-                const imagenes = document.getElementById("imagenes").files;
-                if (imagenes.length === 0) {
-                    alert("Por favor, selecciona al menos una imagen.");
-                    return;
-                }
-
-                await subirImagenes(imagenes, imagefolder);
-
-                await addDoc(collection(db, coleccion), nuevaPropiedad);
-                alert(`Propiedad y sus imágenes guardadas correctamente con ID: ${idPropiedad}`);
-                document.getElementById("formulario-propiedades").reset();
-            } catch (e) {
-                console.error("Error al guardar los datos: ", e);
-                alert("Ocurrió un error al guardar los datos.");
-            }
+        if (orderedImages.length === 0) {
+            alert("Por favor, selecciona al menos una imagen.");
+            return;
         }
+
+        await subirImagenes(imagefolder);
+
+        // Continuación del código para guardar la propiedad
+        alert(`Propiedad y sus imágenes guardadas correctamente con ID: ${idPropiedad}`);
+        document.getElementById("formulario-propiedades").reset();
+    } catch (e) {
+        console.error("Error al guardar los datos: ", e);
+        alert("Ocurrió un error al guardar los datos.");
+    }
+}
 
         // Función para cerrar sesión
         function cerrarSesion() {
