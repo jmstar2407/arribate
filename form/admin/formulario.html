@@ -111,11 +111,11 @@
             return `${dia}/${mes}/${año} ${hora}:${minuto}`;
         }
 
-      // Función para subir imágenes en orden
-      async function subirImagenes(imagenes, carpeta) {
+        // Función para subir imágenes en orden con numeración
+        async function subirImagenes(imagenes, carpeta) {
             for (let i = 0; i < imagenes.length; i++) {
                 const imagen = imagenes[i];
-                const nombreImagen = `${i + 1}.jpg`;
+                const nombreImagen = `${i + 1}.jpg`;  // Nombre de archivo según el orden
                 const imagenRef = ref(storage, `${carpeta}/${nombreImagen}`);
 
                 try {
@@ -204,24 +204,31 @@
             });
         }
 
-       // Función para mostrar y reordenar imágenes con vistas previas
-       document.getElementById("imagenes").addEventListener("change", (event) => {
+        // Función para mostrar y reordenar imágenes con vistas previas y numeración
+        document.getElementById("imagenes").addEventListener("change", (event) => {
             const lista = document.getElementById("lista-imagenes");
             lista.innerHTML = "";
             orderedImages = Array.from(event.target.files);
 
+            // Crear vista previa con número de orden
             orderedImages.forEach((file, index) => {
                 const listItem = document.createElement("li");
                 listItem.classList.add("image-preview-item");
 
-                // Crear una imagen de vista previa
+                // Crear imagen de vista previa
                 const img = document.createElement("img");
                 img.classList.add("image-preview");
                 img.src = URL.createObjectURL(file);
                 img.alt = `Imagen ${index + 1}`;
                 
-                // Añadir la imagen de vista previa al elemento de la lista
+                // Crear etiqueta con el número de orden
+                const label = document.createElement("span");
+                label.classList.add("image-order-label");
+                label.textContent = index + 1;
+
+                // Añadir la imagen y el número al elemento de lista
                 listItem.appendChild(img);
+                listItem.appendChild(label);
                 lista.appendChild(listItem);
             });
 
@@ -229,8 +236,14 @@
             new Sortable(lista, {
                 animation: 150,
                 onUpdate: () => {
+                    // Reordenar `orderedImages` según el nuevo orden en la lista
                     orderedImages = Array.from(lista.querySelectorAll("li"))
-                        .map((li, idx) => orderedImages[li.dataset.index]);
+                        .map((li) => orderedImages[li.dataset.index]);
+                    
+                    // Actualizar los números visuales después de reordenar
+                    lista.querySelectorAll("li").forEach((li, index) => {
+                        li.querySelector(".image-order-label").textContent = index + 1;
+                    });
                 }
             });
         });
@@ -246,23 +259,33 @@
 <style>
     /* Estilos para la lista y las imágenes de vista previa */
     .image-list {
-        list-style-type: none;
-        display: flex;
-        gap: 10px;
-        padding: 0;
-    }
-    .image-preview-item {
-        position: relative;
-        width: 100px;
-        height: 100px;
-        overflow: hidden;
-    }
-    .image-preview {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-radius: 5px;
-    }
+            list-style-type: none;
+            display: flex;
+            gap: 10px;
+            padding: 0;
+        }
+        .image-preview-item {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            overflow: hidden;
+        }
+        .image-preview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+        .image-order-label {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-size: 0.8em;
+        }
 </style>
 
 
