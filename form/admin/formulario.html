@@ -111,18 +111,18 @@
             return `${dia}/${mes}/${año} ${hora}:${minuto}`;
         }
 
-// Función para subir imágenes con el orden definido en la interfaz visual
+// Función para subir imágenes usando el número en el label como nombre de archivo
 async function subirImagenes(carpeta) {
-    for (let i = 0; i < orderedImages.length; i++) {
+    const lista = document.getElementById("lista-imagenes");
+
+    for (let i = 0; i < lista.children.length; i++) {
+        const listItem = lista.children[i];
         const imagen = orderedImages[i];
-
-        // Verificar que el archivo es una imagen válida
-        if (!imagen || !(imagen instanceof File)) {
-            console.error(`El archivo en el índice ${i} no es válido.`);
-            continue;  // Saltar archivos no válidos
-        }
-
-        const nombreImagen = `${i + 1}.jpg`; // Numeración basada en el índice visual
+        
+        // Obtener el número de orden del label
+        const numeroImagen = listItem.querySelector(".image-order-label").textContent;
+        const nombreImagen = `${numeroImagen}.jpg`;
+        
         const imagenRef = ref(storage, `${carpeta}/${nombreImagen}`);
 
         try {
@@ -212,7 +212,7 @@ async function subirImagenes(carpeta) {
             });
         }
 
-        // Evento para manejar la carga y reordenación de imágenes
+// Evento para manejar la carga y reordenación de imágenes
 document.getElementById("imagenes").addEventListener("change", (event) => {
     const lista = document.getElementById("lista-imagenes");
     lista.innerHTML = "";
@@ -235,7 +235,7 @@ document.getElementById("imagenes").addEventListener("change", (event) => {
         // Crear etiqueta con el número de orden
         const label = document.createElement("span");
         label.classList.add("image-order-label");
-        label.textContent = index + 1;
+        label.textContent = index + 1;  // Inicialmente asigna el número de orden
 
         // Añadir la imagen y el número al elemento de lista
         listItem.appendChild(img);
@@ -247,8 +247,8 @@ document.getElementById("imagenes").addEventListener("change", (event) => {
     new Sortable(lista, {
         animation: 150,
         onUpdate: () => {
-            // Al actualizar el orden visual, reorganiza `orderedImages` acorde a la lista visible
-            orderedImages = Array.from(lista.querySelectorAll("li")).map(li => {
+            // Reordenar `orderedImages` según el nuevo orden en la lista visual
+            orderedImages = Array.from(lista.querySelectorAll("li")).map((li) => {
                 return orderedImages[parseInt(li.dataset.index)];
             });
 
