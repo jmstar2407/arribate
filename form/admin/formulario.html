@@ -52,7 +52,7 @@
         });
 
 
-
+        
 
         // Función para obtener el siguiente ID
         async function generarID(categoria, tipoPropiedad) {
@@ -111,80 +111,89 @@
             return `${dia}/${mes}/${año} ${hora}:${minuto}`;
         }
 
+// Función para subir imágenes con el nombre de su 'alt'
+async function subirImagenes(imagenes, carpeta) {
+    for (let i = 0; i < imagenes.length; i++) {
+        const imagen = imagenes[i];
+        const nombreImagen = orderedImages[i].alt || `imagen_${i + 1}.jpg`; // Usa el 'alt' o un nombre por defecto
+        const imagenRef = ref(storage, `${carpeta}/${nombreImagen}`);
 
-
-// Renombra la función si hay conflictos con el nombre
-async function guardarPropiedad(e) {
-    e.preventDefault();
-
-    const categoria = document.getElementById("categoria").value;
-    const tipoPropiedad = document.getElementById("tipoPropiedad").value;
-    let idPropiedad = document.getElementById("idPropiedad").value;
-    const imagefolder = document.getElementById("imagefolder").value || "imagenes_propiedades";
-
-    // Genera el ID si no coincide o si es nuevo
-    const idGenerado = await generarID(categoria, tipoPropiedad);
-    if (idPropiedad !== idGenerado) {
-        idPropiedad = idGenerado;
-        document.getElementById("idPropiedad").value = idPropiedad;
-    }
-
-    // Recopilar todos los demás datos del formulario
-    const area = parseInt(document.getElementById("area").value);
-    const baños = parseInt(document.getElementById("baños").value);
-    const habitaciones = parseInt(document.getElementById("habitaciones").value);
-    const icono = document.getElementById("icono").value;
-    const latLng = document.getElementById("latLng").value;
-    const parqueo = parseInt(document.getElementById("parqueo").value);
-    const precio = parseInt(document.getElementById("precio").value);
-    const titulo = document.getElementById("titulo").value;
-    const caracteristicas = document.getElementById("caracteristicas").value;
-    const imagecount = parseInt(document.getElementById("imagecount").value);
-    const piscina = document.getElementById("piscina").checked;
-    const jacuzzi = document.getElementById("jacuzzi").checked;
-    const FechaDePublicacion = obtenerFechaActual();
-
-    // Crear el objeto de propiedad con todos los datos
-    const nuevaPropiedad = {
-        id: idPropiedad,
-        area,
-        baños,
-        habitaciones,
-        icono,
-        latLng,
-        parqueo,
-        precio,
-        titulo,
-        caracteristicas,
-        imagecount,
-        imagefolder,
-        piscina,
-        jacuzzi,
-        FechaDePublicacion,
-        usuario: correoUsuario
-    };
-
-    try {
-        // Verifica si hay imágenes seleccionadas antes de intentar subirlas
-        if (orderedImages.length === 0) {
-            alert("Por favor, selecciona al menos una imagen.");
-            return;
+        try {
+            await uploadBytes(imagenRef, imagen);
+            console.log(`Imagen ${nombreImagen} subida exitosamente.`);
+        } catch (error) {
+            console.error(`Error al subir ${nombreImagen}:`, error);
         }
-
-        // Subir las imágenes a la carpeta especificada
-        await subirImagenes(imagefolder);
-
-        // Guarda la propiedad en Firestore
-        const coleccion = categoria === "venta" ? "ventas" : "alquileres";
-        await addDoc(collection(db, coleccion), nuevaPropiedad);
-
-        alert(`Propiedad y sus imágenes guardadas correctamente con ID: ${idPropiedad}`);
-        document.getElementById("formulario-propiedades").reset();
-    } catch (e) {
-        console.error("Error al guardar los datos: ", e);
-        alert("Ocurrió un error al guardar los datos.");
     }
 }
+
+        // Función para manejar el envío del formulario
+        async function agregarPropiedad(e) {
+            e.preventDefault();
+
+            const categoria = document.getElementById("categoria").value;
+            const tipoPropiedad = document.getElementById("tipoPropiedad").value;
+            let idPropiedad = document.getElementById("idPropiedad").value;
+            const imagefolder = document.getElementById("imagefolder").value || "imagenes_propiedades";
+
+            const idGenerado = await generarID(categoria, tipoPropiedad);
+            if (idPropiedad !== idGenerado) {
+                idPropiedad = idGenerado;
+                document.getElementById("idPropiedad").value = idPropiedad;
+            }
+
+            const area = parseInt(document.getElementById("area").value);
+            const baños = parseInt(document.getElementById("baños").value);
+            const habitaciones = parseInt(document.getElementById("habitaciones").value);
+            const icono = document.getElementById("icono").value;
+            const latLng = document.getElementById("latLng").value;
+            const parqueo = parseInt(document.getElementById("parqueo").value);
+            const precio = parseInt(document.getElementById("precio").value);
+            const titulo = document.getElementById("titulo").value;
+            const caracteristicas = document.getElementById("caracteristicas").value;
+            const imagecount = parseInt(document.getElementById("imagecount").value);
+            const piscina = document.getElementById("piscina").checked;
+            const jacuzzi = document.getElementById("jacuzzi").checked;
+            const FechaDePublicacion = obtenerFechaActual();
+
+            const nuevaPropiedad = {
+                id: idPropiedad,
+                area,
+                baños,
+                habitaciones,
+                icono,
+                latLng,
+                parqueo,
+                precio,
+                titulo,
+                caracteristicas,
+                imagecount,
+                imagefolder,
+                piscina,
+                jacuzzi,
+                FechaDePublicacion,
+                usuario: correoUsuario
+            };
+
+            const coleccion = categoria === "venta" ? "ventas" : "alquileres";
+
+            try {
+                const imagenes = document.getElementById("imagenes").files;
+                if (imagenes.length === 0) {
+                    alert("Por favor, selecciona al menos una imagen.");
+                    return;
+                }
+
+                await subirImagenes(imagenes, imagefolder);
+
+                await addDoc(collection(db, coleccion), nuevaPropiedad);
+                alert(`Propiedad y sus imágenes guardadas correctamente con ID: ${idPropiedad}`);
+                document.getElementById("formulario-propiedades").reset();
+            } catch (e) {
+                console.error("Error al guardar los datos: ", e);
+                alert("Ocurrió un error al guardar los datos.");
+            }
+        }
 
         // Función para cerrar sesión
         function cerrarSesion() {
@@ -195,120 +204,75 @@ async function guardarPropiedad(e) {
             });
         }
 
-/// Evento para manejar la carga y reordenación de imágenes
+// Modificar el evento de cambio para establecer el 'alt' en orderedImages
 document.getElementById("imagenes").addEventListener("change", (event) => {
     const lista = document.getElementById("lista-imagenes");
     lista.innerHTML = "";
-
-    // Inicializar `orderedImages` con los archivos originales cargados
     orderedImages = Array.from(event.target.files);
 
-    // Crear vista previa para cada imagen con URL Blob y establecer dataset para cada índice
     orderedImages.forEach((file, index) => {
         const listItem = document.createElement("li");
         listItem.classList.add("image-preview-item");
-        listItem.dataset.index = index;  // Guarda el índice original
 
-        // Crear imagen de vista previa
         const img = document.createElement("img");
         img.classList.add("image-preview");
         img.src = URL.createObjectURL(file);
-        img.alt = `${index + 1}`;  // Inicialmente asigna el número de orden en el alt
+        img.alt = file.name.split('.').slice(0, -1).join('.'); // Establece el 'alt' como el nombre original sin extensión
 
-        // Crear etiqueta con el número de orden
         const label = document.createElement("span");
         label.classList.add("image-order-label");
-        label.textContent = index + 1;  // Inicialmente asigna el número de orden
+        label.textContent = index + 1;
 
-        // Añadir la imagen y el número al elemento de lista
         listItem.appendChild(img);
         listItem.appendChild(label);
         lista.appendChild(listItem);
     });
 
-    // Inicializar Sortable para permitir la reordenación de la lista visual
     new Sortable(lista, {
         animation: 150,
         onUpdate: () => {
-            // Reordenar `orderedImages` según el nuevo orden en la lista visual
-            orderedImages = Array.from(lista.querySelectorAll("li")).map((li) => {
-                return orderedImages[parseInt(li.dataset.index)];
-            });
+            orderedImages = Array.from(lista.querySelectorAll("li"))
+                .map((li, idx) => {
+                    const img = li.querySelector("img");
+                    img.alt = `Imagen_${idx + 1}`; // Actualiza el 'alt' al cambiar el orden
+                    return orderedImages[li.dataset.index];
+                });
 
-            // Actualizar los números visuales y el atributo alt después de reordenar
             lista.querySelectorAll("li").forEach((li, index) => {
-                // Actualizar el número de orden visual
                 li.querySelector(".image-order-label").textContent = index + 1;
-                // Actualizar el alt de la imagen
-                li.querySelector("img").alt = `Imagen ${index + 1}`;
             });
         }
     });
 });
 
-// Función para subir imágenes usando el atributo alt como nombre de archivo
-async function subirImagenes(carpeta) {
-    const lista = document.getElementById("lista-imagenes");
-
-    for (let i = 0; i < lista.children.length; i++) {
-        const listItem = lista.children[i];
-        const imagen = orderedImages[i];
-        
-        // Verificar que `imagen` es un archivo válido
-        if (!imagen || !(imagen instanceof File)) {
-            console.error(`El archivo en el índice ${i} no es válido.`);
-            continue;  // Saltar archivos no válidos
-        }
-
-        // Obtener el atributo alt del elemento img como nombre de archivo
-        const nombreImagen = listItem.querySelector("img").alt + ".jpg";
-
-        // Crear referencia en la carpeta especificada en Firebase Storage
-        const imagenRef = ref(storage, `${carpeta}/${nombreImagen}`);
-        console.log(`Subiendo ${nombreImagen} a ${carpeta}`);
-
-        try {
-            await uploadBytes(imagenRef, imagen);
-            console.log(`Imagen ${nombreImagen} subida exitosamente a la carpeta ${carpeta}.`);
-        } catch (error) {
-            console.error(`Error al subir ${nombreImagen} a la carpeta ${carpeta}:`, error);
-        }
-    }
-}
-
-
-
-// Asignar eventos al cargar la página
-window.onload = () => {
-    document.getElementById("categoria").addEventListener("change", actualizarID);
-    document.getElementById("tipoPropiedad").addEventListener("change", actualizarID);
-    document.getElementById("formulario-propiedades").addEventListener("submit", guardarPropiedad); // Usar la función correcta
-};
+        // Asignar eventos
+        window.onload = () => {
+            document.getElementById("categoria").addEventListener("change", actualizarID);
+            document.getElementById("tipoPropiedad").addEventListener("change", actualizarID);
+            document.getElementById("formulario-propiedades").addEventListener("submit", agregarPropiedad);
+        };
     </script>
 
-    <style>
-        /* Estilos para la lista y las imágenes de vista previa */
-        .image-list {
+<style>
+    /* Estilos para la lista y las imágenes de vista previa */
+    .image-list {
             list-style-type: none;
             display: flex;
             gap: 10px;
             padding: 0;
         }
-
         .image-preview-item {
             position: relative;
             width: 100px;
             height: 100px;
             overflow: hidden;
         }
-
         .image-preview {
             width: 100%;
             height: 100%;
             object-fit: cover;
             border-radius: 5px;
         }
-
         .image-order-label {
             position: absolute;
             top: 5px;
@@ -319,13 +283,13 @@ window.onload = () => {
             border-radius: 3px;
             font-size: 0.8em;
         }
-    </style>
+</style>
 
 
 </head>
 
 <body>
-    <h1 id="welcome-message">Bienvenid@7777</h1>
+    <h1 id="welcome-message">Bienvenid@</h1>
     <form id="formulario-propiedades">
         <label for="categoria">Categoría:</label>
         <select id="categoria" required>
