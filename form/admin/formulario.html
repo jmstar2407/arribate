@@ -112,35 +112,6 @@
         }
 
 
-
-        
-
-        
-// Función para subir imágenes con el orden correcto y verificación de archivos
-async function subirImagenes(carpeta) {
-    for (let i = 0; i < orderedImages.length; i++) {
-        const imagen = orderedImages[i];
-
-        // Verifica que el archivo sea una imagen válida antes de subir
-        if (!imagen || !(imagen instanceof File)) {
-            console.error(`El archivo en el índice ${i} no es válido.`);
-            continue;  // Saltar archivos no válidos
-        }
-
-        const nombreImagen = `${i + 1}.jpg`;
-        const imagenRef = ref(storage, `${carpeta}/${nombreImagen}`);
-
-        try {
-            await uploadBytes(imagenRef, imagen);
-            console.log(`Imagen ${nombreImagen} subida exitosamente.`);
-        } catch (error) {
-            console.error(`Error al subir ${nombreImagen}:`, error);
-        }
-    }
-}
-
-
-
         // Función para manejar el envío del formulario
         async function agregarPropiedad(e) {
             e.preventDefault();
@@ -266,6 +237,28 @@ document.getElementById("imagenes").addEventListener("change", (event) => {
     });
 });
 
+// Función para subir imágenes con el orden correcto y verificación de archivos
+async function subirImagenes(carpeta) {
+    for (let i = 0; i < orderedImages.length; i++) {
+        const imagen = orderedImages[i];
+
+        // Verifica que el archivo sea una imagen válida antes de subir
+        if (!imagen || !(imagen instanceof File)) {
+            console.error(`El archivo en el índice ${i} no es válido.`);
+            continue;  // Saltar archivos no válidos
+        }
+
+        const nombreImagen = `${i + 1}.jpg`;
+        const imagenRef = ref(storage, `${carpeta}/${nombreImagen}`);
+
+        try {
+            await uploadBytes(imagenRef, imagen);
+            console.log(`Imagen ${nombreImagen} subida exitosamente.`);
+        } catch (error) {
+            console.error(`Error al subir ${nombreImagen}:`, error);
+        }
+    }
+}
 
 
         // Asignar eventos
