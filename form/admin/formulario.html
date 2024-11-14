@@ -179,8 +179,8 @@
             ? `https://arribate.com/venta/${idPropiedad}`
             : `https://arribate.com/alquiler/${idPropiedad}`;
 
-        document.getElementById("nombre-usuario").textContent = `¡${correoUsuario}, la propiedad se agregó con éxito!`;
-        document.getElementById("mensaje-modal").textContent = "Puedes copiar el enlace de tu propiedad:";
+        document.getElementById("nombre-usuario").textContent = `¡${userName}, la propiedad se agregó con éxito!`;
+        document.getElementById("mensaje-modal").textContent = "Puedes copiar el enlace de la propiedad:";
         document.getElementById("enlace-propiedad").value = enlacePropiedad;
         document.getElementById("modal-exito").style.display = "block";
 
@@ -198,18 +198,26 @@
 // Manejar el evento de copiar al portapapeles
 document.getElementById("copiar-enlace").addEventListener("click", () => {
     const enlaceInput = document.getElementById("enlace-propiedad");
+    const botonCopiar = document.getElementById("copiar-enlace"); // Obtener el botón
     enlaceInput.select();
     enlaceInput.setSelectionRange(0, 99999);  // Para dispositivos móviles
     navigator.clipboard.writeText(enlaceInput.value)
-        .then(() => alert("Enlace copiado al portapapeles"))
-        .catch(err => alert("Error al copiar el enlace: " + err));
+        .then(() => {
+            // Cambiar el texto del botón a "Copiado"
+            botonCopiar.textContent = "Copiado"; 
+
+            // Revertir el texto del botón después de 5 segundos
+            setTimeout(() => {
+                botonCopiar.textContent = "Copiar"; 
+            }, 5000); // 5000 milisegundos = 5 segundos
+        })
+        .catch(err => console.error("Error al copiar el enlace: " + err)); // Usar console.error para errores
 });
 
-// Manejar el cierre del modal
+// Manejar el cierre del modal (Este código se mantiene igual)
 document.getElementById("cerrar-modal").addEventListener("click", () => {
     document.getElementById("modal-exito").style.display = "none";
 });
-
 
 
 
