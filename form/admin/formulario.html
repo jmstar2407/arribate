@@ -119,7 +119,7 @@
             const categoria = document.getElementById("categoria").value;
             const tipoPropiedad = document.getElementById("tipoPropiedad").value;
             let idPropiedad = document.getElementById("idPropiedad").value;
-            const imagefolder = document.getElementById("imagefolder").value || "imagenes_propiedades";
+            const carpetaBase = `propiedades/${categoria}/${idPropiedad}`;
 
             const idGenerado = await generarID(categoria, tipoPropiedad);
             if (idPropiedad !== idGenerado) {
@@ -168,8 +168,8 @@
             return;
         }
 
-        // Subir las imágenes
-        await subirImagenes(orderedImages, imagefolder);
+        // Subir las imágenes a la ruta específica
+        await subirImagenes(orderedImages, `propiedades/${categoria}`);
 
         // Guardar los datos de la propiedad en Firestore
         await addDoc(collection(db, coleccion), nuevaPropiedad);
@@ -194,29 +194,30 @@
         alert("Ocurrió un error al guardar los datos. Revisa la consola para más detalles.");
     }
 }
-// Manejar el evento de copiar al portapapeles
-document.getElementById("copiar-enlace").addEventListener("click", () => {
-    const enlaceInput = document.getElementById("enlace-propiedad");
-    const botonCopiar = document.getElementById("copiar-enlace"); // Obtener el botón
-    enlaceInput.select();
-    enlaceInput.setSelectionRange(0, 99999);  // Para dispositivos móviles
-    navigator.clipboard.writeText(enlaceInput.value)
-        .then(() => {
-            // Cambiar el texto del botón a "Copiado"
-            botonCopiar.textContent = "¡Copiado!"; 
 
-            // Revertir el texto del botón después de 5 segundos
-            setTimeout(() => {
-                botonCopiar.textContent = "Copiar"; 
-            }, 3000); // 5000 milisegundos = 3 segundos
-        })
-        .catch(err => console.error("Error al copiar el enlace: " + err)); // Usar console.error para errores
-});
+        // Manejar el evento de copiar al portapapeles
+        document.getElementById("copiar-enlace").addEventListener("click", () => {
+            const enlaceInput = document.getElementById("enlace-propiedad");
+            const botonCopiar = document.getElementById("copiar-enlace"); // Obtener el botón
+            enlaceInput.select();
+            enlaceInput.setSelectionRange(0, 99999);  // Para dispositivos móviles
+            navigator.clipboard.writeText(enlaceInput.value)
+                .then(() => {
+                    // Cambiar el texto del botón a "Copiado"
+                    botonCopiar.textContent = "¡Copiado!";
 
-// Manejar el cierre del modal (Este código se mantiene igual)
-document.getElementById("cerrar-modal").addEventListener("click", () => {
-    document.getElementById("modal-exito").style.display = "none";
-});
+                    // Revertir el texto del botón después de 5 segundos
+                    setTimeout(() => {
+                        botonCopiar.textContent = "Copiar";
+                    }, 3000); // 5000 milisegundos = 3 segundos
+                })
+                .catch(err => console.error("Error al copiar el enlace: " + err)); // Usar console.error para errores
+        });
+
+        // Manejar el cierre del modal (Este código se mantiene igual)
+        document.getElementById("cerrar-modal").addEventListener("click", () => {
+            document.getElementById("modal-exito").style.display = "none";
+        });
 
 
 
@@ -297,7 +298,7 @@ document.getElementById("cerrar-modal").addEventListener("click", () => {
 
 
         // Modifica la función `subirImagenes` para usar `orderedImages`
-        async function subirImagenes(imagenes, carpeta) {
+        async function subirImagenes(imagenes, carpetaBase) {
             document.getElementById("loading-indicator").style.display = "block";  // Mostrar indicador de carga
             const lista = document.getElementById("lista-imagenes");
             const imageElements = lista.querySelectorAll("li");
@@ -306,12 +307,15 @@ document.getElementById("cerrar-modal").addEventListener("click", () => {
                 const imagen = orderedImages[i];
                 const label = imageElements[i].querySelector(".image-order-label");
                 const nombreImagen = `${label.textContent}.${imagen.name.split('.').pop()}`;
-                const imagenRef = ref(storage, `${carpeta}/${nombreImagen}`);
+
+                // Ruta específica para almacenamiento basada en la categoría y el ID de la propiedad
+                const rutaEspecifica = `${carpetaBase}/${idPropiedad}/img/${nombreImagen}`;
+                const imagenRef = ref(storage, rutaEspecifica);
 
                 try {
                     // Subir la imagen al almacenamiento
                     await uploadBytes(imagenRef, imagen);
-                    console.log(`Imagen ${nombreImagen} subida exitosamente.`);
+                    console.log(`Imagen ${nombreImagen} subida exitosamente en ${rutaEspecifica}.`);
                 } catch (error) {
                     console.error(`Error al subir ${nombreImagen}:`, error);
                     throw new Error(`Error al subir ${nombreImagen}: ${error.message}`);
@@ -377,33 +381,41 @@ document.getElementById("cerrar-modal").addEventListener("click", () => {
         }
 
         .modal {
-    display: none;
-    position: fixed;
-    top: 0px;
-    left: 0px;
-    height: 100%;
-    z-index: 1000;
-    background-color: #1c1b2b;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    width: 100%;
-    text-align: center;
-}
+            display: none;
+            position: fixed;
+            top: 0px;
+            left: 0px;
+            height: 100%;
+            z-index: 1000;
+            background-color: #1c1b2b;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            text-align: center;
+        }
 
-.modal-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
+        .modal-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            cursor: auto;
+            padding: 16px;
+        }
 
-#enlace-propiedad {
-    width: 100%;
-    margin: 10px 0;
-    padding: 5px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    text-align: center;
-}
-
+        #enlace-propiedad {
+            width: 100%;
+            margin: 10px 0;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-align: center;
+        }
     </style>
 
 
