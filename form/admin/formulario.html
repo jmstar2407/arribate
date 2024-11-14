@@ -298,32 +298,38 @@
 
 
         // Modifica la función `subirImagenes` para usar `orderedImages`
-        async function subirImagenes(imagenes, carpetaBase) {
-            document.getElementById("loading-indicator").style.display = "block";  // Mostrar indicador de carga
-            const lista = document.getElementById("lista-imagenes");
-            const imageElements = lista.querySelectorAll("li");
+// Función `subirImagenes` ajustada para usar `orderedImages` y rutas dinámicas
+async function subirImagenes(orderedImages, carpetaBase) {
+    document.getElementById("loading-indicator").style.display = "block";  // Mostrar indicador de carga
+    const lista = document.getElementById("lista-imagenes");
+    const imageElements = lista.querySelectorAll("li");
 
-            for (let i = 0; i < imageElements.length; i++) {
-                const imagen = orderedImages[i];
-                const label = imageElements[i].querySelector(".image-order-label");
-                const nombreImagen = `${label.textContent}.${imagen.name.split('.').pop()}`;
+    for (let i = 0; i < orderedImages.length; i++) {
+        const imagen = orderedImages[i];
+        const nombreArchivo = `img${i + 1}`;  // Nombrar cada imagen como img1, img2, etc.
 
-                // Ruta específica para almacenamiento basada en la categoría y el ID de la propiedad
-                const rutaEspecifica = `${carpetaBase}/${idPropiedad}/img/${nombreImagen}`;
-                const imagenRef = ref(storage, rutaEspecifica);
+        // Ruta específica para almacenamiento basada en la categoría y el ID de la propiedad
+        const rutaCompleta = `${carpetaBase}/img/${nombreArchivo}`;  // Aquí se construye la ruta
+        const imagenRef = ref(storage, rutaCompleta);
 
-                try {
-                    // Subir la imagen al almacenamiento
-                    await uploadBytes(imagenRef, imagen);
-                    console.log(`Imagen ${nombreImagen} subida exitosamente en ${rutaEspecifica}.`);
-                } catch (error) {
-                    console.error(`Error al subir ${nombreImagen}:`, error);
-                    throw new Error(`Error al subir ${nombreImagen}: ${error.message}`);
-                }
-            }
-            document.getElementById("loading-indicator").style.display = "none";  // Ocultar indicador de carga
+        try {
+            // Subir la imagen al almacenamiento
+            await uploadBytes(imagenRef, imagen);
+            console.log(`Imagen ${nombreArchivo} subida correctamente a ${rutaCompleta}.`);
+        } catch (error) {
+            console.error(`Error al subir la imagen ${nombreArchivo}:`, error);
+            throw new Error(`Error al subir la imagen ${nombreArchivo}: ${error.message}`);
         }
+    }
+    document.getElementById("loading-indicator").style.display = "none";  // Ocultar indicador de carga
+}
 
+// Ejemplo de cómo usar la función `subirImagenes`
+const idPropiedad = document.getElementById("idPropiedad").value;  // Asegúrate de usar .value para obtener el texto
+const categoria = document.getElementById("categoria").value;  // Suponiendo que tienes un input para la categoría
+const carpetaBase = `propiedades/${categoria}/${idPropiedad}`;  // Usa el valor, no el elemento
+
+await subirImagenes(orderedImages, carpetaBase);
 
 
         // Asignar eventos
