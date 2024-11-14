@@ -203,12 +203,12 @@ document.getElementById("copiar-enlace").addEventListener("click", () => {
     navigator.clipboard.writeText(enlaceInput.value)
         .then(() => {
             // Cambiar el texto del botón a "Copiado"
-            botonCopiar.textContent = "Copiado"; 
+            botonCopiar.textContent = "¡Copiado!"; 
 
             // Revertir el texto del botón después de 5 segundos
             setTimeout(() => {
                 botonCopiar.textContent = "Copiar"; 
-            }, 5000); // 5000 milisegundos = 5 segundos
+            }, 3000); // 5000 milisegundos = 3 segundos
         })
         .catch(err => console.error("Error al copiar el enlace: " + err)); // Usar console.error para errores
 });
@@ -379,16 +379,13 @@ document.getElementById("cerrar-modal").addEventListener("click", () => {
         .modal {
     display: none;
     position: fixed;
+    top: 0px;
+    left: 0px;
+    height: 100%;
     z-index: 1000;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
+    background-color: #1c1b2b;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    width: 90%;
-    max-width: 400px;
+    width: 100%;
     text-align: center;
 }
 
@@ -510,7 +507,7 @@ document.getElementById("cerrar-modal").addEventListener("click", () => {
             <p id="mensaje-modal"></p>
             <input type="text" id="enlace-propiedad" readonly>
             <button id="copiar-enlace">Copiar enlace</button>
-            <button id="cerrar-modal">Cerrar</button>
+            <button id="cerrar-modal">Listo</button>
         </div>
     </div>
 
