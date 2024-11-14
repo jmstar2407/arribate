@@ -474,8 +474,12 @@ document.getElementById("cerrar-modal").addEventListener("click", () => {
         <input type="number" id="habitaciones" required>
         <br><br>
 
-        <label for="icono">Ícono:</label>
-        <input type="text" id="icono" required>
+        <label for="icono">icono:</label>
+        <select id="icono" required>
+            <option value="houseIcon">Casa</option>
+            <option value="buildingIcon">Apartamento</option>
+            <option value="landIcon">Solar</option>
+        </select>
         <br><br>
 
         <label for="latLng">Latitud y Longitud:</label>
