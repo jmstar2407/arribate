@@ -111,25 +111,6 @@
             return `${dia}/${mes}/${año} ${hora}:${minuto}`;
         }
 
-        // Función para subir imágenes en orden con numeración
-        async function subirImagenes(imagenes, carpeta) {
-    const lista = document.getElementById("lista-imagenes");
-    const imageElements = lista.querySelectorAll("li");
-
-    for (let i = 0; i < imageElements.length; i++) {
-        const imagen = imagenes[i];
-        const label = imageElements[i].querySelector(".image-order-label");
-        const nombreImagen = `${label.textContent}.${imagen.name.split('.').pop()}`; // Usar el número del label y la extensión original
-        const imagenRef = ref(storage, `${carpeta}/${nombreImagen}`);
-
-        try {
-            await uploadBytes(imagenRef, imagen);
-            console.log(`Imagen ${nombreImagen} subida exitosamente.`);
-        } catch (error) {
-            console.error(`Error al subir ${nombreImagen}:`, error);
-        }
-    }
-}
 
         // Función para manejar el envío del formulario
         async function agregarPropiedad(e) {
@@ -208,50 +189,63 @@
             });
         }
 
-        // Función para mostrar y reordenar imágenes con vistas previas y numeración
         document.getElementById("imagenes").addEventListener("change", (event) => {
+    const lista = document.getElementById("lista-imagenes");
+    lista.innerHTML = "";
+    orderedImages = Array.from(event.target.files);
 
-            const lista = document.getElementById("lista-imagenes");
-            lista.innerHTML = "";
-            orderedImages = Array.from(event.target.files);
+    // Crear vista previa con número de orden
+    orderedImages.forEach((file, index) => {
+        const listItem = document.createElement("li");
+        listItem.classList.add("image-preview-item");
+        listItem.dataset.index = index; // Añade el índice inicial
 
-            // Crear vista previa con número de orden
-            orderedImages.forEach((file, index) => {
-                const listItem = document.createElement("li");
-                listItem.classList.add("image-preview-item");
+        const img = document.createElement("img");
+        img.classList.add("image-preview");
+        img.src = URL.createObjectURL(file);
+        img.alt = `Imagen ${index + 1}`;
 
-                // Crear imagen de vista previa
-                const img = document.createElement("img");
-                img.classList.add("image-preview");
-                img.src = URL.createObjectURL(file);
-                img.alt = `Imagen ${index + 1}`;
-                
-                // Crear etiqueta con el número de orden
-                const label = document.createElement("span");
-                label.classList.add("image-order-label");
-                label.textContent = index + 1;
+        const label = document.createElement("span");
+        label.classList.add("image-order-label");
+        label.textContent = index + 1;
 
-                // Añadir la imagen y el número al elemento de lista
-                listItem.appendChild(img);
-                listItem.appendChild(label);
-                lista.appendChild(listItem);
-            });
+        listItem.appendChild(img);
+        listItem.appendChild(label);
+        lista.appendChild(listItem);
+    });
 
-   // Inicializar o actualizar Sortable
-   new Sortable(lista, {
+    new Sortable(lista, {
         animation: 150,
         onUpdate: () => {
-            // Actualizar `orderedImages` según el nuevo orden en la lista
-            const imageElements = lista.querySelectorAll("li"); 
-            orderedImages = Array.from(imageElements).map((li) => orderedImages[li.dataset.index]);
+            const imageElements = lista.querySelectorAll("li");
+            orderedImages = Array.from(imageElements).map(li => {
+                const originalIndex = li.dataset.index;
+                return orderedImages[originalIndex]; // Asignación del nuevo orden basado en los índices
+            });
 
-            // Actualizar los números visuales después de reordenar
             imageElements.forEach((li, index) => {
                 li.querySelector(".image-order-label").textContent = index + 1;
             });
         }
     });
 });
+
+// Modifica la función `subirImagenes` para usar `orderedImages`
+async function subirImagenes(imagenes, carpeta) {
+    for (let i = 0; i < orderedImages.length; i++) {
+        const imagen = orderedImages[i];
+        const nombreImagen = `${i + 1}.${imagen.name.split('.').pop()}`; // Usa la numeración en orden
+
+        const imagenRef = ref(storage, `${carpeta}/${nombreImagen}`);
+        try {
+            await uploadBytes(imagenRef, imagen);
+            console.log(`Imagen ${nombreImagen} subida exitosamente.`);
+        } catch (error) {
+            console.error(`Error al subir ${nombreImagen}:`, error);
+        }
+    }
+}
+
 
 
         // Asignar eventos
