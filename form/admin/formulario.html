@@ -201,40 +201,46 @@
     lista.innerHTML = "";
     orderedImages = Array.from(event.target.files);
 
-    // Crear vista previa con número de orden
     orderedImages.forEach((file, index) => {
         const listItem = document.createElement("li");
         listItem.classList.add("image-preview-item");
-        listItem.dataset.index = index;  // Atributo personalizado para rastrear la posición original
+        listItem.dataset.index = index;
 
-        // Crear imagen de vista previa
         const img = document.createElement("img");
         img.classList.add("image-preview");
         img.src = URL.createObjectURL(file);
         img.alt = `Imagen ${index + 1}`;
 
-        // Crear etiqueta con el número de orden
         const label = document.createElement("span");
         label.classList.add("image-order-label");
         label.textContent = index + 1;
 
+        // Botón de eliminación
+        const removeButton = document.createElement("button");
+        removeButton.textContent = "X";
+        removeButton.style.position = "absolute";
+        removeButton.style.top = "5px";
+        removeButton.style.right = "5px";
+        removeButton.onclick = () => {
+            orderedImages.splice(index, 1);
+            listItem.remove();
+            actualizarOrden();
+        };
+
         listItem.appendChild(img);
         listItem.appendChild(label);
+        listItem.appendChild(removeButton);
         lista.appendChild(listItem);
     });
 
-    // Inicializar o actualizar Sortable
     new Sortable(lista, {
         animation: 150,
         onUpdate: () => {
-            // Obtener el nuevo orden de elementos
             const imageElements = lista.querySelectorAll("li");
             orderedImages = Array.from(imageElements).map((li) => {
                 const originalIndex = li.dataset.index;
-                return event.target.files[originalIndex];  // Reasignar según el nuevo orden
+                return event.target.files[originalIndex];
             });
-
-            // Actualizar los números visuales después de reordenar
             imageElements.forEach((li, index) => {
                 li.querySelector(".image-order-label").textContent = index + 1;
             });
@@ -242,18 +248,29 @@
     });
 });
 
+// Función para actualizar la lista visual y el orden después de eliminar
+function actualizarOrden() {
+    const lista = document.getElementById("lista-imagenes");
+    const elementos = lista.querySelectorAll("li");
+    elementos.forEach((elemento, index) => {
+        elemento.querySelector(".image-order-label").textContent = index + 1;
+        elemento.dataset.index = index;
+    });
+}
+
 
 
 
 // Modifica la función `subirImagenes` para usar `orderedImages`
 async function subirImagenes(imagenes, carpeta) {
+    document.getElementById("loading-indicator").style.display = "block";  // Mostrar indicador de carga
     const lista = document.getElementById("lista-imagenes");
     const imageElements = lista.querySelectorAll("li");
 
     for (let i = 0; i < imageElements.length; i++) {
-        const imagen = orderedImages[i];  // Asegúrate de usar orderedImages actualizado
+        const imagen = orderedImages[i];
         const label = imageElements[i].querySelector(".image-order-label");
-        const nombreImagen = `${label.textContent}.${imagen.name.split('.').pop()}`; // Usar el número del label y la extensión original
+        const nombreImagen = `${label.textContent}.${imagen.name.split('.').pop()}`;
         const imagenRef = ref(storage, `${carpeta}/${nombreImagen}`);
 
         try {
@@ -263,6 +280,8 @@ async function subirImagenes(imagenes, carpeta) {
             console.error(`Error al subir ${nombreImagen}:`, error);
         }
     }
+
+    document.getElementById("loading-indicator").style.display = "none";  // Ocultar indicador de carga
 }
 
 
@@ -272,6 +291,8 @@ async function subirImagenes(imagenes, carpeta) {
             document.getElementById("categoria").addEventListener("change", actualizarID);
             document.getElementById("tipoPropiedad").addEventListener("change", actualizarID);
             document.getElementById("formulario-propiedades").addEventListener("submit", agregarPropiedad);
+            document.getElementById("formulario-propiedades").reset();
+            document.getElementById("lista-imagenes").innerHTML = "";  // Limpiar la lista de imágenes
         };
     </script>
 
@@ -305,6 +326,19 @@ async function subirImagenes(imagenes, carpeta) {
             border-radius: 3px;
             font-size: 0.8em;
         }
+
+        #loading-indicator {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 5px;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
 </style>
 
 
@@ -397,6 +431,10 @@ async function subirImagenes(imagenes, carpeta) {
         <button type="submit">Agregar Propiedad</button>
     </form>
     <button onclick="cerrarSesion()">Cerrar Sesión</button>
+
+    <div id="loading-indicator" style="display: none;">
+        <p>Cargando...</p>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.10.2/Sortable.min.js"></script>
 </body>
