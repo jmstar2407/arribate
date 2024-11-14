@@ -179,8 +179,8 @@
             ? `https://arribate.com/venta/${idPropiedad}`
             : `https://arribate.com/alquiler/${idPropiedad}`;
 
-        document.getElementById("nombre-usuario").textContent = `¡${userName}, la propiedad se agregó con éxito!`;
-        document.getElementById("mensaje-modal").textContent = "Puedes copiar el enlace de la propiedad:";
+        document.getElementById("nombre-usuario").textContent = `¡${correoUsuario}, la propiedad se agregó con éxito!`;
+        document.getElementById("mensaje-modal").textContent = "Puedes copiar el enlace de tu propiedad:";
         document.getElementById("enlace-propiedad").value = enlacePropiedad;
         document.getElementById("modal-exito").style.display = "block";
 
@@ -194,7 +194,6 @@
         alert("Ocurrió un error al guardar los datos. Revisa la consola para más detalles.");
     }
 }
-
 // Manejar el evento de copiar al portapapeles
 document.getElementById("copiar-enlace").addEventListener("click", () => {
     const enlaceInput = document.getElementById("enlace-propiedad");
