@@ -105,6 +105,18 @@
 }
 
         // Función para obtener la fecha actual en formato día/mes/año hora:minuto
+        function obtenerFechaActual() {
+            const fecha = new Date();
+            const dia = String(fecha.getDate()).padStart(2, '0');
+            const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+            const año = fecha.getFullYear();
+            const hora = String(fecha.getHours()).padStart(2, '0');
+            const minuto = String(fecha.getMinutes()).padStart(2, '0');
+            return `${dia}/${mes}/${año} ${hora}:${minuto}`;
+        }
+
+
+        // Función para manejar el envío del formulario
         async function agregarPropiedad(e) {
     e.preventDefault();
 
