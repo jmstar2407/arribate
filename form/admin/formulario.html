@@ -498,13 +498,11 @@ document.getElementById("cerrar-modal").addEventListener("click", () => {
         <input type="text" id="caracteristicas" required>
         <br><br>
 
-        <label for="imagecount" style="display: none;">Número de Imágenes:</label>
-        <input type="number" id="imagecount" readonly style="display: none;">
-        <br><br>
-        
-        <label for="imagefolder" style="display: none;">Carpeta de Imágenes:</label>
-        <input type="text" id="imagefolder" readonly style="display: none;">
-        <br><br>
+        <label for="imagecount" style="display: none;">Número de Imágenes:</label> <!-- hiden-->
+        <input type="number" id="imagecount" readonly style="display: none;"> <!-- hiden-->
+
+        <label for="imagefolder" style="display: none;">Carpeta de Imágenes:</label> <!-- hiden-->
+        <input type="text" id="imagefolder" readonly style="display: none;"> <!-- hiden-->
 
         <label for="imagenes">Subir Imágenes:</label>
         <input type="file" id="imagenes" multiple required accept="image/*">
