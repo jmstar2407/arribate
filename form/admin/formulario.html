@@ -114,55 +114,55 @@
 
         // Función para manejar el envío del formulario
         async function agregarPropiedad(e) {
-            e.preventDefault();
+    e.preventDefault();
 
-            const categoria = document.getElementById("categoria").value;
-            const tipoPropiedad = document.getElementById("tipoPropiedad").value;
-            let idPropiedad = document.getElementById("idPropiedad").value;
-            const carpetaBase = `propiedades/${categoria}/${idPropiedad}`;
+    const categoria = document.getElementById("categoria").value;
+    const tipoPropiedad = document.getElementById("tipoPropiedad").value;
+    let idPropiedad = document.getElementById("idPropiedad").value;
+    const carpetaBase = `propiedades/${categoria}/${idPropiedad}`;  // Asegúrate de que es un string
 
-            const idGenerado = await generarID(categoria, tipoPropiedad);
-            if (idPropiedad !== idGenerado) {
-                idPropiedad = idGenerado;
-                document.getElementById("idPropiedad").value = idPropiedad;
-            }
+    const idGenerado = await generarID(categoria, tipoPropiedad);
+    if (idPropiedad !== idGenerado) {
+        idPropiedad = idGenerado;
+        document.getElementById("idPropiedad").value = idPropiedad;
+    }
 
-            const area = parseInt(document.getElementById("area").value);
-            const baños = parseInt(document.getElementById("baños").value);
-            const habitaciones = parseInt(document.getElementById("habitaciones").value);
-            const icono = document.getElementById("icono").value;
-            const latLng = document.getElementById("latLng").value;
-            const parqueo = parseInt(document.getElementById("parqueo").value);
-            const precio = parseInt(document.getElementById("precio").value);
-            const titulo = document.getElementById("titulo").value;
-            const caracteristicas = document.getElementById("caracteristicas").value;
-            const imagecount = parseInt(document.getElementById("imagecount").value);
-            const piscina = document.getElementById("piscina").checked;
-            const jacuzzi = document.getElementById("jacuzzi").checked;
-            const FechaDePublicacion = obtenerFechaActual();
+    const area = parseInt(document.getElementById("area").value);
+    const baños = parseInt(document.getElementById("baños").value);
+    const habitaciones = parseInt(document.getElementById("habitaciones").value);
+    const icono = document.getElementById("icono").value;
+    const latLng = document.getElementById("latLng").value;
+    const parqueo = parseInt(document.getElementById("parqueo").value);
+    const precio = parseInt(document.getElementById("precio").value);
+    const titulo = document.getElementById("titulo").value;
+    const caracteristicas = document.getElementById("caracteristicas").value;
+    const imagecount = parseInt(document.getElementById("imagecount").value);
+    const piscina = document.getElementById("piscina").checked;
+    const jacuzzi = document.getElementById("jacuzzi").checked;
+    const FechaDePublicacion = obtenerFechaActual();
 
-            const nuevaPropiedad = {
-                id: idPropiedad,
-                area,
-                baños,
-                habitaciones,
-                icono,
-                latLng,
-                parqueo,
-                precio,
-                titulo,
-                caracteristicas,
-                imagecount,
-                imagefolder,
-                piscina,
-                jacuzzi,
-                FechaDePublicacion,
-                usuario: correoUsuario
-            };
+    const nuevaPropiedad = {
+        id: idPropiedad,
+        area,
+        baños,
+        habitaciones,
+        icono,
+        latLng,
+        parqueo,
+        precio,
+        titulo,
+        caracteristicas,
+        imagecount,
+        imagefolder: carpetaBase,  // Aquí debe ser una cadena de texto
+        piscina,
+        jacuzzi,
+        FechaDePublicacion,
+        usuario: correoUsuario
+    };
 
-            const coleccion = categoria === "venta" ? "ventas" : "alquileres";
+    const coleccion = categoria === "venta" ? "ventas" : "alquileres";
 
-            try {
+    try {
         if (orderedImages.length === 0) {
             alert("Por favor, selecciona al menos una imagen.");
             return;
