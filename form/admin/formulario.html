@@ -189,6 +189,13 @@
             });
         }
 
+
+
+
+
+
+
+
         document.getElementById("imagenes").addEventListener("change", (event) => {
     const lista = document.getElementById("lista-imagenes");
     lista.innerHTML = "";
@@ -198,13 +205,15 @@
     orderedImages.forEach((file, index) => {
         const listItem = document.createElement("li");
         listItem.classList.add("image-preview-item");
-        listItem.dataset.index = index; // Añade el índice inicial
+        listItem.dataset.index = index;  // Atributo personalizado para rastrear la posición original
 
+        // Crear imagen de vista previa
         const img = document.createElement("img");
         img.classList.add("image-preview");
         img.src = URL.createObjectURL(file);
         img.alt = `Imagen ${index + 1}`;
 
+        // Crear etiqueta con el número de orden
         const label = document.createElement("span");
         label.classList.add("image-order-label");
         label.textContent = index + 1;
@@ -214,15 +223,18 @@
         lista.appendChild(listItem);
     });
 
+    // Inicializar o actualizar Sortable
     new Sortable(lista, {
         animation: 150,
         onUpdate: () => {
+            // Obtener el nuevo orden de elementos
             const imageElements = lista.querySelectorAll("li");
-            orderedImages = Array.from(imageElements).map(li => {
+            orderedImages = Array.from(imageElements).map((li) => {
                 const originalIndex = li.dataset.index;
-                return orderedImages[originalIndex]; // Asignación del nuevo orden basado en los índices
+                return event.target.files[originalIndex];  // Reasignar según el nuevo orden
             });
 
+            // Actualizar los números visuales después de reordenar
             imageElements.forEach((li, index) => {
                 li.querySelector(".image-order-label").textContent = index + 1;
             });
@@ -230,13 +242,20 @@
     });
 });
 
+
+
+
 // Modifica la función `subirImagenes` para usar `orderedImages`
 async function subirImagenes(imagenes, carpeta) {
-    for (let i = 0; i < orderedImages.length; i++) {
-        const imagen = orderedImages[i];
-        const nombreImagen = `${i + 1}.${imagen.name.split('.').pop()}`; // Usa la numeración en orden
+    const lista = document.getElementById("lista-imagenes");
+    const imageElements = lista.querySelectorAll("li");
 
+    for (let i = 0; i < imageElements.length; i++) {
+        const imagen = orderedImages[i];  // Asegúrate de usar orderedImages actualizado
+        const label = imageElements[i].querySelector(".image-order-label");
+        const nombreImagen = `${label.textContent}.${imagen.name.split('.').pop()}`; // Usar el número del label y la extensión original
         const imagenRef = ref(storage, `${carpeta}/${nombreImagen}`);
+
         try {
             await uploadBytes(imagenRef, imagen);
             console.log(`Imagen ${nombreImagen} subida exitosamente.`);
@@ -292,7 +311,7 @@ async function subirImagenes(imagenes, carpeta) {
 </head>
 
 <body>
-    <h1 id="welcome-message">Bienvenid@88</h1>
+    <h1 id="welcome-message">Bienvenid@99</h1>
     <form id="formulario-propiedades">
         <label for="categoria">Categoría:</label>
         <select id="categoria" required>
