@@ -61,9 +61,13 @@
                 casa: "c",
                 apartamento: "a",
                 terreno: "t",
+                local: "l",
+                oficina: "o",
                 villa: "v",
+                finca: "f",
+                nave: "n",
                 penthouse: "p",
-                local: "l"
+                edificio: "e"
             }[tipoPropiedad];
 
             const prefijo = `${letraInicial}${letraTipo}`;
@@ -91,20 +95,20 @@
 
         // Función para manejar cambios en el formulario
         async function actualizarID() {
-    const categoria = document.getElementById("categoria").value;
-    const tipoPropiedad = document.getElementById("tipoPropiedad").value;
+            const categoria = document.getElementById("categoria").value;
+            const tipoPropiedad = document.getElementById("tipoPropiedad").value;
 
-    if (categoria && tipoPropiedad) {
-        const idGenerado = await generarID(categoria, tipoPropiedad);
-        document.getElementById("idPropiedad").value = idGenerado;
+            if (categoria && tipoPropiedad) {
+                const idGenerado = await generarID(categoria, tipoPropiedad);
+                document.getElementById("idPropiedad").value = idGenerado;
 
-        // Actualizar la carpeta de imágenes automáticamente
-        const imageFolderPath = `propiedades/${categoria}/${idGenerado}/img`;
-        document.getElementById("imagefolder").value = imageFolderPath;
-    }
-}
+                // Actualizar la carpeta de imágenes automáticamente
+                const imageFolderPath = `propiedades/${categoria}/${idGenerado}/img`;
+                document.getElementById("imagefolder").value = imageFolderPath;
+            }
+        }
 
-        // Función para obtener la fecha actual en formato día/mes/año hora:minuto
+        // Función para obtener la fecha actual en formato día/mes/año hora:minuto:segundo
         function obtenerFechaActual() {
             const fecha = new Date();
             const dia = String(fecha.getDate()).padStart(2, '0');
@@ -112,122 +116,123 @@
             const año = fecha.getFullYear();
             const hora = String(fecha.getHours()).padStart(2, '0');
             const minuto = String(fecha.getMinutes()).padStart(2, '0');
-            return `${dia}/${mes}/${año} ${hora}:${minuto}`;
+            const segundo = String(fecha.getSeconds()).padStart(2, '0'); // Agregar segundos
+            return `${dia}/${mes}/${año} ${hora}:${minuto}:${segundo}`; // Incluir segundos en la cadena de retorno
         }
 
 
         // Función para manejar el envío del formulario
         async function agregarPropiedad(e) {
-    e.preventDefault();
+            e.preventDefault();
 
-    const categoria = document.getElementById("categoria").value;
-    const tipoPropiedad = document.getElementById("tipoPropiedad").value;
-    let idPropiedad = document.getElementById("idPropiedad").value;
+            const categoria = document.getElementById("categoria").value;
+            const tipoPropiedad = document.getElementById("tipoPropiedad").value;
+            let idPropiedad = document.getElementById("idPropiedad").value;
 
-    // Verificar y generar el ID actual al momento de guardar
-    const idGenerado = await generarID(categoria, tipoPropiedad);
-    if (idPropiedad !== idGenerado) {
-        idPropiedad = idGenerado;
-        document.getElementById("idPropiedad").value = idPropiedad;
-    }
+            // Verificar y generar el ID actual al momento de guardar
+            const idGenerado = await generarID(categoria, tipoPropiedad);
+            if (idPropiedad !== idGenerado) {
+                idPropiedad = idGenerado;
+                document.getElementById("idPropiedad").value = idPropiedad;
+            }
 
-    // Asignar la ruta de la carpeta de imágenes con el ID actualizado
-    const imagefolder = `propiedades/${categoria}/${idPropiedad}/img`;
-    document.getElementById("imagefolder").value = imagefolder;
+            // Asignar la ruta de la carpeta de imágenes con el ID actualizado
+            const imagefolder = `propiedades/${categoria}/${idPropiedad}/img`;
+            document.getElementById("imagefolder").value = imagefolder;
 
-    const area = parseInt(document.getElementById("area").value);
-    const baños = parseInt(document.getElementById("baños").value);
-    const habitaciones = parseInt(document.getElementById("habitaciones").value);
-    const icono = document.getElementById("icono").value;
-    const latLng = document.getElementById("latLng").value;
-    const parqueo = parseInt(document.getElementById("parqueo").value);
-    const precio = parseInt(document.getElementById("precio").value);
-    const titulo = document.getElementById("titulo").value;
-    const caracteristicas = document.getElementById("caracteristicas").value;
-    const imagecount = parseInt(document.getElementById("imagecount").value);
-    const piscina = document.getElementById("piscina").checked;
-    const jacuzzi = document.getElementById("jacuzzi").checked;
-    const FechaDePublicacion = obtenerFechaActual();
+            const area = parseInt(document.getElementById("area").value);
+            const bathrooms = parseInt(document.getElementById("bathrooms").value);
+            const rooms = parseInt(document.getElementById("rooms").value);
+            const icon = document.getElementById("icon").value;
+            const latLng = document.getElementById("latLng").value;
+            const parking = parseInt(document.getElementById("parking").value);
+            const price = parseInt(document.getElementById("price").value);
+            const title = document.getElementById("title").value;
+            const caracteristicas = document.getElementById("caracteristicas").value;
+            const imagecount = parseInt(document.getElementById("imagecount").value);
+            //const piscina = document.getElementById("piscina").checked;
+            //const jacuzzi = document.getElementById("jacuzzi").checked;
+            const FechaDePublicacion = obtenerFechaActual();
 
-    const nuevaPropiedad = {
-        id: idPropiedad,
-        area,
-        baños,
-        habitaciones,
-        icono,
-        latLng,
-        parqueo,
-        precio,
-        titulo,
-        caracteristicas,
-        imagecount,
-        imagefolder,
-        piscina,
-        jacuzzi,
-        FechaDePublicacion,
-        usuario: correoUsuario
-    };
+            const nuevaPropiedad = {
+                id: idPropiedad,
+                area,
+                bathrooms,
+                rooms,
+                icon,
+                latLng,
+                parking,
+                price,
+                title,
+                caracteristicas,
+                imagecount,
+                imagefolder,
+                //piscina,
+                //jacuzzi,
+                FechaDePublicacion,
+                usuario: correoUsuario
+            };
 
-    const coleccion = categoria === "venta" ? "ventas" : "alquileres";
+            const coleccion = categoria === "venta" ? "ventas" : "alquileres";
 
-    try {
-        if (orderedImages.length === 0) {
-            alert("Por favor, selecciona al menos una imagen.");
-            return;
+            try {
+                if (orderedImages.length === 0) {
+                    alert("Por favor, selecciona al menos una imagen.");
+                    return;
+                }
+
+                // Subir las imágenes y guardar la propiedad en Firestore
+                await subirImagenes(orderedImages, imagefolder);
+                await addDoc(collection(db, coleccion), nuevaPropiedad);
+
+                // Mostrar modal de éxito
+                const enlacePropiedad = categoria === "venta"
+                    ? `https://arribate.com/venta/${idPropiedad}`
+                    : `https://arribate.com/alquiler/${idPropiedad}`;
+                document.getElementById("nombre-usuario").textContent = `¡${correoUsuario}, la propiedad se agregó con éxito!`;
+                document.getElementById("mensaje-modal").textContent = "Puedes copiar el enlace de tu propiedad:";
+                document.getElementById("enlace-propiedad").value = enlacePropiedad;
+                document.getElementById("modal-exito").style.display = "block";
+
+                // Resetear el formulario y limpiar la lista de imágenes
+                document.getElementById("formulario-propiedades").reset();
+                document.getElementById("lista-imagenes").innerHTML = "";
+                orderedImages = [];
+
+            } catch (e) {
+                console.error("Error al guardar los datos: ", e);
+                alert("Ocurrió un error al guardar los datos. Revisa la consola para más detalles.");
+            }
         }
 
-        // Subir las imágenes y guardar la propiedad en Firestore
-        await subirImagenes(orderedImages, imagefolder);
-        await addDoc(collection(db, coleccion), nuevaPropiedad);
-
-        // Mostrar modal de éxito
-        const enlacePropiedad = categoria === "venta"
-            ? `https://arribate.com/venta/${idPropiedad}`
-            : `https://arribate.com/alquiler/${idPropiedad}`;
-        document.getElementById("nombre-usuario").textContent = `¡${correoUsuario}, la propiedad se agregó con éxito!`;
-        document.getElementById("mensaje-modal").textContent = "Puedes copiar el enlace de tu propiedad:";
-        document.getElementById("enlace-propiedad").value = enlacePropiedad;
-        document.getElementById("modal-exito").style.display = "block";
-
-        // Resetear el formulario y limpiar la lista de imágenes
-        document.getElementById("formulario-propiedades").reset();
-        document.getElementById("lista-imagenes").innerHTML = "";
-        orderedImages = [];
-
-    } catch (e) {
-        console.error("Error al guardar los datos: ", e);
-        alert("Ocurrió un error al guardar los datos. Revisa la consola para más detalles.");
-    }
-}
 
 
 
 
 
+        // Manejar el evento de copiar al portapapeles
+        document.getElementById("copiar-enlace").addEventListener("click", () => {
+            const enlaceInput = document.getElementById("enlace-propiedad");
+            const botonCopiar = document.getElementById("copiar-enlace"); // Obtener el botón
+            enlaceInput.select();
+            enlaceInput.setSelectionRange(0, 99999);  // Para dispositivos móviles
+            navigator.clipboard.writeText(enlaceInput.value)
+                .then(() => {
+                    // Cambiar el texto del botón a "Copiado"
+                    botonCopiar.textContent = "¡Copiado!";
 
-// Manejar el evento de copiar al portapapeles
-document.getElementById("copiar-enlace").addEventListener("click", () => {
-    const enlaceInput = document.getElementById("enlace-propiedad");
-    const botonCopiar = document.getElementById("copiar-enlace"); // Obtener el botón
-    enlaceInput.select();
-    enlaceInput.setSelectionRange(0, 99999);  // Para dispositivos móviles
-    navigator.clipboard.writeText(enlaceInput.value)
-        .then(() => {
-            // Cambiar el texto del botón a "Copiado"
-            botonCopiar.textContent = "¡Copiado!"; 
+                    // Revertir el texto del botón después de 5 segundos
+                    setTimeout(() => {
+                        botonCopiar.textContent = "Copiar";
+                    }, 3000); // 5000 milisegundos = 3 segundos
+                })
+                .catch(err => console.error("Error al copiar el enlace: " + err)); // Usar console.error para errores
+        });
 
-            // Revertir el texto del botón después de 5 segundos
-            setTimeout(() => {
-                botonCopiar.textContent = "Copiar"; 
-            }, 3000); // 5000 milisegundos = 3 segundos
-        })
-        .catch(err => console.error("Error al copiar el enlace: " + err)); // Usar console.error para errores
-});
-
-// Manejar el cierre del modal (Este código se mantiene igual)
-document.getElementById("cerrar-modal").addEventListener("click", () => {
-    document.getElementById("modal-exito").style.display = "none";
-});
+        // Manejar el cierre del modal (Este código se mantiene igual)
+        document.getElementById("cerrar-modal").addEventListener("click", () => {
+            document.getElementById("modal-exito").style.display = "none";
+        });
 
 
 
@@ -237,66 +242,66 @@ document.getElementById("cerrar-modal").addEventListener("click", () => {
 
         // Modifica el evento para manejar la carga de imágenes adicionales
         document.getElementById("imagenes").addEventListener("change", (event) => {
-    const imageCountInput = document.getElementById("imagecount");
-    const lista = document.getElementById("lista-imagenes");
-    const nuevasImagenes = Array.from(event.target.files);
+            const imageCountInput = document.getElementById("imagecount");
+            const lista = document.getElementById("lista-imagenes");
+            const nuevasImagenes = Array.from(event.target.files);
 
-    // Actualizar el número de imágenes en el campo de solo lectura
-    imageCountInput.value = nuevasImagenes.length;
-    imageCountInput.setAttribute("readonly", true);
+            // Actualizar el número de imágenes en el campo de solo lectura
+            imageCountInput.value = nuevasImagenes.length;
+            imageCountInput.setAttribute("readonly", true);
 
-    // Añadir las nuevas imágenes a la lista existente y al array de imágenes
-    nuevasImagenes.forEach((file, index) => {
-        const listItem = document.createElement("li");
-        listItem.classList.add("image-preview-item");
-        listItem.dataset.index = orderedImages.length + index;
+            // Añadir las nuevas imágenes a la lista existente y al array de imágenes
+            nuevasImagenes.forEach((file, index) => {
+                const listItem = document.createElement("li");
+                listItem.classList.add("image-preview-item");
+                listItem.dataset.index = orderedImages.length + index;
 
-        const img = document.createElement("img");
-        img.classList.add("image-preview");
-        img.src = URL.createObjectURL(file);
-        img.alt = `Imagen ${orderedImages.length + index + 1}`;
+                const img = document.createElement("img");
+                img.classList.add("image-preview");
+                img.src = URL.createObjectURL(file);
+                img.alt = `Imagen ${orderedImages.length + index + 1}`;
 
-        const label = document.createElement("span");
-        label.classList.add("image-order-label");
-        label.textContent = orderedImages.length + index + 1;
+                const label = document.createElement("span");
+                label.classList.add("image-order-label");
+                label.textContent = orderedImages.length + index + 1;
 
-        // Botón de eliminación
-        const removeButton = document.createElement("button");
-        removeButton.textContent = "X";
-        removeButton.style.position = "absolute";
-        removeButton.style.top = "5px";
-        removeButton.style.right = "5px";
-        removeButton.onclick = () => {
-            orderedImages.splice(orderedImages.indexOf(file), 1);
-            listItem.remove();
-            actualizarOrden();
-            // Actualizar el número de imágenes después de eliminar una
-            imageCountInput.value = orderedImages.length;
-        };
+                // Botón de eliminación
+                const removeButton = document.createElement("button");
+                removeButton.textContent = "X";
+                removeButton.style.position = "absolute";
+                removeButton.style.top = "5px";
+                removeButton.style.right = "5px";
+                removeButton.onclick = () => {
+                    orderedImages.splice(orderedImages.indexOf(file), 1);
+                    listItem.remove();
+                    actualizarOrden();
+                    // Actualizar el número de imágenes después de eliminar una
+                    imageCountInput.value = orderedImages.length;
+                };
 
-        listItem.appendChild(img);
-        listItem.appendChild(label);
-        listItem.appendChild(removeButton);
-        lista.appendChild(listItem);
-    });
-
-    orderedImages.push(...nuevasImagenes);
-
-    // Mantener la funcionalidad de arrastrar y soltar
-    new Sortable(lista, {
-        animation: 150,
-        onUpdate: () => {
-            const imageElements = lista.querySelectorAll("li");
-            orderedImages = Array.from(imageElements).map((li) => {
-                const originalIndex = li.dataset.index;
-                return orderedImages[originalIndex];
+                listItem.appendChild(img);
+                listItem.appendChild(label);
+                listItem.appendChild(removeButton);
+                lista.appendChild(listItem);
             });
-            imageElements.forEach((li, index) => {
-                li.querySelector(".image-order-label").textContent = index + 1;
+
+            orderedImages.push(...nuevasImagenes);
+
+            // Mantener la funcionalidad de arrastrar y soltar
+            new Sortable(lista, {
+                animation: 150,
+                onUpdate: () => {
+                    const imageElements = lista.querySelectorAll("li");
+                    orderedImages = Array.from(imageElements).map((li) => {
+                        const originalIndex = li.dataset.index;
+                        return orderedImages[originalIndex];
+                    });
+                    imageElements.forEach((li, index) => {
+                        li.querySelector(".image-order-label").textContent = index + 1;
+                    });
+                }
             });
-        }
-    });
-});
+        });
 
 
 
@@ -322,7 +327,7 @@ document.getElementById("cerrar-modal").addEventListener("click", () => {
             for (let i = 0; i < imageElements.length; i++) {
                 const imagen = orderedImages[i];
                 const label = imageElements[i].querySelector(".image-order-label");
-                const nombreImagen = `${i + 1}.jpg`;
+                const nombreImagen = `${label.textContent}.${imagen.name.split('.').pop()}`;
                 const imagenRef = ref(storage, `${carpeta}/${nombreImagen}`);
 
                 try {
@@ -394,42 +399,41 @@ document.getElementById("cerrar-modal").addEventListener("click", () => {
         }
 
         .modal {
-    display: none;
-    position: fixed;
-    top: 0px;
-    left: 0px;
-    height: 100%;
-    z-index: 1000;
-    background-color: #1c1b2b;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    width: 100%;
-    text-align: center;
-}
+            display: none;
+            position: fixed;
+            top: 0px;
+            left: 0px;
+            height: 100%;
+            z-index: 1000;
+            background-color: #1c1b2b;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            text-align: center;
+        }
 
-.modal-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-    cursor: auto;
-    padding: 16px;
-}
+        .modal-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            cursor: auto;
+            padding: 16px;
+        }
 
-#enlace-propiedad {
-    width: 100%;
-    margin: 10px 0;
-    padding: 5px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    text-align: center;
-}
-
+        #enlace-propiedad {
+            width: 100%;
+            margin: 10px 0;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-align: center;
+        }
     </style>
 
 
@@ -452,9 +456,6 @@ document.getElementById("cerrar-modal").addEventListener("click", () => {
             <option value="casa">Casa</option>
             <option value="apartamento">Apartamento</option>
             <option value="terreno">Terreno</option>
-            <option value="villa">Villa</option>
-            <option value="penthouse">Penthouse</option>
-            <option value="local">Local</option>
         </select>
         <br><br>
 
@@ -462,41 +463,40 @@ document.getElementById("cerrar-modal").addEventListener("click", () => {
         <input type="text" id="idPropiedad" readonly required>
         <br><br>
 
+        <label for="icon">Icono de propiedad:</label>
+        <select id="icon" required>
+            <option value="">Selecciona</option>
+            <option value="houseIcon">Casa - por defecto</option>
+            <option value="buildingIcon">Apartamento - por defecto</option>
+            <option value="landIcon">Terreno - por defecto</option>
+        </select>
+        <br><br>
+
         <label for="area">Área:</label>
         <input type="number" id="area" required>
         <br><br>
 
-        <label for="baños">Baños:</label>
-        <input type="number" id="baños" required>
+        <label for="bathrooms">Baños:</label>
+        <input type="number" id="bathrooms" required>
         <br><br>
 
-        <label for="habitaciones">Habitaciones:</label>
-        <input type="number" id="habitaciones" required>
+        <label for="rooms">Habitaciones:</label>
+        <input type="number" id="rooms" required>
         <br><br>
 
-        <label for="icono">Ícono:</label>
-        <input type="text" id="icono" required>
+
+        <label for="parking">Parqueo:</label>
+        <input type="number" id="parking" required>
         <br><br>
 
-        <label for="latLng">Latitud y Longitud:</label>
-        <input type="text" id="latLng" required>
+        <label for="price">Precio:</label>
+        <input type="number" id="price" required>
         <br><br>
 
-        <label for="parqueo">Parqueo:</label>
-        <input type="number" id="parqueo" required>
+        <label for="title">Título:</label>
+        <input type="text" id="title" required>
         <br><br>
 
-        <label for="precio">Precio:</label>
-        <input type="number" id="precio" required>
-        <br><br>
-
-        <label for="titulo">Título:</label>
-        <input type="text" id="titulo" required>
-        <br><br>
-
-        <label for="caracteristicas">Características:</label>
-        <input type="text" id="caracteristicas" required>
-        <br><br>
 
         <label for="imagecount" style="display: none;">Número de Imágenes:</label> <!-- hiden-->
         <input type="number" id="imagecount" readonly style="display: none;"> <!-- hiden-->
@@ -504,18 +504,35 @@ document.getElementById("cerrar-modal").addEventListener("click", () => {
         <label for="imagefolder" style="display: none;">Carpeta de Imágenes:</label> <!-- hiden-->
         <input type="text" id="imagefolder" readonly style="display: none;"> <!-- hiden-->
 
+        <label for="piscina" style="display: none;">Piscina:</label> <!-- hiden-->
+        <input type="checkbox" id="piscina" style="display: none;"> <!-- hiden-->
+
+        <label for="jacuzzi" style="display: none;">Jacuzzi:</label> <!-- hiden-->
+        <input type="checkbox" id="jacuzzi" style="display: none;"> <!-- hiden-->
+
+
+
         <label for="imagenes">Subir Imágenes:</label>
         <input type="file" id="imagenes" multiple required accept="image/*">
         <ul id="lista-imagenes"></ul>
         <br><br>
 
-        <label for="piscina">Piscina:</label>
-        <input type="checkbox" id="piscina">
+
+        <label for="caracteristicas">Características:</label>
+        <input type="text" id="caracteristicas" required>
         <br><br>
 
-        <label for="jacuzzi">Jacuzzi:</label>
-        <input type="checkbox" id="jacuzzi">
+        <!-- <label for="latLng">LatLng (coordenadas):</label>
+            <input type="text" id="latLng" placeholder="Ej: 18.54,-69.90" required> -->
+
+
+
+        <label for="latLng">Coordenadas (Lat, Lng):</label>
+        <input type="text" id="latLng" placeholder="Seleccione en el mapa" readonly>
+        <div id="map" style="width: 100%; height: 400px; margin-top: 10px;"></div>
+
         <br><br>
+
 
         <button type="submit">Agregar Propiedad</button>
     </form>
@@ -536,6 +553,91 @@ document.getElementById("cerrar-modal").addEventListener("click", () => {
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.10.2/Sortable.min.js"></script>
+
+
+
+    <script>
+        let map;
+        let marker;
+        let circle; // Variable para el círculo
+
+        function initMap() {
+            // Configuración inicial del mapa
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: { lat: 19.011018, lng: -70.348341 }, // Coordenadas iniciales (Santiago)
+                zoom: 8,
+            });
+
+            // Inicializa el marcador
+            marker = new google.maps.Marker({
+                map: map,
+                draggable: true, // Permitir arrastrar el marcador
+            });
+
+
+            // Evento para actualizar las coordenadas al hacer clic en el mapa
+            map.addListener("click", (event) => {
+                updateLatLng(event.latLng);
+            });
+
+            // Evento para actualizar las coordenadas al arrastrar el marcador
+            marker.addListener("dragend", (event) => {
+                updateLatLng(event.latLng);
+            });
+
+            // Barra de búsqueda de Google Places
+            const input = document.createElement("input");
+            input.type = "text";
+            input.placeholder = "Buscar lugares o dirección en RD";
+            input.style = "width: 100%; margin-bottom: 10px;";
+            document.getElementById("map").insertAdjacentElement("beforebegin", input);
+
+            // Configuración del Autocomplete con restricciones a República Dominicana
+            const options = {
+                componentRestrictions: { country: "DO" }, // Limitar a República Dominicana
+                fields: ["geometry", "name"], // Campos que quieres obtener en los resultados
+            };
+
+            const autocomplete = new google.maps.places.Autocomplete(input, options);
+
+            // Vincular Autocomplete al mapa
+            autocomplete.bindTo("bounds", map);
+
+            // Evento cuando se selecciona un lugar
+            autocomplete.addListener("place_changed", () => {
+                const place = autocomplete.getPlace();
+                if (!place.geometry || !place.geometry.location) return;
+
+                // Centrar el mapa y mover el marcador
+                map.setCenter(place.geometry.location);
+                marker.setPosition(place.geometry.location);
+                updateLatLng(place.geometry.location);
+            });
+        }
+
+        // Función para actualizar las coordenadas en el formulario
+        function updateLatLng(latLng) {
+            const lat = latLng.lat().toFixed(6);
+            const lng = latLng.lng().toFixed(6);
+            document.getElementById("latLng").value = `${lat}, ${lng}`;
+            marker.setPosition(latLng);
+            circle.setCenter(latLng); // Actualiza la posición del círculo
+        }
+
+        // Llama a la función para inicializar el mapa cuando cargue la página
+        window.onload = () => {
+            initMap();
+        };
+    </script>
+
+
+
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAnl6BmNpeFzqsmxapeB316ZFO4oIQQRZk&libraries=places&callback=initMap"
+        async defer>
+        </script>
+
+
 </body>
 
 </html>
