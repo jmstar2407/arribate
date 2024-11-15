@@ -104,7 +104,7 @@
 
                 // Actualizar la carpeta de imágenes automáticamente
                 const imageFolderPath = `propiedades/${categoria}/${idGenerado}/img`;
-                document.getElementById("imagefolder").value = imageFolderPath;
+                document.getElementById("imageFolder").value = imageFolderPath;
             }
         }
 
@@ -137,8 +137,8 @@
             }
 
             // Asignar la ruta de la carpeta de imágenes con el ID actualizado
-            const imagefolder = `propiedades/${categoria}/${idPropiedad}/img`;
-            document.getElementById("imagefolder").value = imagefolder;
+            const imageFolder = `propiedades/${categoria}/${idPropiedad}/img`;
+            document.getElementById("imageFolder").value = imageFolder;
 
             const area = parseInt(document.getElementById("area").value);
             const bathrooms = parseInt(document.getElementById("bathrooms").value);
@@ -166,7 +166,7 @@
                 title,
                 caracteristicas,
                 imagecount,
-                imagefolder,
+                imageFolder,
                 //piscina,
                 //jacuzzi,
                 FechaDePublicacion,
@@ -182,7 +182,7 @@
                 }
 
                 // Subir las imágenes y guardar la propiedad en Firestore
-                await subirImagenes(orderedImages, imagefolder);
+                await subirImagenes(orderedImages, imageFolder);
                 await addDoc(collection(db, coleccion), nuevaPropiedad);
 
                 // Mostrar modal de éxito
@@ -501,8 +501,8 @@
         <label for="imagecount" style="display: none;">Número de Imágenes:</label> <!-- hiden-->
         <input type="number" id="imagecount" readonly style="display: none;"> <!-- hiden-->
 
-        <label for="imagefolder" style="display: none;">Carpeta de Imágenes:</label> <!-- hiden-->
-        <input type="text" id="imagefolder" readonly style="display: none;"> <!-- hiden-->
+        <label for="imageFolder" style="display: none;">Carpeta de Imágenes:</label> <!-- hiden-->
+        <input type="text" id="imageFolder" readonly style="display: none;"> <!-- hiden-->
 
         <label for="piscina" style="display: none;">Piscina:</label> <!-- hiden-->
         <input type="checkbox" id="piscina" style="display: none;"> <!-- hiden-->
@@ -554,88 +554,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.10.2/Sortable.min.js"></script>
 
-
-
-    <script>
-        let map;
-        let marker;
-        let circle; // Variable para el círculo
-
-        function initMap() {
-            // Configuración inicial del mapa
-            map = new google.maps.Map(document.getElementById("map"), {
-                center: { lat: 19.011018, lng: -70.348341 }, // Coordenadas iniciales (Santiago)
-                zoom: 8,
-            });
-
-            // Inicializa el marcador
-            marker = new google.maps.Marker({
-                map: map,
-                draggable: true, // Permitir arrastrar el marcador
-            });
-
-
-            // Evento para actualizar las coordenadas al hacer clic en el mapa
-            map.addListener("click", (event) => {
-                updateLatLng(event.latLng);
-            });
-
-            // Evento para actualizar las coordenadas al arrastrar el marcador
-            marker.addListener("dragend", (event) => {
-                updateLatLng(event.latLng);
-            });
-
-            // Barra de búsqueda de Google Places
-            const input = document.createElement("input");
-            input.type = "text";
-            input.placeholder = "Buscar lugares o dirección en RD";
-            input.style = "width: 100%; margin-bottom: 10px;";
-            document.getElementById("map").insertAdjacentElement("beforebegin", input);
-
-            // Configuración del Autocomplete con restricciones a República Dominicana
-            const options = {
-                componentRestrictions: { country: "DO" }, // Limitar a República Dominicana
-                fields: ["geometry", "name"], // Campos que quieres obtener en los resultados
-            };
-
-            const autocomplete = new google.maps.places.Autocomplete(input, options);
-
-            // Vincular Autocomplete al mapa
-            autocomplete.bindTo("bounds", map);
-
-            // Evento cuando se selecciona un lugar
-            autocomplete.addListener("place_changed", () => {
-                const place = autocomplete.getPlace();
-                if (!place.geometry || !place.geometry.location) return;
-
-                // Centrar el mapa y mover el marcador
-                map.setCenter(place.geometry.location);
-                marker.setPosition(place.geometry.location);
-                updateLatLng(place.geometry.location);
-            });
-        }
-
-        // Función para actualizar las coordenadas en el formulario
-        function updateLatLng(latLng) {
-            const lat = latLng.lat().toFixed(6);
-            const lng = latLng.lng().toFixed(6);
-            document.getElementById("latLng").value = `${lat}, ${lng}`;
-            marker.setPosition(latLng);
-            circle.setCenter(latLng); // Actualiza la posición del círculo
-        }
-
-        // Llama a la función para inicializar el mapa cuando cargue la página
-        window.onload = () => {
-            initMap();
-        };
-    </script>
-
-
-
-    <script
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAnl6BmNpeFzqsmxapeB316ZFO4oIQQRZk&libraries=places&callback=initMap"
-        async defer>
-        </script>
 
 
 </body>
