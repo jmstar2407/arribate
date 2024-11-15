@@ -555,6 +555,87 @@
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.10.2/Sortable.min.js"></script>
 
 
+    <script>
+        let map;
+        let marker;
+        let circle; // Variable para el círculo
+
+        function initMap() {
+            // Configuración inicial del mapa
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: { lat: 19.011018, lng: -70.348341 }, // Coordenadas iniciales (Santiago)
+                zoom: 8,
+            });
+
+            // Inicializa el marcador
+            marker = new google.maps.Marker({
+                map: map,
+                draggable: true, // Permitir arrastrar el marcador
+            });
+
+
+            // Evento para actualizar las coordenadas al hacer clic en el mapa
+            map.addListener("click", (event) => {
+                updateLatLng(event.latLng);
+            });
+
+            // Evento para actualizar las coordenadas al arrastrar el marcador
+            marker.addListener("dragend", (event) => {
+                updateLatLng(event.latLng);
+            });
+
+            // Barra de búsqueda de Google Places
+            const input = document.createElement("input");
+            input.type = "text";
+            input.placeholder = "Buscar lugares o dirección en RD";
+            input.style = "width: 100%; margin-bottom: 10px;";
+            document.getElementById("map").insertAdjacentElement("beforebegin", input);
+
+            // Configuración del Autocomplete con restricciones a República Dominicana
+            const options = {
+                componentRestrictions: { country: "DO" }, // Limitar a República Dominicana
+                fields: ["geometry", "name"], // Campos que quieres obtener en los resultados
+            };
+
+            const autocomplete = new google.maps.places.Autocomplete(input, options);
+
+            // Vincular Autocomplete al mapa
+            autocomplete.bindTo("bounds", map);
+
+            // Evento cuando se selecciona un lugar
+            autocomplete.addListener("place_changed", () => {
+                const place = autocomplete.getPlace();
+                if (!place.geometry || !place.geometry.location) return;
+
+                // Centrar el mapa y mover el marcador
+                map.setCenter(place.geometry.location);
+                marker.setPosition(place.geometry.location);
+                updateLatLng(place.geometry.location);
+            });
+        }
+
+        // Función para actualizar las coordenadas en el formulario
+        function updateLatLng(latLng) {
+            const lat = latLng.lat().toFixed(6);
+            const lng = latLng.lng().toFixed(6);
+            document.getElementById("latLng").value = `${lat}, ${lng}`;
+            marker.setPosition(latLng);
+            circle.setCenter(latLng); // Actualiza la posición del círculo
+        }
+
+        // Llama a la función para inicializar el mapa cuando cargue la página
+        window.onload = () => {
+            initMap();
+        };
+    </script>
+
+
+
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAnl6BmNpeFzqsmxapeB316ZFO4oIQQRZk&libraries=places&callback=initMap"
+        async defer>
+        </script>
+
 
 </body>
 
