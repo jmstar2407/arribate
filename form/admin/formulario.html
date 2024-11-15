@@ -322,7 +322,7 @@ document.getElementById("cerrar-modal").addEventListener("click", () => {
             for (let i = 0; i < imageElements.length; i++) {
                 const imagen = orderedImages[i];
                 const label = imageElements[i].querySelector(".image-order-label");
-                const nombreImagen = `${label.textContent}.${imagen.name.split('.').pop()}`;
+                const nombreImagen = `${i + 1}.jpg`;
                 const imagenRef = ref(storage, `${carpeta}/${nombreImagen}`);
 
                 try {
@@ -474,12 +474,8 @@ document.getElementById("cerrar-modal").addEventListener("click", () => {
         <input type="number" id="habitaciones" required>
         <br><br>
 
-        <label for="icono">icono:</label>
-        <select id="icono" required>
-            <option value="houseIcon">Casa</option>
-            <option value="buildingIcon">Apartamento</option>
-            <option value="landIcon">Solar</option>
-        </select>
+        <label for="icono">Ícono:</label>
+        <input type="text" id="icono" required>
         <br><br>
 
         <label for="latLng">Latitud y Longitud:</label>
