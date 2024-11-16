@@ -619,7 +619,7 @@
 
 <script>
     const sliderCircle = document.getElementById('sliderCircle');
-    const sliderButton = document.querySelector('.slider-button'); // Obtener el botón
+    const sliderButton = document.querySelector('.slider-button');
     const sliderText = document.querySelector('.slider-text');
     let isSliding = false;
 
@@ -650,7 +650,6 @@
         const left = Math.min(Math.max(mouseX - sliderContainer.getBoundingClientRect().left - circleWidth / 2, 0), containerWidth - circleWidth);
         sliderCircle.style.left = left + 'px';
 
-        // Cambiar color del botón al 95%
         if (left >= containerWidth * 0.8) {
           sliderButton.style.backgroundColor = 'red';
         } else {
@@ -675,9 +674,11 @@
           }
         });
 
-        // Enviar formulario al 100% sin soltar
+        // Enviar formulario al 100% sin soltar en móviles
         if (left >= containerWidth - circleWidth) {
-          document.getElementById('propertyForm').submit(); 
+          document.getElementById('propertyForm').submit();
+          e.preventDefault();
+          e.stopPropagation();
         }
       };
 
@@ -689,18 +690,20 @@
         document.removeEventListener('mousemove', onMove);
         document.removeEventListener('mouseup', onEnd);
         document.removeEventListener('touchmove', onMove);
-        document.removeEventListener('touchend', onEnd);
+        document.removeEventListener('touchend', onEnd);   
+
       };
 
       document.addEventListener('mousemove', onMove);
       document.addEventListener('mouseup', onEnd);
-      document.addEventListener('touchmove', onMove);
+      document.addEventListener('touchmove', onMove);   
+ // Usar touchmove para móviles
       document.addEventListener('touchend', onEnd);
     }
 
     function resetSlider() {
       sliderCircle.style.left = '0px';
-      sliderButton.style.backgroundColor = '#007bff'; // Restablecer color del botón
+      sliderButton.style.backgroundColor = '#007bff';
 
       const letterSpans = sliderText.querySelectorAll('span');
       letterSpans.forEach(span => {
@@ -708,22 +711,19 @@
       });
     }
 
-    // Simulación de error en el submit (reemplaza esto con tu lógica real)
     function handleSubmit(event) {
-      event.preventDefault(); // Evitar el envío real del formulario
+      event.preventDefault();
 
-      // Simular un error aleatorio
-      const hasError = Math.random() < 0.5; // 50% de probabilidad de error
+      const hasError = Math.random() < 0.5;
 
       if (hasError) {
         console.error("Error al guardar la propiedad.");
-        resetSlider(); // Deslizar el botón a la izquierda
+        resetSlider();
       } else {
         console.log("Propiedad publicada con éxito.");
-        // Aquí iría tu código para manejar el envío exitoso del formulario
       }
 
-      return false; // Evitar el envío por defecto del formulario
+      return false;
     }
   </script>
 </body>
