@@ -252,22 +252,24 @@
 
 
 
-
         // Manejar el evento de copiar al portapapeles
         document.getElementById("copiar-enlace").addEventListener("click", () => {
             const enlaceInput = document.getElementById("enlace-propiedad");
             const botonCopiar = document.getElementById("copiar-enlace"); // Obtener el botón
-            enlaceInput.select();
-            enlaceInput.setSelectionRange(0, 99999);  // Para dispositivos móviles
-            navigator.clipboard.writeText(enlaceInput.value)
+
+            // Obtener el valor del atributo href del enlace
+            const enlace = enlaceInput.getAttribute("href");
+
+            // Copiar el enlace al portapapeles
+            navigator.clipboard.writeText(enlace)
                 .then(() => {
-                    // Cambiar el texto del botón a "Copiado"
+                    // Cambiar el texto del botón a "¡Copiado!"
                     botonCopiar.textContent = "¡Copiado!";
 
-                    // Revertir el texto del botón después de 5 segundos
+                    // Revertir el texto del botón después de 3 segundos
                     setTimeout(() => {
                         botonCopiar.textContent = "Copiar";
-                    }, 3000); // 5000 milisegundos = 3 segundos
+                    }, 3000); // 3000 milisegundos = 3 segundos
                 })
                 .catch(err => console.error("Error al copiar el enlace: " + err)); // Usar console.error para errores
         });
@@ -545,7 +547,8 @@
                         <span id="nombre-usuario"></span>
                         <div id="mensaje-adicional"></div>
                         <p id="mensaje-modal"></p>
-                        <a id="enlace-propiedad" href="#" target="_blank" style="display: none; color: green; text-decoration: none;"></a>
+                        <a id="enlace-propiedad" href="#" target="_blank"
+                            style="display: none; color: green; text-decoration: none;"></a>
                         <button id="copiar-enlace">Copiar enlace</button>
                         <button id="cerrar-modal">Listo</button>
                     </div>
