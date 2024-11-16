@@ -650,7 +650,7 @@
         const left = Math.min(Math.max(mouseX - sliderContainer.getBoundingClientRect().left - circleWidth / 2, 0), containerWidth - circleWidth);
         sliderCircle.style.left = left + 'px';
 
-        if (left >= containerWidth * 0.95) {
+        if (left >= containerWidth * 0.8) {
           sliderButton.style.backgroundColor = 'red';
         } else {
           sliderButton.style.backgroundColor = '#007bff';
@@ -674,9 +674,9 @@
           }
         });
 
-        // Forzar el envío del formulario con click()
         if (left >= containerWidth - circleWidth) {
-          sliderButton.click(); 
+          sliderButton.click();
+          resetSlider(); // Deslizar a la izquierda después del envío
           e.preventDefault();
           e.stopPropagation();
         }
@@ -711,18 +711,7 @@
 
     function handleSubmit(event) {
       event.preventDefault();
-
-      const hasError = Math.random() < 0.5;
-
-      if (hasError) {
-        console.error("Error al guardar la propiedad.");
-      } else {
-        console.log("Propiedad publicada con éxito.");
-      }
-
-      // Deslizar el botón a la izquierda independientemente del resultado
-      resetSlider(); 
-
+      // ... (Aquí iría tu código para manejar el envío del formulario) ...
       return false;
     }
   </script>
