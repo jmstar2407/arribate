@@ -80,7 +80,6 @@
 
 
 
-
         // Función para obtener el siguiente ID
         async function generarID(categoria, tipoPropiedad) {
             const letraInicial = categoria === "venta" ? "v" : "a";
@@ -219,11 +218,19 @@
                 const enlacePropiedad = categoria === "venta"
                     ? `https://arribate.com/venta/${idPropiedad}`
                     : `https://arribate.com/alquiler/${idPropiedad}`;
-                //document.getElementById("nombre-usuario").textContent = `¡${correoUsuario}, la propiedad se agregó con éxito!`;
+
+                // Actualiza el contenido del modal
                 document.getElementById("nombre-usuario").textContent = `¡La propiedad se agregó con éxito!`;
                 document.getElementById("mensaje-adicional").textContent = `ID: ${idPropiedad}`;
                 document.getElementById("mensaje-modal").textContent = "Puedes copiar el enlace de tu propiedad:";
-                document.getElementById("enlace-propiedad").value = enlacePropiedad;
+
+                // Establece el enlace y lo muestra
+                const enlaceElement = document.getElementById("enlace-propiedad");
+                enlaceElement.href = enlacePropiedad; // Establece el enlace
+                enlaceElement.textContent = enlacePropiedad; // Muestra la URL como texto
+                enlaceElement.style.display = "block"; // Muestra el enlace
+
+                // Muestra el modal
                 document.getElementById("modal-exito").style.display = "block";
 
                 // Resetear el formulario y limpiar la lista de imágenes
@@ -529,7 +536,6 @@
 
                 </form>
 
-
                 <div id="loading-indicator" style="display: none;">
                     <p>Cargando...</p>
                 </div>
@@ -539,7 +545,7 @@
                         <span id="nombre-usuario"></span>
                         <div id="mensaje-adicional"></div>
                         <p id="mensaje-modal"></p>
-                        <input type="text" id="enlace-propiedad" readonly>
+                        <a id="enlace-propiedad" href="#" target="_blank" style="display: none; color: green; text-decoration: none;"></a>
                         <button id="copiar-enlace">Copiar enlace</button>
                         <button id="cerrar-modal">Listo</button>
                     </div>
