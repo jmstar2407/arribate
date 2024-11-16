@@ -623,7 +623,7 @@
     const sliderCircle = document.getElementById('sliderCircle');
     const sliderButton = document.querySelector('.slider-button');
     const sliderText = document.querySelector('.slider-text');
-    const buttonContent = document.querySelector('.button-content'); // Obtener el div
+    const buttonContent = document.querySelector('.button-content');
     let isSliding = false;
 
     function initializeText() {
@@ -640,20 +640,21 @@
     sliderCircle.addEventListener('mousedown', startSlide);
     sliderCircle.addEventListener('touchstart', startSlide);
 
-    // Prevenir el comportamiento por defecto del clic en el div
     buttonContent.addEventListener('click', (event) => {
       event.preventDefault(); 
     });
 
-    // Event listener para el clic en el círculo
     sliderCircle.addEventListener('click', () => {
       const sliderContainer = sliderCircle.parentElement;
       const containerWidth = sliderContainer.offsetWidth;
       const circleWidth = sliderCircle.offsetWidth;
+      const left = parseFloat(sliderCircle.style.left) || 0; // Obtener la posición actual
 
-      sliderCircle.style.left = (containerWidth - circleWidth) + 'px'; 
-      sliderButton.click();
-      resetSlider();
+      // Verificar si el círculo está en la posición final (100%)
+      if (left >= containerWidth - circleWidth) { 
+        sliderButton.click();
+        resetSlider();
+      }
     });
 
     function startSlide(event) {
