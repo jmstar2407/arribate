@@ -3,6 +3,10 @@ body {
     background: black;
 }
 
+button{
+    -webkit-tap-highlight-color: transparent;
+}
+
 #content {
     display: block;
     font-family: Arial, sans-serif;
@@ -344,13 +348,14 @@ li {
     position: relative;
     width: 300px;
     height: 50px;
+    -webkit-tap-highlight-color: transparent;
   }
 
   .slider-button {
     position: relative;
     width: 100%;
     height: 100%;
-    background-color: #007bff;
+    background-color: #0065d1;
     border: none;
     border-radius: 25px;
     color: white;
@@ -362,6 +367,8 @@ li {
     overflow: hidden;
     transition: background-color 0.3s ease;
     padding: 0px;
+    -webkit-tap-highlight-color: transparent;
+    box-shadow: 3px 4px 12px 1px rgb(0 49 98) inset;
   }
 
   .slider-text {
@@ -370,6 +377,7 @@ li {
     transform: translateX(-50%);
     transition: opacity 0.3s ease;
     white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
   }
 
   .circle {
@@ -383,6 +391,7 @@ li {
     border-radius: 50%;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
   }
 
   .button-content { /* Estilo para el nuevo div */
@@ -392,4 +401,5 @@ li {
     align-items: center;
     justify-content: center;
     position: relative; /* Para que el círculo se posicione correctamente */
+    -webkit-tap-highlight-color: transparent;
   }
