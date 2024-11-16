@@ -21,7 +21,7 @@ body {
     background: rgb(21 22 26);
     border-bottom: 1px solid hsl(246.67deg 7.67% 14.03%);
     text-align: center;
-    
+
 }
 
 .logonombre {
@@ -300,9 +300,17 @@ li {
 
 @media (max-width: 700px) {
 
-    .form-admin-add-property {
+    .form-admin-add-property-Master {
+        top: 0px;
         height: 100%;
         width: 100%;
+        border-radius: 0px;
     }
+}
+
+.form-admin-add-property {
+    height: 100%;
+    width: 100%;
+}
 
 }
