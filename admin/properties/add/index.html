@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulario de Propiedades</title>
-    <link rel="stylesheet" href="./css/styles1.css" />
+    <link rel="stylesheet" href="/admin/properties/add/css/styles.css" />
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
         import { getFirestore, collection, query, orderBy, limit, getDocs, addDoc, where } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
@@ -29,7 +29,7 @@
         const storage = getStorage(app);
         let correoUsuario = "";
         let orderedImages = [];
-        
+
 
         // Configuración de tiempo de inactividad en milisegundos (10 minutos = 600000 ms)
         const tiempoInactividad = 6000000;
@@ -38,7 +38,7 @@
         // Función para redirigir al usuario tras la inactividad
         function cerrarPorInactividad() {
             signOut(auth).then(() => {
-                window.location.href = "https://arribate.com/admin/login/";
+                window.location.href = "auth.html";
             }).catch((error) => {
                 console.error("Error al cerrar sesión por inactividad: ", error);
             });
@@ -51,32 +51,32 @@
         }
 
 
-        
+
         // Verificar si el usuario está autenticado y obtener su nombre o correo
         onAuthStateChanged(auth, (user) => {
             const contentDiv = document.getElementById("content");
             if (user) {
                 // Mostrar el contenedor solo si el usuario está autenticado
-                contentDiv.style.display = "block";
-        const welcomeMessage = document.getElementById("welcome-message");
-        let userName;
+                contentDiv.style.display = "flex";
+                const welcomeMessage = document.getElementById("welcome-message");
+                let userName;
 
-        if (user.displayName) {
-            userName = user.displayName;
-        } else if (user.email) {
-            const emailNamePart = user.email.split('@')[0].split('.')[0];
-            userName = emailNamePart.toUpperCase();
-        } else {
-            userName = "Usuario";
-        }
+                if (user.displayName) {
+                    userName = user.displayName;
+                } else if (user.email) {
+                    const emailNamePart = user.email.split('@')[0].split('.')[0];
+                    userName = emailNamePart.toUpperCase();
+                } else {
+                    userName = "Usuario";
+                }
 
-        // Usar innerHTML para interpretar HTML en el mensaje
-        welcomeMessage.innerHTML = `HOLA, <br><span style="font-weight: bold;">${userName}</span>`;
-        correoUsuario = user.email;
-    } else {
-        window.location.href = "https://arribate.com/admin/login/";
-    }
-});
+                // Usar innerHTML para interpretar HTML en el mensaje
+                welcomeMessage.innerHTML = `HOLA, <br><span style="font-weight: bold;">${userName}</span>`;
+                correoUsuario = user.email;
+            } else {
+                window.location.href = "auth.html";
+            }
+        });
 
 
 
@@ -373,7 +373,7 @@
         // Función para cerrar sesión
         function cerrarSesion() {
             signOut(auth).then(() => {
-                window.location.href = "https://arribate.com/admin/login/";
+                window.location.href = "auth.html";
             }).catch((error) => {
                 alert("Error al cerrar sesión: " + error.message);
             });
@@ -401,121 +401,150 @@
 </head>
 
 <body>
+
+    
     <div id="content" style="display: none;">
-    <div class="form-admin-add-property-Master">
-        <div class="form-admin-add-property">
-            <button id="logout-button">Cerrar sesión</button>
-            <h1 id="welcome-message">HOLA,</h1>
-            <form id="formulario-propiedades">
-                <label for="categoria">Propósito de la Propiedad:</label>
-                <select id="categoria" required>
-                    <option value="">Selecciona</option>
-                    <option value="venta">Vender</option>
-                    <option value="alquiler">Alquilar</option>
-                </select>
-                <br><br>
+        <div class="form-admin-add-property-Master">
 
-                <label for="tipoPropiedad">Tipo de Propiedad:</label>
-                <select id="tipoPropiedad" required>
-                    <option value="">Selecciona</option>
-                    <option value="casa">Casa</option>
-                    <option value="apartamento">Apartamento</option>
-                    <option value="terreno">Terreno</option>
-                </select>
-                <br><br>
-
-                <label for="idPropiedad">ID de la Propiedad:</label>
-                <input type="text" id="idPropiedad" placeholder="vc10001" readonly required>
-                <br><br>
-
-                <label for="icon">Icono de propiedad:</label>
-                <select id="icon" required>
-                    <option value="">Selecciona</option>
-                    <option value="houseIcon">Casa - Estándar</option>
-                    <option value="buildingIcon">Apartamento - Estándar</option>
-                    <option value="landIcon">Terreno - Estándar</option>
-                </select>
-                <br><br>
-
-                
-                <div class="form-divisor"></div> <!-- Divisor -->
-
-                <label for="title">Título de la Publicación:</label>
-                <input type="text" id="title" placeholder="36 caracteres max." maxlength="36">
-                <br><br>
-
-                <label for="price">Precio de la Propiedad:</label>
-                <input type="number" id="price" placeholder="Solo en RD$" required>
-                <br><br>
-
-                <label for="rooms">Cantidad de Habitaciones:</label>
-                <input type="number" id="rooms" placeholder="0" required>
-                <br><br>
-
-                <label for="bathrooms">Cantidad de Baños:</label>
-                <input type="number" id="bathrooms" placeholder="0" required>
-                <br><br>
-
-                <label for="parking">Cantidad de Parqueos:</label>
-                <input type="number" id="parking" placeholder="0" required>
-                <br><br>
-
-                <label for="area">Metros Cuadrados (m²):</label>
-                <input type="number" id="area" placeholder="0" required>
-                <br><br>
-
-                <label for="imageCount" style="display: none;">Número de Imágenes:</label> <!-- hiden-->
-                <input type="number" id="imageCount" readonly style="display: none;"> <!-- hiden-->
-
-                <label for="imageFolder" style="display: none;">Carpeta de Imágenes:</label> <!-- hiden-->
-                <input type="text" id="imageFolder" readonly style="display: none;"> <!-- hiden-->
-
-                <label for="piscina" style="display: none;">Piscina:</label> <!-- hiden-->
-                <input type="checkbox" id="piscina" style="display: none;"> <!-- hiden-->
-
-                <label for="jacuzzi" style="display: none;">Jacuzzi:</label> <!-- hiden-->
-                <input type="checkbox" id="jacuzzi" style="display: none;"> <!-- hiden-->
-
-
-
-                <label for="imagenes">Subir Imágenes:</label>
-                <input type="file" id="imagenes" multiple required accept="image/*">
-                <ul id="lista-imagenes"></ul>
-                <br><br>
-
-
-                <label for="caracteristicas">Detalles de la Propiedad:</label>
-                <input type="text" id="caracteristicas" placeholder="Escriba aquí detalles adicionales..." required>
-                <br><br>
-
-                <!-- <label for="latLng">LatLng (coordenadas):</label>
-            <input type="text" id="latLng" placeholder="Ej: 18.54,-69.90" required> -->
-
-                <label for="latLng">Ubicación de la Propiedad (Coordenadas):</label>
-                <input type="text" id="latLng" placeholder="Seleccione en el mapa" readonly>
-                <div id="map"></div>
-                <br><br>
-
-
-                <button type="submit">Agregar Propiedad</button>
-            </form>
-            
-
-            <div id="loading-indicator" style="display: none;">
-                <p>Cargando...</p>
+            <div class="menu-master">
+                <div class="logonombre">
+                    <div class="logo1"></div>
+                    <div style="margin-left: 10px;">
+                        <h1>ArríbaTe</h1><span>Administrador</span>
+                    </div>
+                </div>
             </div>
 
-            <div id="modal-exito" class="modal">
-                <div class="modal-content">
-                    <span id="nombre-usuario"></span>
-                    <p id="mensaje-modal"></p>
-                    <input type="text" id="enlace-propiedad" readonly>
-                    <button id="copiar-enlace">Copiar enlace</button>
-                    <button id="cerrar-modal">Listo</button>
+
+            <div class="form-admin-add-property">
+
+                
+            <div class="animation-wrapper">
+                <div class="particle particle-1"></div>
+                <div class="particle particle-2"></div>
+                <div class="particle particle-3"></div>
+                <div class="particle particle-4"></div>
+              </div>
+
+              
+                <button id="logout-button">Cerrar sesión</button>
+                <h1 id="welcome-message">HOLA,</h1>
+                <form id="formulario-propiedades">
+                    <label for="categoria">Propósito de la Propiedad:</label>
+                    <select id="categoria" required>
+                        <option value="">Selecciona</option>
+                        <option value="venta">Vender</option>
+                        <option value="alquiler">Alquilar</option>
+                    </select>
+                    <br><br>
+
+                    <label for="tipoPropiedad">Tipo de Propiedad:</label>
+                    <select id="tipoPropiedad" required>
+                        <option value="">Selecciona</option>
+                        <option value="casa">Casa</option>
+                        <option value="apartamento">Apartamento</option>
+                        <option value="terreno">Terreno</option>
+                    </select>
+                    <br><br>
+
+                    <label for="idPropiedad">ID de la Propiedad:</label>
+                    <input type="text" id="idPropiedad" placeholder="vc10001" readonly required>
+                    <br><br>
+
+                    <label for="icon">Icono de propiedad:</label>
+                    <select id="icon" required>
+                        <option value="">Selecciona</option>
+                        <option value="houseIcon">Casa - Estándar</option>
+                        <option value="buildingIcon">Apartamento - Estándar</option>
+                        <option value="landIcon">Terreno - Estándar</option>
+                    </select>
+                    <br><br>
+
+
+                    <div class="form-divisor"></div> <!-- Divisor -->
+
+                    <label for="title">Título de la Publicación:</label>
+                    <input type="text" id="title" placeholder="36 caracteres max." maxlength="36">
+                    <br><br>
+
+                    <label for="price">Precio de la Propiedad:</label>
+                    <input type="number" id="price" placeholder="Solo en RD$" required>
+                    <br><br>
+
+                    <label for="rooms">Cantidad de Habitaciones:</label>
+                    <input type="number" id="rooms" placeholder="0" required>
+                    <br><br>
+
+                    <label for="bathrooms">Cantidad de Baños:</label>
+                    <input type="number" id="bathrooms" placeholder="0" required>
+                    <br><br>
+
+                    <label for="parking">Cantidad de Parqueos:</label>
+                    <input type="number" id="parking" placeholder="0" required>
+                    <br><br>
+
+                    <label for="area">Metros Cuadrados (m²):</label>
+                    <input type="number" id="area" placeholder="0" required>
+                    <br><br>
+
+                    <label for="imageCount" style="display: none;">Número de Imágenes:</label> <!-- hiden-->
+                    <input type="number" id="imageCount" readonly style="display: none;"> <!-- hiden-->
+
+                    <label for="imageFolder" style="display: none;">Carpeta de Imágenes:</label> <!-- hiden-->
+                    <input type="text" id="imageFolder" readonly style="display: none;"> <!-- hiden-->
+
+                    <label for="piscina" style="display: none;">Piscina:</label> <!-- hiden-->
+                    <input type="checkbox" id="piscina" style="display: none;"> <!-- hiden-->
+
+                    <label for="jacuzzi" style="display: none;">Jacuzzi:</label> <!-- hiden-->
+                    <input type="checkbox" id="jacuzzi" style="display: none;"> <!-- hiden-->
+
+
+
+                    <label for="imagenes">Subir Imágenes:</label>
+                    <input type="file" id="imagenes" multiple required accept="image/*">
+                    <ul id="lista-imagenes"></ul>
+                    <br><br>
+
+
+                    <label for="caracteristicas">Detalles de la Propiedad:</label>
+                    <input type="text" id="caracteristicas" placeholder="Escriba aquí detalles adicionales..." required>
+                    <br><br>
+
+                    <!-- <label for="latLng">LatLng (coordenadas):</label>
+            <input type="text" id="latLng" placeholder="Ej: 18.54,-69.90" required> -->
+
+                    <label for="latLng">Ubicación de la Propiedad (Coordenadas):</label>
+                    <input type="text" id="latLng" placeholder="Seleccione en el mapa" readonly>
+                    <div id="map"></div>
+                    <br><br>
+
+                    <div class="slider-container"  style="height: 50px; width: 100%;">
+                        <button class="slider-button">
+                          <div class="button-content"> 
+                            <span class="slider-text">Publicar Propiedad</span>
+                            <div class="circle" id="sliderCircle"></div>
+                          </div>
+                        </button>
+                      </div>
+                </form>
+
+
+                <div id="loading-indicator" style="display: none;">
+                    <p>Cargando...</p>
+                </div>
+
+                <div id="modal-exito" class="modal">
+                    <div class="modal-content">
+                        <span id="nombre-usuario"></span>
+                        <p id="mensaje-modal"></p>
+                        <input type="text" id="enlace-propiedad" readonly>
+                        <button id="copiar-enlace">Copiar enlace</button>
+                        <button id="cerrar-modal">Listo</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.10.2/Sortable.min.js"></script>
@@ -602,7 +631,122 @@
         async defer>
         </script>
 
+<script>
+    const sliderCircle = document.getElementById('sliderCircle');
+    const sliderButton = document.querySelector('.slider-button');
+    const sliderText = document.querySelector('.slider-text');
+    const buttonContent = document.querySelector('.button-content');
+    let isSliding = false;
 
+    function initializeText() {
+      const letters = sliderText.innerText.split('');
+      let updatedText = "";
+      for (let i = 0; i < letters.length; i++) {
+        updatedText += `<span>${letters[i]}</span>`;
+      }
+      sliderText.innerHTML = updatedText;
+    }
+
+    initializeText();
+
+    sliderCircle.addEventListener('mousedown', startSlide);
+    sliderCircle.addEventListener('touchstart', startSlide);
+
+    buttonContent.addEventListener('click', (event) => {
+      event.preventDefault(); 
+    });
+
+    sliderCircle.addEventListener('click', () => {
+      const sliderContainer = sliderCircle.parentElement;
+      const containerWidth = sliderContainer.offsetWidth;
+      const circleWidth = sliderCircle.offsetWidth;
+      const left = parseFloat(sliderCircle.style.left) || 0; // Obtener la posición actual
+
+      // Verificar si el círculo está en la posición final (100%)
+      if (left >= containerWidth - circleWidth) { 
+        sliderButton.click();
+        resetSlider();
+      }
+    });
+
+    function startSlide(event) {
+      if (isSliding) return;
+      isSliding = true;
+
+      const sliderContainer = sliderCircle.parentElement;
+      const containerWidth = sliderContainer.offsetWidth;
+      const circleWidth = sliderCircle.offsetWidth;
+
+      const onMove = (e) => {
+        const mouseX = e.clientX || e.touches[0].clientX;
+        const left = Math.min(Math.max(mouseX - sliderContainer.getBoundingClientRect().left - circleWidth / 2, 0), containerWidth - circleWidth);
+        sliderCircle.style.left = left + 'px';
+
+        if (left >= containerWidth * 0.95) {
+          sliderButton.style.backgroundColor = 'red';
+        } else {
+          sliderButton.style.backgroundColor = '#007bff';
+        }
+
+        const letterSpans = sliderText.querySelectorAll('span');
+        const textWidth = sliderText.offsetWidth;
+
+        letterSpans.forEach((span, i) => {
+          const letterWidth = textWidth / letterSpans.length;
+          const letterLeft = (containerWidth / 2) - (textWidth / 2) + (letterWidth * i);
+          const visibility = (left + circleWidth) - letterLeft;
+
+          if (visibility < 0) {
+            span.style.opacity = 1;
+          } else if (visibility < letterWidth) {
+            const opacity = Math.max(0, 1 - (visibility / letterWidth));
+            span.style.opacity = opacity;
+          } else {
+            span.style.opacity = 0;
+          }
+        });
+
+        if (left >= containerWidth - circleWidth) {
+          sliderButton.click();
+          resetSlider();
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      };
+
+      const onEnd = () => {
+        if (parseFloat(sliderCircle.style.left) < containerWidth - circleWidth) {
+          resetSlider();
+        }
+        isSliding = false;
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onEnd);
+        document.removeEventListener('touchmove', onMove);
+        document.removeEventListener('touchend', onEnd);
+      };
+
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onEnd);
+      document.addEventListener('touchmove', onMove);
+      document.addEventListener('touchend', onEnd);
+    }
+
+    function resetSlider() {
+      sliderCircle.style.left = '0px';
+      sliderButton.style.backgroundColor = '#007bff';
+
+      const letterSpans = sliderText.querySelectorAll('span');
+      letterSpans.forEach(span => {
+        span.style.opacity = 1;
+      });
+    }
+
+    function handleSubmit(event) {
+      event.preventDefault();
+      // ... (Aquí iría tu código para manejar el envío del formulario) ...
+      return false;
+    }
+  </script>
 </body>
 
 </html>
