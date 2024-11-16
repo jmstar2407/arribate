@@ -148,89 +148,96 @@
         }
 
 
-        // Función para manejar el envío del formulario
-        async function agregarPropiedad(e) {
-            e.preventDefault();
+        let isSubmitting = false;
 
-            const categoria = document.getElementById("categoria").value;
-            const tipoPropiedad = document.getElementById("tipoPropiedad").value;
-            let idPropiedad = document.getElementById("idPropiedad").value;
+async function agregarPropiedad(e) {
+    e.preventDefault();
 
-            // Verificar y generar el ID actual al momento de guardar
-            const idGenerado = await generarID(categoria, tipoPropiedad);
-            if (idPropiedad !== idGenerado) {
-                idPropiedad = idGenerado;
-                document.getElementById("idPropiedad").value = idPropiedad;
-            }
+    // Verificar si ya se está enviando
+    if (isSubmitting) return;
 
-            // Asignar la ruta de la carpeta de imágenes con el ID actualizado
-            const imageFolder = `propiedades/${categoria}/${idPropiedad}/img`;
-            document.getElementById("imageFolder").value = imageFolder;
+    isSubmitting = true; // Iniciar el proceso de envío
+    document.querySelector('.slider-button').disabled = true; // Deshabilitar el botón de envío
 
-            const area = parseInt(document.getElementById("area").value);
-            const bathrooms = parseInt(document.getElementById("bathrooms").value);
-            const rooms = parseInt(document.getElementById("rooms").value);
-            const icon = document.getElementById("icon").value;
-            const latLng = document.getElementById("latLng").value;
-            const parking = parseInt(document.getElementById("parking").value);
-            const price = parseInt(document.getElementById("price").value);
-            const title = document.getElementById("title").value;
-            const caracteristicas = document.getElementById("caracteristicas").value;
-            const imageCount = parseInt(document.getElementById("imageCount").value);
-            //const piscina = document.getElementById("piscina").checked;
-            //const jacuzzi = document.getElementById("jacuzzi").checked;
-            const FechaDePublicacion = obtenerFechaActual();
+    const categoria = document.getElementById("categoria").value;
+    const tipoPropiedad = document.getElementById("tipoPropiedad").value;
+    let idPropiedad = document.getElementById("idPropiedad").value;
 
-            const nuevaPropiedad = {
-                id: idPropiedad,
-                area,
-                bathrooms,
-                rooms,
-                icon,
-                latLng,
-                parking,
-                price,
-                title,
-                caracteristicas,
-                imageCount,
-                imageFolder,
-                //piscina,
-                //jacuzzi,
-                FechaDePublicacion,
-                usuario: correoUsuario
-            };
+    // Verificar y generar el ID actual al momento de guardar
+    const idGenerado = await generarID(categoria, tipoPropiedad);
+    if (idPropiedad !== idGenerado) {
+        idPropiedad = idGenerado;
+        document.getElementById("idPropiedad").value = idPropiedad;
+    }
 
-            const coleccion = categoria === "venta" ? "ventas" : "alquileres";
+    // Asignar la ruta de la carpeta de imágenes con el ID actualizado
+    const imageFolder = `propiedades/${categoria}/${idPropiedad}/img`;
+    document.getElementById("imageFolder").value = imageFolder;
 
-            try {
-                if (orderedImages.length === 0) {
-                    alert("Por favor, selecciona al menos una imagen.");
-                    return;
-                }
+    const area = parseInt(document.getElementById("area").value);
+    const bathrooms = parseInt(document.getElementById("bathrooms").value);
+    const rooms = parseInt(document.getElementById("rooms").value);
+    const icon = document.getElementById("icon").value;
+    const latLng = document.getElementById("latLng").value;
+    const parking = parseInt(document.getElementById("parking").value);
+    const price = parseInt(document.getElementById("price").value);
+    const title = document.getElementById("title").value;
+    const caracteristicas = document.getElementById("caracteristicas").value;
+    const imageCount = parseInt(document.getElementById("imageCount").value);
+    const FechaDePublicacion = obtenerFechaActual();
 
-                // Subir las imágenes y guardar la propiedad en Firestore
-                await subirImagenes(orderedImages, imageFolder);
-                await addDoc(collection(db, coleccion), nuevaPropiedad);
+    const nuevaPropiedad = {
+        id: idPropiedad,
+        area,
+        bathrooms,
+        rooms,
+        icon,
+        latLng,
+        parking,
+        price,
+        title,
+        caracteristicas,
+        imageCount,
+        imageFolder,
+        FechaDePublicacion,
+        usuario: correoUsuario
+    };
 
-                // Mostrar modal de éxito
-                const enlacePropiedad = categoria === "venta"
-                    ? `https://arribate.com/venta/${idPropiedad}`
-                    : `https://arribate.com/alquiler/${idPropiedad}`;
-                document.getElementById("nombre-usuario").textContent = `¡${correoUsuario}, la propiedad se agregó con éxito!`;
-                document.getElementById("mensaje-modal").textContent = "Puedes copiar el enlace de tu propiedad:";
-                document.getElementById("enlace-propiedad").value = enlacePropiedad;
-                document.getElementById("modal-exito").style.display = "block";
+    const coleccion = categoria === "venta" ? "ventas" : "alquileres";
 
-                // Resetear el formulario y limpiar la lista de imágenes
-                document.getElementById("formulario-propiedades").reset();
-                document.getElementById("lista-imagenes").innerHTML = "";
-                orderedImages = [];
-
-            } catch (e) {
-                console.error("Error al guardar los datos: ", e);
-                alert("Ocurrió un error al guardar los datos. Revisa la consola para más detalles.");
-            }
+    try {
+        if (orderedImages.length === 0) {
+            alert("Por favor, selecciona al menos una imagen.");
+            return;
         }
+
+        // Subir las imágenes y guardar la propiedad en Firestore
+        await subirImagenes(orderedImages, imageFolder);
+        await addDoc(collection(db, coleccion), nuevaPropiedad);
+
+        // Mostrar modal de éxito
+        const enlacePropiedad = categoria === "venta"
+            ? `https://arribate.com/venta/${idPropiedad}`
+            : `https://arribate.com/alquiler/${idPropiedad}`;
+        document.getElementById("nombre-usuario").textContent = `¡${correoUsuario}, la propiedad se agregó con éxito!`;
+        document.getElementById("mensaje-modal").textContent = "Puedes copiar el enlace de tu propiedad:";
+        document.getElementById("enlace-propiedad").value = enlacePropiedad;
+        document.getElementById("modal-exito").style.display = "block";
+
+        // Resetear el formulario y limpiar la lista de imágenes
+        document.getElementById("formulario-propiedades").reset();
+        document.getElementById("lista-imagenes").innerHTML = "";
+        orderedImages = [];
+
+    } catch (e) {
+        console.error("Error al guardar los datos: ", e);
+        alert("Ocurrió un error al guardar los datos. Revisa la consola para más detalles.");
+    } finally {
+        // Rehabilitar el botón de envío y restablecer el flag
+        isSubmitting = false;
+        document.querySelector('.slider-button').disabled = false; // Habilitar el botón de envío nuevamente
+    }
+}
 
 
 
