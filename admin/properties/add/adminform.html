@@ -38,7 +38,7 @@
         // Función para redirigir al usuario tras la inactividad
         function cerrarPorInactividad() {
             signOut(auth).then(() => {
-                window.location.href = "https://arribate.com/admin/login/";
+                window.location.href = "auth.html";
             }).catch((error) => {
                 console.error("Error al cerrar sesión por inactividad: ", error);
             });
@@ -57,7 +57,7 @@
             const contentDiv = document.getElementById("content");
             if (user) {
                 // Mostrar el contenedor solo si el usuario está autenticado
-                contentDiv.style.display = "block";
+                contentDiv.style.display = "flex";
         const welcomeMessage = document.getElementById("welcome-message");
         let userName;
 
@@ -74,7 +74,7 @@
         welcomeMessage.innerHTML = `HOLA, <br><span style="font-weight: bold;">${userName}</span>`;
         correoUsuario = user.email;
     } else {
-        window.location.href = "https://arribate.com/admin/login/";
+        window.location.href = "auth.html";
     }
 });
 
@@ -373,7 +373,7 @@
         // Función para cerrar sesión
         function cerrarSesion() {
             signOut(auth).then(() => {
-                window.location.href = "https://arribate.com/admin/login/";
+                window.location.href = "auth.html";
             }).catch((error) => {
                 alert("Error al cerrar sesión: " + error.message);
             });
@@ -403,6 +403,17 @@
 <body>
     <div id="content" style="display: none;">
     <div class="form-admin-add-property-Master">
+
+        <div class="menu-master">
+            <div class="logonombre">
+                <div class="logo1"></div>
+                <div style="margin-left: 10px;">
+                    <h1>ArríbaTe</h1><span>República Dominicana</span>
+                </div>
+            </div>
+        </div>
+
+
         <div class="form-admin-add-property">
             <button id="logout-button">Cerrar sesión</button>
             <h1 id="welcome-message">HOLA,</h1>
