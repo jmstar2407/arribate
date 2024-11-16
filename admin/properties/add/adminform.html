@@ -219,8 +219,9 @@
                 const enlacePropiedad = categoria === "venta"
                     ? `https://arribate.com/venta/${idPropiedad}`
                     : `https://arribate.com/alquiler/${idPropiedad}`;
-                document.getElementById("nombre-usuario").textContent = `¡${correoUsuario}, la propiedad se agregó con éxito!`;
-                document.getElementById("mensaje-adicional").textContent = `Propiedad publicada correctamente con el ID: ${idPropiedad}`;
+                //document.getElementById("nombre-usuario").textContent = `¡${correoUsuario}, la propiedad se agregó con éxito!`;
+                document.getElementById("nombre-usuario").textContent = `¡La propiedad se agregó con éxito!`;
+                document.getElementById("mensaje-adicional").textContent = `ID: ${idPropiedad}`;
                 document.getElementById("mensaje-modal").textContent = "Puedes copiar el enlace de tu propiedad:";
                 document.getElementById("enlace-propiedad").value = enlacePropiedad;
                 document.getElementById("modal-exito").style.display = "block";
