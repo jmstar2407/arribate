@@ -383,6 +383,7 @@
         window.onload = () => {
             document.getElementById("categoria").addEventListener("change", actualizarID);
             document.getElementById("tipoPropiedad").addEventListener("change", actualizarID);
+            document.getElementById("formulario-propiedades").addEventListener("submit", agregarPropiedad);
             document.getElementById("logout-button").addEventListener("click", cerrarSesion);
 
             // Escuchar eventos de interacción de mouse, teclado, clics y scroll
@@ -712,7 +713,7 @@
 
     function handleSubmit(event) {
         event.preventDefault();
-        document.getElementById("formulario-propiedades").addEventListener("submit", agregarPropiedad);
+        // ... (Aquí iría tu código para manejar el envío del formulario) ...
         return false;
     }
 </script>
