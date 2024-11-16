@@ -650,7 +650,7 @@
         const left = Math.min(Math.max(mouseX - sliderContainer.getBoundingClientRect().left - circleWidth / 2, 0), containerWidth - circleWidth);
         sliderCircle.style.left = left + 'px';
 
-        if (left >= containerWidth * 0.8) {
+        if (left >= containerWidth * 0.95) {
           sliderButton.style.backgroundColor = 'red';
         } else {
           sliderButton.style.backgroundColor = '#007bff';
@@ -674,9 +674,9 @@
           }
         });
 
-        // Enviar formulario al 100% sin soltar en móviles
+        // Forzar el envío del formulario con click()
         if (left >= containerWidth - circleWidth) {
-          document.getElementById('propertyForm').submit();
+          sliderButton.click(); 
           e.preventDefault();
           e.stopPropagation();
         }
@@ -690,14 +690,12 @@
         document.removeEventListener('mousemove', onMove);
         document.removeEventListener('mouseup', onEnd);
         document.removeEventListener('touchmove', onMove);
-        document.removeEventListener('touchend', onEnd);   
-
+        document.removeEventListener('touchend', onEnd);
       };
 
       document.addEventListener('mousemove', onMove);
       document.addEventListener('mouseup', onEnd);
-      document.addEventListener('touchmove', onMove);   
- // Usar touchmove para móviles
+      document.addEventListener('touchmove', onMove);
       document.addEventListener('touchend', onEnd);
     }
 
@@ -718,10 +716,12 @@
 
       if (hasError) {
         console.error("Error al guardar la propiedad.");
-        resetSlider();
       } else {
         console.log("Propiedad publicada con éxito.");
       }
+
+      // Deslizar el botón a la izquierda independientemente del resultado
+      resetSlider(); 
 
       return false;
     }
