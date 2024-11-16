@@ -1,93 +1,89 @@
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Botón Deslizante</title>
-    <style>
-        .slider-container {
-            width: 300px;
-            height: 50px;
-            background-color: #e0e0e0;
-            border-radius: 25px;
-            position: relative;
-            overflow: hidden;
-        }
+<style>
+.boton-deslizante {
+  width: 300px; 
+  height: 50px;  
+  background-color: #4CAF50; 
+  border-radius: 25px; 
+  display: flex;
+  align-items: center; 
+  position: relative; 
+  overflow: hidden; 
+}
 
-        .slider-button {
-            width: 50px;
-            height: 50px;
-            background-color: #4caf50;
-            border-radius: 50%;
-            position: absolute;
-            left: 0;
-            top: 0;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: left 0.2s ease;
-        }
+.circulo {
+  width: 40px;
+  height: 40px;
+  background-color: #fff;
+  border-radius: 50%;
+  position: absolute;
+  left: 5px; 
+  cursor: grab; 
+}
 
-        .slider-text {
-            position: absolute;
-            width: 100%;
-            text-align: center;
-            line-height: 50px;
-            color: #555;
-        }
-
-        .slider-container.active .slider-button {
-            background-color: #2e7d32;
-        }
-    </style>
+.texto {
+  color: white;
+  font-size: 16px;
+  flex-grow: 1;
+  text-align: center;
+}
+</style>
 </head>
 <body>
-    <div class="slider-container" id="slider">
-        <div class="slider-button" id="sliderButton">⇄</div>
-        <div class="slider-text">Publicar Propiedad</div>
-    </div>
 
-    <script>
-        const slider = document.getElementById('slider');
-        const sliderButton = document.getElementById('sliderButton');
-        let isSliding = false;
-
-        sliderButton.addEventListener('mousedown', (e) => {
-            isSliding = true;
-            let startX = e.clientX;
-            let buttonLeft = 0;
-
-            const mouseMoveHandler = (e) => {
-                if (isSliding) {
-                    let newLeft = e.clientX - startX;
-                    if (newLeft < 0) newLeft = 0;
-                    if (newLeft > slider.clientWidth - sliderButton.clientWidth) {
-                        newLeft = slider.clientWidth - sliderButton.clientWidth;
-                        // Simular un evento al finalizar el deslizamiento
-                        slider.classList.add('active');
-                        sliderButton.style.left = newLeft + 'px';
-                        isSliding = false;
-                        document.removeEventListener('mousemove', mouseMoveHandler);
-                        document.removeEventListener('mouseup', mouseUpHandler);
-                        alert('Propiedad publicada');
-                    }
-                    sliderButton.style.left = newLeft + 'px';
-                }
-            };
-
-            const mouseUpHandler = () => {
-                if (isSliding) {
-                    sliderButton.style.left = '0px'; // Volver al inicio si no se completó
-                    isSliding = false;
-                }
-                document.removeEventListener('mousemove', mouseMoveHandler);
-                document.removeEventListener('mouseup', mouseUpHandler);
-            };
-
-            document.addEventListener('mousemove', mouseMoveHandler);
-            document.addEventListener('mouseup', mouseUpHandler);
-        });
-    </script>
-</body>
-</html>
+    <div class="boton-deslizante">
+        <div class="circulo"></div>
+        <span class="texto">Publicar Propiedad</span>
+      </div>
+      
+      <script>
+      const circulo = document.querySelector('.circulo');
+      const boton = document.querySelector('.boton-deslizante');
+      
+      let isDragging = false;
+      let offsetX;
+      
+      circulo.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        offsetX = circulo.offsetLeft - e.clientX;
+      
+        // Iniciar vibración si el navegador lo soporta
+        if ("vibrate" in navigator) {
+          navigator.vibrate(50); // Vibrar durante 50ms al iniciar el arrastre
+        }
+      });
+      
+      document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        e.preventDefault(); 
+      
+        const newLeft = e.clientX + offsetX;
+        circulo.style.left = Math.max(0, Math.min(newLeft, boton.offsetWidth - circulo.offsetWidth)) + 'px';
+      
+        // Vibrar continuamente mientras se arrastra
+        if ("vibrate" in navigator) {
+          navigator.vibrate(10); // Vibrar durante 10ms cada vez que se mueve
+        }
+      });
+      
+      document.addEventListener('mouseup', (e) => {
+        isDragging = false;
+      
+        // Detener la vibración al soltar
+        if ("vibrate" in navigator) {
+          navigator.vibrate(0); 
+        }
+      
+        if (parseInt(circulo.style.left) >= boton.offsetWidth - circulo.offsetWidth) {
+          alert('¡Propiedad publicada!'); 
+          circulo.style.left = '5px'; 
+        } else {
+          circulo.style.left = '5px'; 
+        }
+      });
+      </script>
+      
+      </body>
+      </html>
