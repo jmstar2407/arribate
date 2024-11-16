@@ -360,6 +360,7 @@ li {
     justify-content: center;
     cursor: pointer;
     overflow: hidden;
+    transition: background-color 0.3s ease; /* Transición para el cambio de color */
   }
 
   .slider-text {
