@@ -29,7 +29,7 @@
         const storage = getStorage(app);
         let correoUsuario = "";
         let orderedImages = [];
-        
+
 
         // Configuración de tiempo de inactividad en milisegundos (10 minutos = 600000 ms)
         const tiempoInactividad = 6000000;
@@ -51,32 +51,32 @@
         }
 
 
-        
+
         // Verificar si el usuario está autenticado y obtener su nombre o correo
         onAuthStateChanged(auth, (user) => {
             const contentDiv = document.getElementById("content");
             if (user) {
                 // Mostrar el contenedor solo si el usuario está autenticado
                 contentDiv.style.display = "flex";
-        const welcomeMessage = document.getElementById("welcome-message");
-        let userName;
+                const welcomeMessage = document.getElementById("welcome-message");
+                let userName;
 
-        if (user.displayName) {
-            userName = user.displayName;
-        } else if (user.email) {
-            const emailNamePart = user.email.split('@')[0].split('.')[0];
-            userName = emailNamePart.toUpperCase();
-        } else {
-            userName = "Usuario";
-        }
+                if (user.displayName) {
+                    userName = user.displayName;
+                } else if (user.email) {
+                    const emailNamePart = user.email.split('@')[0].split('.')[0];
+                    userName = emailNamePart.toUpperCase();
+                } else {
+                    userName = "Usuario";
+                }
 
-        // Usar innerHTML para interpretar HTML en el mensaje
-        welcomeMessage.innerHTML = `HOLA, <br><span style="font-weight: bold;">${userName}</span>`;
-        correoUsuario = user.email;
-    } else {
-        window.location.href = "auth.html";
-    }
-});
+                // Usar innerHTML para interpretar HTML en el mensaje
+                welcomeMessage.innerHTML = `HOLA, <br><span style="font-weight: bold;">${userName}</span>`;
+                correoUsuario = user.email;
+            } else {
+                window.location.href = "auth.html";
+            }
+        });
 
 
 
@@ -150,94 +150,94 @@
 
         let isSubmitting = false;
 
-async function agregarPropiedad(e) {
-    e.preventDefault();
+        async function agregarPropiedad(e) {
+            e.preventDefault();
 
-    // Verificar si ya se está enviando
-    if (isSubmitting) return;
+            // Verificar si ya se está enviando
+            if (isSubmitting) return;
 
-    isSubmitting = true; // Iniciar el proceso de envío
-    document.querySelector('.slider-button').disabled = true; // Deshabilitar el botón de envío
+            isSubmitting = true; // Iniciar el proceso de envío
+            document.querySelector('.slider-button').disabled = true; // Deshabilitar el botón de envío
 
-    const categoria = document.getElementById("categoria").value;
-    const tipoPropiedad = document.getElementById("tipoPropiedad").value;
-    let idPropiedad = document.getElementById("idPropiedad").value;
+            const categoria = document.getElementById("categoria").value;
+            const tipoPropiedad = document.getElementById("tipoPropiedad").value;
+            let idPropiedad = document.getElementById("idPropiedad").value;
 
-    // Verificar y generar el ID actual al momento de guardar
-    const idGenerado = await generarID(categoria, tipoPropiedad);
-    if (idPropiedad !== idGenerado) {
-        idPropiedad = idGenerado;
-        document.getElementById("idPropiedad").value = idPropiedad;
-    }
+            // Verificar y generar el ID actual al momento de guardar
+            const idGenerado = await generarID(categoria, tipoPropiedad);
+            if (idPropiedad !== idGenerado) {
+                idPropiedad = idGenerado;
+                document.getElementById("idPropiedad").value = idPropiedad;
+            }
 
-    // Asignar la ruta de la carpeta de imágenes con el ID actualizado
-    const imageFolder = `propiedades/${categoria}/${idPropiedad}/img`;
-    document.getElementById("imageFolder").value = imageFolder;
+            // Asignar la ruta de la carpeta de imágenes con el ID actualizado
+            const imageFolder = `propiedades/${categoria}/${idPropiedad}/img`;
+            document.getElementById("imageFolder").value = imageFolder;
 
-    const area = parseInt(document.getElementById("area").value);
-    const bathrooms = parseInt(document.getElementById("bathrooms").value);
-    const rooms = parseInt(document.getElementById("rooms").value);
-    const icon = document.getElementById("icon").value;
-    const latLng = document.getElementById("latLng").value;
-    const parking = parseInt(document.getElementById("parking").value);
-    const price = parseInt(document.getElementById("price").value);
-    const title = document.getElementById("title").value;
-    const caracteristicas = document.getElementById("caracteristicas").value;
-    const imageCount = parseInt(document.getElementById("imageCount").value);
-    const FechaDePublicacion = obtenerFechaActual();
+            const area = parseInt(document.getElementById("area").value);
+            const bathrooms = parseInt(document.getElementById("bathrooms").value);
+            const rooms = parseInt(document.getElementById("rooms").value);
+            const icon = document.getElementById("icon").value;
+            const latLng = document.getElementById("latLng").value;
+            const parking = parseInt(document.getElementById("parking").value);
+            const price = parseInt(document.getElementById("price").value);
+            const title = document.getElementById("title").value;
+            const caracteristicas = document.getElementById("caracteristicas").value;
+            const imageCount = parseInt(document.getElementById("imageCount").value);
+            const FechaDePublicacion = obtenerFechaActual();
 
-    const nuevaPropiedad = {
-        id: idPropiedad,
-        area,
-        bathrooms,
-        rooms,
-        icon,
-        latLng,
-        parking,
-        price,
-        title,
-        caracteristicas,
-        imageCount,
-        imageFolder,
-        FechaDePublicacion,
-        usuario: correoUsuario
-    };
+            const nuevaPropiedad = {
+                id: idPropiedad,
+                area,
+                bathrooms,
+                rooms,
+                icon,
+                latLng,
+                parking,
+                price,
+                title,
+                caracteristicas,
+                imageCount,
+                imageFolder,
+                FechaDePublicacion,
+                usuario: correoUsuario
+            };
 
-    const coleccion = categoria === "venta" ? "ventas" : "alquileres";
+            const coleccion = categoria === "venta" ? "ventas" : "alquileres";
 
-    try {
-        if (orderedImages.length === 0) {
-            alert("Por favor, selecciona al menos una imagen.");
-            return;
+            try {
+                if (orderedImages.length === 0) {
+                    alert("Por favor, selecciona al menos una imagen.");
+                    return;
+                }
+
+                // Subir las imágenes y guardar la propiedad en Firestore
+                await subirImagenes(orderedImages, imageFolder);
+                await addDoc(collection(db, coleccion), nuevaPropiedad);
+
+                // Mostrar modal de éxito
+                const enlacePropiedad = categoria === "venta"
+                    ? `https://arribate.com/venta/${idPropiedad}`
+                    : `https://arribate.com/alquiler/${idPropiedad}`;
+                document.getElementById("nombre-usuario").textContent = `¡${correoUsuario}, la propiedad se agregó con éxito!`;
+                document.getElementById("mensaje-modal").textContent = "Puedes copiar el enlace de tu propiedad:";
+                document.getElementById("enlace-propiedad").value = enlacePropiedad;
+                document.getElementById("modal-exito").style.display = "block";
+
+                // Resetear el formulario y limpiar la lista de imágenes
+                document.getElementById("formulario-propiedades").reset();
+                document.getElementById("lista-imagenes").innerHTML = "";
+                orderedImages = [];
+
+            } catch (e) {
+                console.error("Error al guardar los datos: ", e);
+                alert("Ocurrió un error al guardar los datos. Revisa la consola para más detalles.");
+            } finally {
+                // Rehabilitar el botón de envío y restablecer el flag
+                isSubmitting = false;
+                document.querySelector('.slider-button').disabled = false; // Habilitar el botón de envío nuevamente
+            }
         }
-
-        // Subir las imágenes y guardar la propiedad en Firestore
-        await subirImagenes(orderedImages, imageFolder);
-        await addDoc(collection(db, coleccion), nuevaPropiedad);
-
-        // Mostrar modal de éxito
-        const enlacePropiedad = categoria === "venta"
-            ? `https://arribate.com/venta/${idPropiedad}`
-            : `https://arribate.com/alquiler/${idPropiedad}`;
-        document.getElementById("nombre-usuario").textContent = `¡${correoUsuario}, la propiedad se agregó con éxito!`;
-        document.getElementById("mensaje-modal").textContent = "Puedes copiar el enlace de tu propiedad:";
-        document.getElementById("enlace-propiedad").value = enlacePropiedad;
-        document.getElementById("modal-exito").style.display = "block";
-
-        // Resetear el formulario y limpiar la lista de imágenes
-        document.getElementById("formulario-propiedades").reset();
-        document.getElementById("lista-imagenes").innerHTML = "";
-        orderedImages = [];
-
-    } catch (e) {
-        console.error("Error al guardar los datos: ", e);
-        alert("Ocurrió un error al guardar los datos. Revisa la consola para más detalles.");
-    } finally {
-        // Rehabilitar el botón de envío y restablecer el flag
-        isSubmitting = false;
-        document.querySelector('.slider-button').disabled = false; // Habilitar el botón de envío nuevamente
-    }
-}
 
 
 
@@ -263,9 +263,10 @@ async function agregarPropiedad(e) {
                 .catch(err => console.error("Error al copiar el enlace: " + err)); // Usar console.error para errores
         });
 
-        // Manejar el cierre del modal (Este código se mantiene igual)
+        // Manejar el cierre del modal
         document.getElementById("cerrar-modal").addEventListener("click", () => {
-            document.getElementById("modal-exito").style.display = "none";
+            // Refrescar la página
+            location.reload();
         });
 
 
@@ -361,7 +362,7 @@ async function agregarPropiedad(e) {
             for (let i = 0; i < imageElements.length; i++) {
                 const imagen = orderedImages[i];
                 const label = imageElements[i].querySelector(".image-order-label");
-                const nombreImagen = `${label.textContent}.${imagen.name.split('.').pop()}`;
+                const nombreImagen = `${i + 1}.jpg`;
                 const imagenRef = ref(storage, `${carpeta}/${nombreImagen}`);
 
                 try {
@@ -409,139 +410,139 @@ async function agregarPropiedad(e) {
 
 <body>
     <div id="content" style="display: none;">
-    <div class="form-admin-add-property-Master">
+        <div class="form-admin-add-property-Master">
 
-        <div class="menu-master">
-            <div class="logonombre">
-                <div class="logo1"></div>
-                <div style="margin-left: 10px;">
-                    <h1>ArríbaTe</h1><span>Administrador</span>
+            <div class="menu-master">
+                <div class="logonombre">
+                    <div class="logo1"></div>
+                    <div style="margin-left: 10px;">
+                        <h1>ArríbaTe</h1><span>Administrador</span>
+                    </div>
                 </div>
             </div>
-        </div>
 
 
-        <div class="form-admin-add-property">
-            <button id="logout-button">Cerrar sesión</button>
-            <h1 id="welcome-message">HOLA,</h1>
-            <form id="formulario-propiedades">
-                <label for="categoria">Propósito de la Propiedad:</label>
-                <select id="categoria" required>
-                    <option value="">Selecciona</option>
-                    <option value="venta">Vender</option>
-                    <option value="alquiler">Alquilar</option>
-                </select>
-                <br><br>
+            <div class="form-admin-add-property">
+                <button id="logout-button">Cerrar sesión</button>
+                <h1 id="welcome-message">HOLA,</h1>
+                <form id="formulario-propiedades">
+                    <label for="categoria">Propósito de la Propiedad:</label>
+                    <select id="categoria" required>
+                        <option value="">Selecciona</option>
+                        <option value="venta">Vender</option>
+                        <option value="alquiler">Alquilar</option>
+                    </select>
+                    <br><br>
 
-                <label for="tipoPropiedad">Tipo de Propiedad:</label>
-                <select id="tipoPropiedad" required>
-                    <option value="">Selecciona</option>
-                    <option value="casa">Casa</option>
-                    <option value="apartamento">Apartamento</option>
-                    <option value="terreno">Terreno</option>
-                </select>
-                <br><br>
+                    <label for="tipoPropiedad">Tipo de Propiedad:</label>
+                    <select id="tipoPropiedad" required>
+                        <option value="">Selecciona</option>
+                        <option value="casa">Casa</option>
+                        <option value="apartamento">Apartamento</option>
+                        <option value="terreno">Terreno</option>
+                    </select>
+                    <br><br>
 
-                <label for="idPropiedad">ID de la Propiedad:</label>
-                <input type="text" id="idPropiedad" placeholder="vc10001" readonly required>
-                <br><br>
+                    <label for="idPropiedad">ID de la Propiedad:</label>
+                    <input type="text" id="idPropiedad" placeholder="vc10001" readonly required>
+                    <br><br>
 
-                <label for="icon">Icono de propiedad:</label>
-                <select id="icon" required>
-                    <option value="">Selecciona</option>
-                    <option value="houseIcon">Casa - Estándar</option>
-                    <option value="buildingIcon">Apartamento - Estándar</option>
-                    <option value="landIcon">Terreno - Estándar</option>
-                </select>
-                <br><br>
-
-                
-                <div class="form-divisor"></div> <!-- Divisor -->
-
-                <label for="title">Título de la Publicación:</label>
-                <input type="text" id="title" placeholder="36 caracteres max." maxlength="36">
-                <br><br>
-
-                <label for="price">Precio de la Propiedad:</label>
-                <input type="number" id="price" placeholder="Solo en RD$" required>
-                <br><br>
-
-                <label for="rooms">Cantidad de Habitaciones:</label>
-                <input type="number" id="rooms" placeholder="0" required>
-                <br><br>
-
-                <label for="bathrooms">Cantidad de Baños:</label>
-                <input type="number" id="bathrooms" placeholder="0" required>
-                <br><br>
-
-                <label for="parking">Cantidad de Parqueos:</label>
-                <input type="number" id="parking" placeholder="0" required>
-                <br><br>
-
-                <label for="area">Metros Cuadrados (m²):</label>
-                <input type="number" id="area" placeholder="0" required>
-                <br><br>
-
-                <label for="imageCount" style="display: none;">Número de Imágenes:</label> <!-- hiden-->
-                <input type="number" id="imageCount" readonly style="display: none;"> <!-- hiden-->
-
-                <label for="imageFolder" style="display: none;">Carpeta de Imágenes:</label> <!-- hiden-->
-                <input type="text" id="imageFolder" readonly style="display: none;"> <!-- hiden-->
-
-                <label for="piscina" style="display: none;">Piscina:</label> <!-- hiden-->
-                <input type="checkbox" id="piscina" style="display: none;"> <!-- hiden-->
-
-                <label for="jacuzzi" style="display: none;">Jacuzzi:</label> <!-- hiden-->
-                <input type="checkbox" id="jacuzzi" style="display: none;"> <!-- hiden-->
+                    <label for="icon">Icono de propiedad:</label>
+                    <select id="icon" required>
+                        <option value="">Selecciona</option>
+                        <option value="houseIcon">Casa - Estándar</option>
+                        <option value="buildingIcon">Apartamento - Estándar</option>
+                        <option value="landIcon">Terreno - Estándar</option>
+                    </select>
+                    <br><br>
 
 
+                    <div class="form-divisor"></div> <!-- Divisor -->
 
-                <label for="imagenes">Subir Imágenes:</label>
-                <input type="file" id="imagenes" multiple required accept="image/*">
-                <ul id="lista-imagenes"></ul>
-                <br><br>
+                    <label for="title">Título de la Publicación:</label>
+                    <input type="text" id="title" placeholder="36 caracteres max." maxlength="36">
+                    <br><br>
+
+                    <label for="price">Precio de la Propiedad:</label>
+                    <input type="number" id="price" placeholder="Solo en RD$" required>
+                    <br><br>
+
+                    <label for="rooms">Cantidad de Habitaciones:</label>
+                    <input type="number" id="rooms" placeholder="0" required>
+                    <br><br>
+
+                    <label for="bathrooms">Cantidad de Baños:</label>
+                    <input type="number" id="bathrooms" placeholder="0" required>
+                    <br><br>
+
+                    <label for="parking">Cantidad de Parqueos:</label>
+                    <input type="number" id="parking" placeholder="0" required>
+                    <br><br>
+
+                    <label for="area">Metros Cuadrados (m²):</label>
+                    <input type="number" id="area" placeholder="0" required>
+                    <br><br>
+
+                    <label for="imageCount" style="display: none;">Número de Imágenes:</label> <!-- hiden-->
+                    <input type="number" id="imageCount" readonly style="display: none;"> <!-- hiden-->
+
+                    <label for="imageFolder" style="display: none;">Carpeta de Imágenes:</label> <!-- hiden-->
+                    <input type="text" id="imageFolder" readonly style="display: none;"> <!-- hiden-->
+
+                    <label for="piscina" style="display: none;">Piscina:</label> <!-- hiden-->
+                    <input type="checkbox" id="piscina" style="display: none;"> <!-- hiden-->
+
+                    <label for="jacuzzi" style="display: none;">Jacuzzi:</label> <!-- hiden-->
+                    <input type="checkbox" id="jacuzzi" style="display: none;"> <!-- hiden-->
 
 
-                <label for="caracteristicas">Detalles de la Propiedad:</label>
-                <input type="text" id="caracteristicas" placeholder="Escriba aquí detalles adicionales..." required>
-                <br><br>
 
-                <!-- <label for="latLng">LatLng (coordenadas):</label>
+                    <label for="imagenes">Subir Imágenes:</label>
+                    <input type="file" id="imagenes" multiple required accept="image/*">
+                    <ul id="lista-imagenes"></ul>
+                    <br><br>
+
+
+                    <label for="caracteristicas">Detalles de la Propiedad:</label>
+                    <input type="text" id="caracteristicas" placeholder="Escriba aquí detalles adicionales..." required>
+                    <br><br>
+
+                    <!-- <label for="latLng">LatLng (coordenadas):</label>
             <input type="text" id="latLng" placeholder="Ej: 18.54,-69.90" required> -->
 
-                <label for="latLng">Ubicación de la Propiedad (Coordenadas):</label>
-                <input type="text" id="latLng" placeholder="Seleccione en el mapa" readonly>
-                <div id="map"></div>
-                <br><br>
+                    <label for="latLng">Ubicación de la Propiedad (Coordenadas):</label>
+                    <input type="text" id="latLng" placeholder="Seleccione en el mapa" readonly>
+                    <div id="map"></div>
+                    <br><br>
 
 
-                <div class="slider-container">
-                    <button type="submit" class="slider-button">
-                        <div class="button-content">
-                            <span class="slider-text">Publicar Propiedad</span>
-                            <div class="circle" id="sliderCircle"></div>
-                        </div>
-                    </button>
+                    <div class="slider-container">
+                        <button type="submit" class="slider-button">
+                            <div class="button-content">
+                                <span class="slider-text">Publicar Propiedad</span>
+                                <div class="circle" id="sliderCircle"></div>
+                            </div>
+                        </button>
+                    </div>
+
+                </form>
+
+
+                <div id="loading-indicator" style="display: none;">
+                    <p>Cargando...</p>
                 </div>
 
-            </form>
-            
-
-            <div id="loading-indicator" style="display: none;">
-                <p>Cargando...</p>
-            </div>
-
-            <div id="modal-exito" class="modal">
-                <div class="modal-content">
-                    <span id="nombre-usuario"></span>
-                    <p id="mensaje-modal"></p>
-                    <input type="text" id="enlace-propiedad" readonly>
-                    <button id="copiar-enlace">Copiar enlace</button>
-                    <button id="cerrar-modal">Listo</button>
+                <div id="modal-exito" class="modal">
+                    <div class="modal-content">
+                        <span id="nombre-usuario"></span>
+                        <p id="mensaje-modal"></p>
+                        <input type="text" id="enlace-propiedad" readonly>
+                        <button id="copiar-enlace">Copiar enlace</button>
+                        <button id="cerrar-modal">Listo</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.10.2/Sortable.min.js"></script>
@@ -626,104 +627,104 @@ async function agregarPropiedad(e) {
     <script
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAnl6BmNpeFzqsmxapeB316ZFO4oIQQRZk&libraries=places&callback=initMap"
         async defer>
-    </script>
-<script type="text/javascript">
-    const sliderCircle = document.getElementById('sliderCircle');
-    const sliderButton = document.querySelector('.slider-button');
-    const sliderText = document.querySelector('.slider-text');
-    const buttonContent = document.querySelector('.button-content');
-    let isSliding = false;
+        </script>
+    <script type="text/javascript">
+        const sliderCircle = document.getElementById('sliderCircle');
+        const sliderButton = document.querySelector('.slider-button');
+        const sliderText = document.querySelector('.slider-text');
+        const buttonContent = document.querySelector('.button-content');
+        let isSliding = false;
 
-    function initializeText() {
-        const letters = sliderText.innerText.split('').map(letter => `<span>${letter}</span>`).join('');
-        sliderText.innerHTML = letters;
-    }
-
-    initializeText();
-
-    sliderCircle.addEventListener('mousedown', startSlide);
-    sliderCircle.addEventListener('touchstart', startSlide);
-    buttonContent.addEventListener('click', event => event.preventDefault());
-
-    sliderCircle.addEventListener('click', () => {
-        const sliderContainer = sliderCircle.parentElement;
-        const containerWidth = sliderContainer.offsetWidth;
-        const circleWidth = sliderCircle.offsetWidth;
-        const left = parseFloat(sliderCircle.style.left) || 0;
-
-        if (left >= containerWidth - circleWidth) {
-            sliderButton.click();
-            resetSlider();
+        function initializeText() {
+            const letters = sliderText.innerText.split('').map(letter => `<span>${letter}</span>`).join('');
+            sliderText.innerHTML = letters;
         }
-    });
 
-    function startSlide(event) {
-        if (isSliding) return;
-        isSliding = true;
+        initializeText();
 
-        const sliderContainer = sliderCircle.parentElement;
-        const containerWidth = sliderContainer.offsetWidth;
-        const circleWidth = sliderCircle.offsetWidth;
+        sliderCircle.addEventListener('mousedown', startSlide);
+        sliderCircle.addEventListener('touchstart', startSlide);
+        buttonContent.addEventListener('click', event => event.preventDefault());
 
-        const onMove = (e) => {
-            const mouseX = e.clientX || e.touches[0].clientX;
-            const left = Math.min(Math.max(mouseX - sliderContainer.getBoundingClientRect().left - circleWidth / 2, 0), containerWidth - circleWidth);
-            sliderCircle.style.left = `${left}px`;
-            sliderButton.style.backgroundColor = left >= containerWidth * 0.95 ? 'red' : '#007bff';
-
-            const letterSpans = sliderText.querySelectorAll('span');
-            const textWidth = sliderText.offsetWidth;
-            const letterWidth = textWidth / letterSpans.length;
-
-            letterSpans.forEach((span, i) => {
-                const letterLeft = (containerWidth / 2) - (textWidth / 2) + (letterWidth * i);
-                const visibility = (left + circleWidth) - letterLeft;
-
-                span.style.opacity = visibility < 0 ? 1 : 
-                                    visibility < letterWidth ? Math.max(0, 1 - (visibility / letterWidth)) : 0;
-            });
+        sliderCircle.addEventListener('click', () => {
+            const sliderContainer = sliderCircle.parentElement;
+            const containerWidth = sliderContainer.offsetWidth;
+            const circleWidth = sliderCircle.offsetWidth;
+            const left = parseFloat(sliderCircle.style.left) || 0;
 
             if (left >= containerWidth - circleWidth) {
                 sliderButton.click();
                 resetSlider();
-                e.preventDefault();
-                e.stopPropagation();
             }
-        };
+        });
 
-        const onEnd = () => {
-            if (parseFloat(sliderCircle.style.left) < containerWidth - circleWidth) {
-                resetSlider();
-            }
-            isSliding = false;
-            cleanupEventListeners();
-        };
+        function startSlide(event) {
+            if (isSliding) return;
+            isSliding = true;
 
-        const cleanupEventListeners = () => {
-            document.removeEventListener('mousemove', onMove);
-            document.removeEventListener('mouseup', onEnd);
-            document.removeEventListener('touchmove', onMove);
-            document.removeEventListener('touchend', onEnd);
-        };
+            const sliderContainer = sliderCircle.parentElement;
+            const containerWidth = sliderContainer.offsetWidth;
+            const circleWidth = sliderCircle.offsetWidth;
 
-        document.addEventListener('mousemove', onMove);
-        document.addEventListener('mouseup', onEnd);
-        document.addEventListener('touchmove', onMove);
-        document.addEventListener('touchend', onEnd);
-    }
+            const onMove = (e) => {
+                const mouseX = e.clientX || e.touches[0].clientX;
+                const left = Math.min(Math.max(mouseX - sliderContainer.getBoundingClientRect().left - circleWidth / 2, 0), containerWidth - circleWidth);
+                sliderCircle.style.left = `${left}px`;
+                sliderButton.style.backgroundColor = left >= containerWidth * 0.95 ? 'red' : '#007bff';
 
-    function resetSlider() {
-        sliderCircle.style.left = '0px';
-        sliderButton.style.backgroundColor = '#007bff';
-        sliderText.querySelectorAll('span').forEach(span => span.style.opacity = 1);
-    }
+                const letterSpans = sliderText.querySelectorAll('span');
+                const textWidth = sliderText.offsetWidth;
+                const letterWidth = textWidth / letterSpans.length;
 
-    function handleSubmit(event) {
-        event.preventDefault();
-        // ... (Aquí iría tu código para manejar el envío del formulario) ...
-        return false;
-    }
-</script>
+                letterSpans.forEach((span, i) => {
+                    const letterLeft = (containerWidth / 2) - (textWidth / 2) + (letterWidth * i);
+                    const visibility = (left + circleWidth) - letterLeft;
+
+                    span.style.opacity = visibility < 0 ? 1 :
+                        visibility < letterWidth ? Math.max(0, 1 - (visibility / letterWidth)) : 0;
+                });
+
+                if (left >= containerWidth - circleWidth) {
+                    sliderButton.click();
+                    resetSlider();
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+            };
+
+            const onEnd = () => {
+                if (parseFloat(sliderCircle.style.left) < containerWidth - circleWidth) {
+                    resetSlider();
+                }
+                isSliding = false;
+                cleanupEventListeners();
+            };
+
+            const cleanupEventListeners = () => {
+                document.removeEventListener('mousemove', onMove);
+                document.removeEventListener('mouseup', onEnd);
+                document.removeEventListener('touchmove', onMove);
+                document.removeEventListener('touchend', onEnd);
+            };
+
+            document.addEventListener('mousemove', onMove);
+            document.addEventListener('mouseup', onEnd);
+            document.addEventListener('touchmove', onMove);
+            document.addEventListener('touchend', onEnd);
+        }
+
+        function resetSlider() {
+            sliderCircle.style.left = '0px';
+            sliderButton.style.backgroundColor = '#007bff';
+            sliderText.querySelectorAll('span').forEach(span => span.style.opacity = 1);
+        }
+
+        function handleSubmit(event) {
+            event.preventDefault();
+            // ... (Aquí iría tu código para manejar el envío del formulario) ...
+            return false;
+        }
+    </script>
 
 </body>
 
