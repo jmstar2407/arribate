@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión</title>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js";
+
+        // Configuración de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBRjDso4IPrh9WLvWWMYoPiJxNFD6Vt3RU",
+            authDomain: "arribate-com.firebaseapp.com",
+            projectId: "arribate-com",
+            storageBucket: "arribate-com.firebaseapp.com",
+            messagingSenderId: "46945634270",
+            appId: "1:46945634270:web:c74fd6781ac1fab5da7f4f",
+            measurementId: "G-Y4J11MBYKQ"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Función para manejar el inicio de sesión
+        async function iniciarSesion(event) {
+            event.preventDefault();
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                window.location.href = document.referrer || "https://arribate.com/admin/properties/add/";  // Redirige al formulario
+            } catch (error) {
+                alert("No se ha podido iniciar sesión. Verifica tu correo electrónico y contraseña.");
+            }
+        }
+
+        // Función para manejar el registro
+        async function registrarUsuario() {
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            try {
+                await createUserWithEmailAndPassword(auth, email, password);
+                alert("Usuario registrado exitosamente");
+                window.location.href = "https://arribate.com/admin/properties/add/"; // Redirige al formulario
+            } catch (error) {
+                alert("Error al registrar el usuario: " + error.message);
+            }
+        }
+
+        // Redirigir al formulario si el usuario ya está autenticado
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                window.location.href = "https://arribate.com/admin/properties/add/";
+            }
+        });
+
+        // Asigna eventos a los botones de inicio de sesión y registro
+        window.onload = () => {
+            document.getElementById("login-form").addEventListener("submit", iniciarSesion);
+            document.getElementById("register-button").addEventListener("click", registrarUsuario);
+        };
+    </script>
+</head>
+<body>
+    <h1>Iniciar sesión en ArríbaTe</h1>
+    <form id="login-form">
+        <label for="email">Correo electrónico:</label>
+        <input type="email" id="email" required>
+        <br><br>
+        <label for="password">Contraseña:</label>
+        <input type="password" id="password" required>
+        <br><br>
+        <button type="submit">Iniciar sesión</button>
+        <!-- <button id="register-button" type="button">Registrarse</button> -->
+    </form>
+</body>
+</html>

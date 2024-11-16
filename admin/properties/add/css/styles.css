@@ -1,0 +1,213 @@
+body {
+    margin: 0;
+    background: black;
+}
+
+.form-admin-add-property-Master {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    background-color: rgb(34 34 39);
+    height: 100%;
+    width: 100%;
+}
+
+.form-admin-add-property {
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #1b1d23;
+    max-height: 1440px;
+    width: 80%;
+    max-width: 750px;
+    border-radius: 14px;
+    height: 95%;
+    overflow: auto;
+    padding: 20px 35px;
+    box-sizing: border-box;
+    color: white;
+}
+
+.form-divisor {
+    position: relative;
+    height: 1px;
+    width: 100%;
+    margin: 24px 0px;
+    background: #ebebeb;
+}
+
+
+label {
+    display: block;
+    margin-top: 10px;
+}
+
+#alqvend {
+    display: block;
+    margin-top: -10px;
+}
+
+#inputalq {
+    width: auto;
+}
+
+#titlelabel {
+    margin-bottom: 14px;
+}
+
+input {
+    width: 98%;
+    padding: 17px 8px;
+    margin-top: 5px;
+    border-radius: 14px;
+    border: none;
+    background: #22252c;
+}
+
+#welcome-message {
+    font-family: system-ui;
+    font-size: 2em;
+    font-weight: 500;
+    margin-block-start: 0px;
+    margin-block-end: 0px;
+}
+
+/* Estilos para la lista y las imágenes de vista previa */
+
+#lista-imagenes {
+    background: gray;
+}
+
+
+.image-list {
+    list-style-type: none;
+    display: flex;
+    gap: 10px;
+    padding: 0;
+}
+
+li {
+    display: list-item;
+    text-align: -webkit-match-parent;
+    unicode-bidi: isolate;
+    display: inline-flex;
+}
+
+.image-preview-item {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    overflow: hidden;
+}
+
+.image-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.image-order-label {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    background-color: rgb(0 0 0 / 56%);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.8em;
+    font-family: none;
+}
+
+/* Estilos para la lista y las imágenes de vista previa FIN */
+
+#loading-indicator {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 5px;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    z-index: 1000;
+    background-color: #1c1b2b;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    text-align: center;
+}
+
+.modal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    cursor: auto;
+    padding: 16px;
+}
+
+#enlace-propiedad {
+    width: 100%;
+    margin: 10px 0;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    text-align: center;
+}
+
+
+#map {
+    width: 100%;
+    height: 400px;
+    margin-top: 10px;
+    border-radius: 14px;
+}
+
+
+
+
+/* Estilos para Chrome, Safari y Edge */
+.form-admin-add-property::-webkit-scrollbar {
+    width: 8px;
+    /* Ancho de la barra de desplazamiento */
+}
+
+.form-admin-add-property::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    /* Color de fondo del track */
+}
+
+.form-admin-add-property::-webkit-scrollbar-thumb {
+    background: #00000041;
+    border-radius: 4px;
+}
+
+.form-admin-add-property::-webkit-scrollbar-thumb:hover {
+    background: #a7a7a7;
+}
+
+
+
+@media (max-width: 700px) {
+
+    .form-admin-add-property {
+        height: 100%;
+        width: 100%;
+    }
+
+}
