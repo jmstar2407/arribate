@@ -3,13 +3,109 @@ body {
     background: black;
 }
 
-.form-admin-add-property-Master {
-    position: fixed;
-    top: 0px;
-    left: 0px;
-    background-color: rgb(34 34 39);
+#content {
+    display: block;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     height: 100%;
+    margin: 0;
+    background-color: #7bacdd;
+}
+
+.menu-master {
+    position: relative;
+    height: 60px;
     width: 100%;
+    background: rgb(21 22 26);
+    border-bottom: 1px solid hsl(246.67deg 7.67% 14.03%);
+    text-align: center;
+    
+}
+
+.logonombre {
+    position: relative;
+    display: inline-flex;
+    top: 0px;
+    font-family: system-ui;
+    font-weight: bold;
+    font-size: 27px;
+    color: #cd1025;
+    margin-top: 0px;
+    align-items: center;
+}
+
+.logonombre span {
+    position: relative;
+    top: -3px;
+    font-size: 10px;
+    color: #777777;
+    text-align: center;
+}
+
+.logo1 {
+    position: relative;
+    margin-top: 0px;
+    height: 57px;
+    width: 57px;
+    background: #ff000000;
+    background-image: url(../img/logo2.svg);
+    background-size: 57px;
+    background-repeat: no-repeat;
+}
+
+.logonombre div {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    flex: 1;
+}
+
+.logonombre div {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    flex: 1;
+}
+
+.logonombre h1 {
+    font-family: system-ui;
+    position: relative;
+    top: 2px;
+    font-size: 30px;
+    margin-block-start: 0px;
+    margin-block-end: 0px;
+    font-weight: bold;
+    background: linear-gradient(90deg, #096caf, #096caf, #096caf, #096caf, #096caf, #096caf, #096caf, #096caf, #ffffff, #cd1025, #cd1025, #cd1025, #cd1025, #cd1025, #cd1025, #cd1025, #cd1025, #ffffff, #096caf, #096caf, #096caf, #096caf, #096caf, #096caf, #096caf, #096caf);
+    background-size: 400%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientMove linear 7s infinite;
+}
+
+@keyframes gradientMove {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    100% {
+        background-position: 100% 50%;
+    }
+}
+
+
+.form-admin-add-property-Master {
+    top: 25px;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    max-width: 750px;
+    height: calc(100% - 50px);
+    min-height: 60px;
+    border-radius: 15px;
+    overflow: hidden;
 }
 
 .form-admin-add-property {
@@ -18,9 +114,8 @@ body {
     margin-right: auto;
     background-color: #1b1d23;
     max-height: 1440px;
-    width: 80%;
-    max-width: 750px;
-    border-radius: 14px;
+    width: 100%;
+    border-radius: 0px;
     height: 95%;
     overflow: auto;
     padding: 20px 35px;
