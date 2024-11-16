@@ -507,12 +507,14 @@
                     <div id="map"></div>
                     <br><br>
 
-                    <div class="deslizar1" style="height: 50px; width: 100%;">
-                        <button type="submit" class="slider-button">
+                    <div class="slider-container"  style="height: 50px; width: 100%;">
+                        <button class="slider-button">
+                          <div class="button-content"> 
                             <span class="slider-text">Publicar Propiedad</span>
                             <div class="circle" id="sliderCircle"></div>
+                          </div>
                         </button>
-                    </div>
+                      </div>
                 </form>
 
 
@@ -621,6 +623,7 @@
     const sliderCircle = document.getElementById('sliderCircle');
     const sliderButton = document.querySelector('.slider-button');
     const sliderText = document.querySelector('.slider-text');
+    const buttonContent = document.querySelector('.button-content'); // Obtener el div
     let isSliding = false;
 
     function initializeText() {
@@ -636,6 +639,11 @@
 
     sliderCircle.addEventListener('mousedown', startSlide);
     sliderCircle.addEventListener('touchstart', startSlide);
+
+    // Prevenir el comportamiento por defecto del clic en el div
+    buttonContent.addEventListener('click', (event) => {
+      event.preventDefault(); 
+    });
 
     // Event listener para el clic en el círculo
     sliderCircle.addEventListener('click', () => {
