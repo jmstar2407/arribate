@@ -277,6 +277,25 @@ li {
 
 
 
+    /* Estilos para Chrome, Safari y Edge */
+    .form-admin-add-property::-webkit-scrollbar {
+        width: 8px;
+        /* Ancho de la barra de desplazamiento */
+    }
+
+    .form-admin-add-property::-webkit-scrollbar-track {
+        background: #16181d;
+        /* Color de fondo del track */
+    }
+
+    .form-admin-add-property::-webkit-scrollbar-thumb {
+        background: #d1d1d141;
+        border-radius: 4px;
+    }
+
+    .form-admin-add-property::-webkit-scrollbar-thumb:hover {
+        background: #333539;
+    }
 
 
 
