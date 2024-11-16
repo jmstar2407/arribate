@@ -220,6 +220,7 @@
                     ? `https://arribate.com/venta/${idPropiedad}`
                     : `https://arribate.com/alquiler/${idPropiedad}`;
                 document.getElementById("nombre-usuario").textContent = `¡${correoUsuario}, la propiedad se agregó con éxito!`;
+                document.getElementById("mensaje-adicional").textContent = `Propiedad publicada correctamente con el ID: ${idPropiedad}`;
                 document.getElementById("mensaje-modal").textContent = "Puedes copiar el enlace de tu propiedad:";
                 document.getElementById("enlace-propiedad").value = enlacePropiedad;
                 document.getElementById("modal-exito").style.display = "block";
@@ -535,6 +536,7 @@
                 <div id="modal-exito" class="modal">
                     <div class="modal-content">
                         <span id="nombre-usuario"></span>
+                        <div id="mensaje-adicional"></div>
                         <p id="mensaje-modal"></p>
                         <input type="text" id="enlace-propiedad" readonly>
                         <button id="copiar-enlace">Copiar enlace</button>
