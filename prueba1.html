@@ -36,7 +36,7 @@
         }
 
         .slider-text {
-            position: absolute; /* Cambiado a absolute para que no se desplace */
+            position: absolute; /* Mantener el texto fijo */
             left: 50%;
             transform: translateX(-50%); /* Centrar el texto */
             transition: opacity 0.3s ease;
@@ -82,7 +82,7 @@
             const containerWidth = sliderContainer.offsetWidth;
             const circleWidth = sliderCircle.offsetWidth;
 
-            const onMouseMove = (e) => {
+            const onMove = (e) => {
                 const mouseX = e.clientX || e.touches[0].clientX;
                 const left = Math.min(Math.max(mouseX - sliderContainer.getBoundingClientRect().left - circleWidth / 2, 0), containerWidth - circleWidth);
                 sliderCircle.style.left = left + 'px';
@@ -103,19 +103,23 @@
                 sliderText.innerText = updatedText;
             };
 
-            const onMouseUp = () => {
+            const onEnd = () => {
                 if (parseFloat(sliderCircle.style.left) >= containerWidth - circleWidth) {
                     document.getElementById('propertyForm').submit();
                 } else {
                     resetSlider();
                 }
                 isSliding = false;
-                document.removeEventListener('mousemove', onMouseMove);
-                document.removeEventListener('mouseup', onMouseUp);
+                document.removeEventListener('mousemove', onMove);
+                document.removeEventListener('mouseup', onEnd);
+                document.removeEventListener('touchmove', onMove);
+                document.removeEventListener('touchend', onEnd);
             };
 
-            document.addEventListener('mousemove', onMouseMove);
-            document.addEventListener('mouseup', onMouseUp);
+            document.addEventListener('mousemove', onMove);
+            document.addEventListener('mouseup', onEnd);
+            document.addEventListener('touchmove', onMove);
+            document.addEventListener('touchend', onEnd);
         }
 
         function resetSlider() {
