@@ -36,6 +36,9 @@
         }
 
         .slider-text {
+            position: absolute; /* Cambiado a absolute para que no se desplace */
+            left: 50%;
+            transform: translateX(-50%); /* Centrar el texto */
             transition: opacity 0.3s ease;
         }
 
@@ -49,7 +52,6 @@
             background-color: white;
             border-radius: 50%;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-            transition: left 0.3s ease;
             cursor: pointer;
         }
     </style>
@@ -84,7 +86,21 @@
                 const mouseX = e.clientX || e.touches[0].clientX;
                 const left = Math.min(Math.max(mouseX - sliderContainer.getBoundingClientRect().left - circleWidth / 2, 0), containerWidth - circleWidth);
                 sliderCircle.style.left = left + 'px';
-                sliderText.style.opacity = 1 - left / (containerWidth - circleWidth);
+
+                // Actualizar la visibilidad de las letras
+                const textWidth = sliderText.offsetWidth;
+                const textLeft = (containerWidth - textWidth) / 2; // Centrar el texto
+                const circleRightEdge = left + circleWidth;
+
+                // Calcular la visibilidad de cada letra
+                const letters = sliderText.innerText.split('');
+                const updatedText = letters.map((letter, index) => {
+                    const letterWidth = textWidth / letters.length;
+                    const letterLeft = textLeft + (letterWidth * index);
+                    return circleRightEdge > letterLeft ? '' : letter;
+                }).join('');
+
+                sliderText.innerText = updatedText;
             };
 
             const onMouseUp = () => {
@@ -104,7 +120,7 @@
 
         function resetSlider() {
             sliderCircle.style.left = '0px';
-            sliderText.style.opacity = '1';
+            sliderText.innerText = 'Publicar Propiedad'; // Restablecer el texto
         }
     </script>
 </body>
