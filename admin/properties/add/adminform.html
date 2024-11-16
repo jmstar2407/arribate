@@ -637,6 +637,17 @@
     sliderCircle.addEventListener('mousedown', startSlide);
     sliderCircle.addEventListener('touchstart', startSlide);
 
+    // Event listener para el clic en el círculo
+    sliderCircle.addEventListener('click', () => {
+      const sliderContainer = sliderCircle.parentElement;
+      const containerWidth = sliderContainer.offsetWidth;
+      const circleWidth = sliderCircle.offsetWidth;
+
+      sliderCircle.style.left = (containerWidth - circleWidth) + 'px'; 
+      sliderButton.click();
+      resetSlider();
+    });
+
     function startSlide(event) {
       if (isSliding) return;
       isSliding = true;
@@ -650,7 +661,7 @@
         const left = Math.min(Math.max(mouseX - sliderContainer.getBoundingClientRect().left - circleWidth / 2, 0), containerWidth - circleWidth);
         sliderCircle.style.left = left + 'px';
 
-        if (left >= containerWidth * 0.8) {
+        if (left >= containerWidth * 0.95) {
           sliderButton.style.backgroundColor = 'red';
         } else {
           sliderButton.style.backgroundColor = '#007bff';
@@ -676,7 +687,7 @@
 
         if (left >= containerWidth - circleWidth) {
           sliderButton.click();
-          resetSlider(); // Deslizar a la izquierda después del envío
+          resetSlider();
           e.preventDefault();
           e.stopPropagation();
         }
