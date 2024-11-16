@@ -28,62 +28,75 @@
   font-size: 16px;
   flex-grow: 1;
   text-align: center;
+  transition: opacity 0.3s ease; /* Transición suave para la opacidad */
+}
+
+/* Clase para ocultar el texto */
+.texto-oculto {
+  opacity: 0; 
 }
 </style>
 </head>
 <body>
 
-    <div class="boton-deslizante">
-        <div class="circulo"></div>
-        <span class="texto">Publicar Propiedad</span>
-      </div>
-      
-      <script>
-      const circulo = document.querySelector('.circulo');
-      const boton = document.querySelector('.boton-deslizante');
-      
-      let isDragging = false;
-      let offsetX;
-      
-      circulo.addEventListener('mousedown', (e) => {
-        isDragging = true;
-        offsetX = circulo.offsetLeft - e.clientX;
-      
-        // Iniciar vibración si el navegador lo soporta
-        if ("vibrate" in navigator) {
-          navigator.vibrate(50); // Vibrar durante 50ms al iniciar el arrastre
-        }
-      });
-      
-      document.addEventListener('mousemove', (e) => {
-        if (!isDragging) return;
-        e.preventDefault(); 
-      
-        const newLeft = e.clientX + offsetX;
-        circulo.style.left = Math.max(0, Math.min(newLeft, boton.offsetWidth - circulo.offsetWidth)) + 'px';
-      
-        // Vibrar continuamente mientras se arrastra
-        if ("vibrate" in navigator) {
-          navigator.vibrate(10); // Vibrar durante 10ms cada vez que se mueve
-        }
-      });
-      
-      document.addEventListener('mouseup', (e) => {
-        isDragging = false;
-      
-        // Detener la vibración al soltar
-        if ("vibrate" in navigator) {
-          navigator.vibrate(0); 
-        }
-      
-        if (parseInt(circulo.style.left) >= boton.offsetWidth - circulo.offsetWidth) {
-          alert('¡Propiedad publicada!'); 
-          circulo.style.left = '5px'; 
-        } else {
-          circulo.style.left = '5px'; 
-        }
-      });
-      </script>
-      
-      </body>
-      </html>
+<div class="boton-deslizante">
+  <div class="circulo"></div>
+  <span class="texto">Publicar Propiedad</span>
+</div>
+
+<script>
+const circulo = document.querySelector('.circulo');
+const boton = document.querySelector('.boton-deslizante');
+const texto = document.querySelector('.texto');
+
+let isDragging = false;
+let offsetX;
+
+function iniciarArrastre(e) {
+  isDragging = true;
+  // Obtener la posición inicial correcta para mouse o touch events
+  offsetX = circulo.offsetLeft - (e.clientX || e.touches[0].clientX); 
+}
+
+function moverCirculo(e) {
+  if (!isDragging) return;
+  e.preventDefault(); 
+
+  // Calcular la posición del círculo para mouse o touch events
+  const newLeft = (e.clientX || e.touches[0].clientX) + offsetX; 
+  circulo.style.left = Math.max(0, Math.min(newLeft, boton.offsetWidth - circulo.offsetWidth)) + 'px';
+
+  // Ocultar el texto si el círculo está encima
+  if (newLeft > boton.offsetWidth / 2) { 
+    texto.classList.add('texto-oculto');
+  } else {
+    texto.classList.remove('texto-oculto');
+  }
+}
+
+function finalizarArrastre(e) {
+  isDragging = false;
+
+  if (parseInt(circulo.style.left) >= boton.offsetWidth - circulo.offsetWidth) {
+    alert('¡Propiedad publicada!'); 
+    circulo.style.left = '5px'; 
+    texto.classList.remove('texto-oculto'); // Mostrar el texto de nuevo
+  } else {
+    circulo.style.left = '5px'; 
+    texto.classList.remove('texto-oculto'); // Mostrar el texto de nuevo
+  }
+}
+
+// Eventos para mouse
+circulo.addEventListener('mousedown', iniciarArrastre);
+document.addEventListener('mousemove', moverCirculo);
+document.addEventListener('mouseup', finalizarArrastre);
+
+// Eventos para touch
+circulo.addEventListener('touchstart', iniciarArrastre);
+document.addEventListener('touchmove', moverCirculo);
+document.addEventListener('touchend', finalizarArrastre);
+</script>
+
+</body>
+</html>
