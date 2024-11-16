@@ -408,7 +408,7 @@
             <div class="logonombre">
                 <div class="logo1"></div>
                 <div style="margin-left: 10px;">
-                    <h1>ArríbaTe</h1><span>República Dominicana</span>
+                    <h1>ArríbaTe</h1><span>Administrador</span>
                 </div>
             </div>
         </div>
@@ -507,8 +507,12 @@
                 <div id="map"></div>
                 <br><br>
 
-
-                <button type="submit">Agregar Propiedad</button>
+<div class="deslizar1" style="height: 50px; width: 100%;">
+                <button type="submit" class="slider-button">
+                    <span class="slider-text">Publicar Propiedad</span>
+                    <div class="circle" id="sliderCircle"></div>
+                  </button>
+                </div>
             </form>
             
 
@@ -613,7 +617,88 @@
         async defer>
         </script>
 
+  <script>
+    const sliderCircle = document.getElementById('sliderCircle');
+    const sliderText = document.querySelector('.slider-text');
+    let isSliding = false;
 
+    // Crear los <span> para cada letra al inicio
+    function initializeText() {
+      const letters = sliderText.innerText.split('');
+      let updatedText = "";
+      for (let i = 0; i < letters.length; i++) {
+        updatedText += `<span>${letters[i]}</span>`;
+      }
+      sliderText.innerHTML = updatedText;
+    }
+
+    initializeText(); // Llamar a la función al cargar la página
+
+    sliderCircle.addEventListener('mousedown', startSlide);
+    sliderCircle.addEventListener('touchstart', startSlide);
+
+    function startSlide(event) {
+      if (isSliding) return;
+      isSliding = true;
+
+      const sliderContainer = sliderCircle.parentElement;
+      const containerWidth = sliderContainer.offsetWidth;
+      const circleWidth = sliderCircle.offsetWidth;
+
+      const onMove = (e) => {
+        const mouseX = e.clientX || e.touches[0].clientX;
+        const left = Math.min(Math.max(mouseX - sliderContainer.getBoundingClientRect().left - circleWidth / 2, 0), containerWidth - circleWidth);
+        sliderCircle.style.left = left + 'px';
+
+        // Obtener todos los <span> de las letras
+        const letterSpans = sliderText.querySelectorAll('span'); 
+        const textWidth = sliderText.offsetWidth;
+
+        letterSpans.forEach((span, i) => {
+          const letterWidth = textWidth / letterSpans.length;
+          const letterLeft = (containerWidth / 2) - (textWidth / 2) + (letterWidth * i);
+          const visibility = (left + circleWidth) - letterLeft;
+
+          if (visibility < 0) {
+            span.style.opacity = 1; // Mostrar la letra
+          } else if (visibility < letterWidth) {
+            const opacity = Math.max(0, 1 - (visibility / letterWidth));
+            span.style.opacity = opacity; // Desvanecer la letra
+          } else {
+            span.style.opacity = 0; // Ocultar la letra
+          }
+        });
+      };
+
+      const onEnd = () => {
+        if (parseFloat(sliderCircle.style.left) >= containerWidth - circleWidth) {
+          document.getElementById('propertyForm').submit();
+        } else {
+          resetSlider();
+        }
+        isSliding = false;
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onEnd);
+        document.removeEventListener('touchmove', onMove);
+        document.removeEventListener('touchend', onEnd);
+      };
+
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onEnd);
+      document.addEventListener('touchmove', onMove);
+      document.addEventListener('touchend', onEnd);
+    }
+
+    function resetSlider() {
+      sliderCircle.style.left = '0px';
+
+      // Restablecer la opacidad de todas las letras
+      const letterSpans = sliderText.querySelectorAll('span'); 
+      letterSpans.forEach(span => {
+        span.style.opacity = 1;
+      });
+    }
+  </script>
 </body>
 
 </html>
