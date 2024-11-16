@@ -276,25 +276,7 @@ li {
 
 
 
-/* Estilos para Chrome, Safari y Edge */
-.form-admin-add-property::-webkit-scrollbar {
-    width: 8px;
-    /* Ancho de la barra de desplazamiento */
-}
 
-.form-admin-add-property::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    /* Color de fondo del track */
-}
-
-.form-admin-add-property::-webkit-scrollbar-thumb {
-    background: #00000041;
-    border-radius: 4px;
-}
-
-.form-admin-add-property::-webkit-scrollbar-thumb:hover {
-    background: #a7a7a7;
-}
 
 
 
@@ -306,11 +288,9 @@ li {
         width: 100%;
         border-radius: 0px;
     }
-}
 
-.form-admin-add-property {
-    height: 100%;
-    width: 100%;
-}
-
+    .form-admin-add-property {
+        height: 100%;
+        width: 100%;
+    }
 }
