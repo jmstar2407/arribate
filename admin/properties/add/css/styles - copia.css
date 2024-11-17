@@ -99,58 +99,6 @@ button{
 }
 
 
-
-.categoria-container {
-    display: flex;
-    gap: 10px;
-    background: #0000ff00;
-    justify-content: center;
-    margin: 10px 0px;
-}
-
-.categoria-option {
-    border: 2px solid transparent;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-    text-align: center;
-    transition: border-color 0.3s;
-    background: #2196F3;
-    height: 60px;
-    width: 110px;
-    border-radius: 14px;
-    margin: 0px 20px;
-    box-shadow: 10px 7px 43px -13px #2195f300, 10px 7px 43px 12px #585e6f inset;
-    transition: 0.7s;
-    display: inline-flex;
-    flex-direction: column;
-}
-
-.categoria-option:hover {
-    box-shadow: 10px 7px 43px -23px #2196f3, 10px 7px 43px 12px #585e6f inset;
-    transition: 0.7s;
-}
-
-.categoria-option.active {
-    box-shadow: 10px 7px 43px -13px #2196f3, 10px 7px 43px 12px #585e6f inset;
-    /*box-shadow: 10px 7px 43px -13px #2196f3, -19px -16px 43px -13px #1496a3, 10px 7px 43px 12px #585e6f inset;*/
-    transition: 0.7s;
-}
-
-.categoria-option img {
-    width: 50px; /* Ajusta el tamaño de la imagen */
-    height: auto;
-}
-
-.categoria-option span {
-    position: relative;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 19px;
-}
-
-
-
 .form-admin-add-property-Master {
     top: 25px;
     position: absolute;
@@ -228,10 +176,7 @@ input {
 /* Estilos para la lista y las imágenes de vista previa */
 
 #lista-imagenes {
-    background: #2e2c31;
-    display: block;
-    height: 60px;
-    border-radius: 14px;
+    background: gray;
 }
 
 
@@ -310,13 +255,11 @@ li {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: #2d2d2d;
+    background-color: white;
     border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
     cursor: auto;
     padding: 16px;
-    height: 270px;
-    width: 80%;
 }
 
 #enlace-propiedad {
