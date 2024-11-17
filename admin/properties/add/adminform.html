@@ -71,7 +71,7 @@
                 }
 
                 // Usar innerHTML para interpretar HTML en el mensaje
-                welcomeMessage.innerHTML = `HOLA, <br><span style="font-weight: bold;">${userName}</span>`;
+               // welcomeMessage.innerHTML = `HOLA, <br><span style="font-weight: bold;">${userName}</span>`;
                 correoUsuario = user.email;
             } else {
                 window.location.href = "auth.html";
@@ -215,14 +215,12 @@
                 await addDoc(collection(db, coleccion), nuevaPropiedad);
 
                 // Mostrar modal de éxito
-                const enlacePropiedad = categoria === "venta"
-                    ? `https://arribate.com/venta/${idPropiedad}`
-                    : `https://arribate.com/alquiler/${idPropiedad}`;
+                const enlacePropiedad = `https://arribate.com/#id-${idPropiedad}`;
 
                 // Actualiza el contenido del modal
                 document.getElementById("nombre-usuario").textContent = `¡La propiedad se agregó con éxito!`;
                 document.getElementById("mensaje-adicional").textContent = `ID: ${idPropiedad}`;
-                document.getElementById("mensaje-modal").textContent = "Puedes copiar el enlace de tu propiedad:";
+                document.getElementById("mensaje-modal").textContent = "Enlace de la propiedad generado:";
 
                 // Establece el enlace y lo muestra
                 const enlaceElement = document.getElementById("enlace-propiedad");
@@ -362,8 +360,6 @@
         }
 
 
-
-
         // Modifica la función `subirImagenes` para usar `orderedImages`
         async function subirImagenes(imagenes, carpeta) {
             document.getElementById("loading-indicator").style.display = "block";  // Mostrar indicador de carga
@@ -437,15 +433,24 @@
                 <button id="logout-button">Cerrar sesión</button>
                 <h1 id="welcome-message">HOLA,</h1>
                 <form id="formulario-propiedades">
+
+
                     <label for="categoria">Propósito de la Propiedad:</label>
-                    <select id="categoria" required>
-                        <option value="">Selecciona</option>
-                        <option value="venta">Vender</option>
-                        <option value="alquiler">Alquilar</option>
-                    </select>
+                    <div id="categoria" class="categoria-container">
+                        <div class="categoria-option" data-value="venta">
+                            <!-- <img src="ruta/a/imagen-venta.jpg"> -->
+                            <span>Vender</span>
+                        </div>
+                        <div class="categoria-option" data-value="alquiler">
+                            <!-- <img src="ruta/a/imagen-alquiler.jpg"> -->
+                            <span>Alquilar</span>
+                        </div>
+                    </div>
+                    <input type="hidden" id="categoria-hidden" name="categoria" required>
                     <br><br>
 
-                    <label for="tipoPropiedad">Tipo de Propiedad:</label>
+
+                  <label for="tipoPropiedad">Tipo de Propiedad:</label>
                     <select id="tipoPropiedad" required>
                         <option value="">Selecciona</option>
                         <option value="casa">Casa</option>
@@ -737,6 +742,8 @@
             return false;
         }
     </script>
+
+    <script src="./js/scripts-addproperties.js"></script>
 
 </body>
 
