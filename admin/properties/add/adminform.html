@@ -71,7 +71,7 @@
                 }
 
                 // Usar innerHTML para interpretar HTML en el mensaje
-               // welcomeMessage.innerHTML = `HOLA, <br><span style="font-weight: bold;">${userName}</span>`;
+                welcomeMessage.innerHTML = `HOLA, <br><span style="font-weight: bold;">${userName}</span>`;
                 correoUsuario = user.email;
             } else {
                 window.location.href = "auth.html";
@@ -121,18 +121,18 @@
 
         // Función para manejar cambios en el formulario
         async function actualizarID() {
-            const categoria = document.getElementById("categoria").value;
-            const tipoPropiedad = document.getElementById("tipoPropiedad").value;
+    const categoria = document.getElementById("categoria-input").value; // Input oculto para la categoría
+    const tipoPropiedad = document.getElementById("tipoPropiedad-input").value; // Input oculto para el tipo de propiedad
 
-            if (categoria && tipoPropiedad) {
-                const idGenerado = await generarID(categoria, tipoPropiedad);
-                document.getElementById("idPropiedad").value = idGenerado;
+    if (categoria && tipoPropiedad) {
+        const idGenerado = await generarID(categoria, tipoPropiedad);
+        document.getElementById("idPropiedad").value = idGenerado;
 
-                // Actualizar la carpeta de imágenes automáticamente
-                const imageFolderPath = `propiedades/${categoria}/${idGenerado}/img`;
-                document.getElementById("imageFolder").value = imageFolderPath;
-            }
-        }
+        // Actualizar la carpeta de imágenes automáticamente
+        const imageFolderPath = `propiedades/${categoria}/${idGenerado}/img`;
+        document.getElementById("imageFolder").value = imageFolderPath;
+    }
+}
 
         // Función para obtener la fecha actual en formato día/mes/año hora:minuto:segundo
         function obtenerFechaActual() {
@@ -394,6 +394,33 @@
             });
         }
 
+
+// Función para configurar la selección de opciones
+function setupOptionSelection(optionSelector, inputId) {
+    document.querySelectorAll(optionSelector).forEach(option => {
+        option.addEventListener('click', function() {
+            // Remover la clase 'active' de todas las opciones
+            document.querySelectorAll(optionSelector).forEach(opt => opt.classList.remove('active'));
+            
+            // Marcar la opción seleccionada como activa
+            this.classList.add('active');
+
+            // Actualizar el valor del input oculto
+            document.getElementById(inputId).value = this.getAttribute('data-value');
+
+            // Llamar a la función para actualizar el ID
+            actualizarID(); // Asegúrate de que esta función esté definida y funcione correctamente
+        });
+    });
+}
+
+// Configurar la selección para las categorías
+setupOptionSelection('.categoria-option', 'categoria-input');
+
+// Configurar la selección para los tipos de propiedad
+setupOptionSelection('.tipo-propiedad-option', 'tipoPropiedad-input');
+
+
         // Asignar eventos
         window.onload = () => {
             document.getElementById("categoria").addEventListener("change", actualizarID);
@@ -438,26 +465,39 @@
                     <label for="categoria">Propósito de la Propiedad:</label>
                     <div id="categoria" class="categoria-container">
                         <div class="categoria-option" data-value="venta">
-                            <!-- <img src="ruta/a/imagen-venta.jpg"> -->
+                            <!-- <img src="ruta/a/tu-imagen-venta.png" alt="Vender"> -->
                             <span>Vender</span>
                         </div>
                         <div class="categoria-option" data-value="alquiler">
-                            <!-- <img src="ruta/a/imagen-alquiler.jpg"> -->
+                            <!-- <img src="ruta/a/tu-imagen-alquiler.png" alt="Alquilar"> -->
                             <span>Alquilar</span>
                         </div>
                     </div>
-                    <input type="hidden" id="categoria-hidden" name="categoria" required>
+                    <input type="hidden" id="categoria-input" name="categoria" required>
+                    <br><br>
+                    
+
+                    <label for="tipoPropiedad">Tipo de Propiedad:</label>
+                    <div id="tipoPropiedad" class="tipo-propiedad-container">
+                        <div class="tipo-propiedad-option" data-value="casa">
+                            <img src="ruta/a/tu-imagen-casa.png" alt="Casa">
+                            <span>Casa</span>
+                        </div>
+                        <div class="tipo-propiedad-option" data-value="apartamento">
+                            <img src="ruta/a/tu-imagen-apartamento.png" alt="Apartamento">
+                            <span>Apartamento</span>
+                        </div>
+                        <div class="tipo-propiedad-option" data-value="terreno">
+                            <img src="ruta/a/tu-imagen-terreno.png" alt="Terreno">
+                            <span>Terreno</span>
+                        </div>
+                    </div>
+                    <input type="hidden" id="tipoPropiedad-input" name="tipoPropiedad" required>
                     <br><br>
 
 
-                  <label for="tipoPropiedad">Tipo de Propiedad:</label>
-                    <select id="tipoPropiedad" required>
-                        <option value="">Selecciona</option>
-                        <option value="casa">Casa</option>
-                        <option value="apartamento">Apartamento</option>
-                        <option value="terreno">Terreno</option>
-                    </select>
-                    <br><br>
+
+
 
                     <label for="idPropiedad">ID de la Propiedad:</label>
                     <input type="text" id="idPropiedad" placeholder="vc10001" readonly required>
@@ -742,8 +782,6 @@
             return false;
         }
     </script>
-
-    <script src="./js/scripts-addproperties.js"></script>
 
 </body>
 
