@@ -122,7 +122,19 @@ select {
     }
 }
 
-
+#caracteristicas {
+    width: 99%;
+    height: 132px;
+    border-radius: 8px;
+    resize: none;
+    background: #242b39;
+    border: none;
+    padding: 7px 10px;
+    box-sizing: border-box;
+    margin: 7px 0px;
+    color: white;
+    font-size: 15px;
+}
 
 
 
