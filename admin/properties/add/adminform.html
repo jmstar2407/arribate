@@ -82,8 +82,8 @@
 
         // Función para obtener el siguiente ID
         async function generarID(categoria, tipoPropiedad) {
-            const letraInicial = categoria === "venta" ? "v" : "a";
-            const letraTipo = {
+    const letraInicial = categoria === "venta" ? "v" : "a";
+    const letraTipo = {
                 casa: "c",
                 apartamento: "a",
                 terreno: "t",
@@ -96,33 +96,45 @@
                 edificio: "e"
             }[tipoPropiedad];
 
-            const prefijo = `${letraInicial}${letraTipo}`;
-            const propiedadesRef = collection(db, categoria === "venta" ? "ventas" : "alquileres");
+if (!letraTipo) {
+    console.error("Tipo de propiedad no válido.");
+    return; // Salir si el tipo de propiedad no es válido
+}
 
-            const q = query(
-                propiedadesRef,
-                where("id", ">=", prefijo),
-                where("id", "<", prefijo + "~"),
-                orderBy("id", "desc"),
-                limit(1)
-            );
+const prefijo = `${letraInicial}${letraTipo}`;
+const propiedadesRef = collection(db, categoria === "venta" ? "ventas" : "alquileres");
 
-            const querySnapshot = await getDocs(q);
-            let siguienteNumero = 1;
+const q = query(
+    propiedadesRef,
+    where("id", ">=", prefijo),
+    where("id", "<", prefijo + "~"),
+    orderBy("id", "desc"),
+    limit(1)
+);
 
-            querySnapshot.forEach((doc) => {
-                const ultimoID = doc.data().id;
-                const numeroActual = parseInt(ultimoID.slice(2));
-                siguienteNumero = numeroActual + 1;
-            });
+const querySnapshot = await getDocs(q);
+let siguienteNumero = 1;
 
-            return `${prefijo}${String(siguienteNumero).padStart(5, "0")}`;
-        }
+querySnapshot.forEach((doc) => {
+    const ultimoID = doc.data().id;
+        siguienteNumero = parseInt(ultimoID.slice(2)) + 1; // Incrementar el número del último ID
+    });
+
+    // Formatear el nuevo ID
+    const nuevoID = `${prefijo}${String(siguienteNumero).padStart(5, '0')}`; // Asegúrate de que el número tenga 5 dígitos
+    console.log(`Nuevo ID generado: ${nuevoID}`); // Debugging
+    return nuevoID;
+}
+
+
+
 
         // Función para manejar cambios en el formulario
         async function actualizarID() {
     const categoria = document.getElementById("categoria-input").value; // Input oculto para la categoría
     const tipoPropiedad = document.getElementById("tipoPropiedad-input").value; // Input oculto para el tipo de propiedad
+
+    console.log(`Actualizando ID: Categoria: ${categoria}, Tipo: ${tipoPropiedad}`); // Debugging
 
     if (categoria && tipoPropiedad) {
         const idGenerado = await generarID(categoria, tipoPropiedad);
@@ -131,6 +143,8 @@
         // Actualizar la carpeta de imágenes automáticamente
         const imageFolderPath = `propiedades/${categoria}/${idGenerado}/img`;
         document.getElementById("imageFolder").value = imageFolderPath;
+    } else {
+        console.error("Categoria o Tipo de Propiedad no definidos.");
     }
 }
 
@@ -409,6 +423,7 @@ function setupOptionSelection(optionSelector, inputId) {
             document.getElementById(inputId).value = this.getAttribute('data-value');
 
             // Llamar a la función para actualizar el ID
+            console.log(`Categoria: ${document.getElementById('categoria-input').value}, Tipo: ${document.getElementById(inputId).value}`);
             actualizarID(); // Asegúrate de que esta función esté definida y funcione correctamente
         });
     });
