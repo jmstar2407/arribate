@@ -7,6 +7,30 @@ button{
     -webkit-tap-highlight-color: transparent;
 }
 
+input {
+    width: 100%;
+    padding: 16px 10px;
+    box-sizing: border-box;
+    margin-top: 5px;
+    border-radius: 14px;
+    border: none;
+    background: #22252c;
+    color: white;
+    position: relative;
+}
+
+select {
+    border-radius: 10px;
+    height: 40px;
+    width: 100%;
+    padding: 0px 5px;
+    background: #313847;
+    color: white;
+    border: none;
+    margin: 5px 0px;
+    cursor: pointer;
+}
+
 #content {
     display: block;
     font-family: Arial, sans-serif;
@@ -100,6 +124,19 @@ button{
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 .categoria-container {
     display: flex;
     gap: 10px;
@@ -154,14 +191,6 @@ button{
 
 
 
-
-
-
-
-
-
-
-
 .tipo-propiedad-container {
     display: flex;
     gap: 10px;
@@ -184,6 +213,11 @@ button{
     width: 50px; /* Ajusta el tamaño de la imagen */
     height: 50px; /* Ajusta el tamaño de la imagen */
 }
+
+
+
+
+
 
 
 
@@ -250,17 +284,6 @@ label {
 
 #titlelabel {
     margin-bottom: 14px;
-}
-
-input {
-    width: 98%;
-    padding: 17px 8px;
-    margin-top: 5px;
-    border-radius: 14px;
-    border: none;
-    background: #22252c;
-    color: white;
-    position: relative;
 }
 
 #welcome-message {
@@ -382,8 +405,6 @@ li {
     border-radius: 14px;
 }
 
-
-
 @media (min-width: 701px) {
 
     /* Estilos para Chrome, Safari y Edge */
@@ -423,22 +444,6 @@ li {
         padding: 20px 20px;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -507,19 +512,6 @@ li {
     position: relative; /* Para que el círculo se posicione correctamente */
     -webkit-tap-highlight-color: transparent;
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
