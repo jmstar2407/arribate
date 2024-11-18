@@ -284,99 +284,107 @@
 
 
 
-        // Modifica el evento para manejar la carga de imágenes adicionales
-       // Manejando la carga de imágenes y actualizando conteo y peso total
-document.getElementById("imagenes").addEventListener("change", (event) => {
-    const imageCountInput = document.getElementById("imageCount");
-    const imageCountOutput = document.getElementById("imageCountOutput");
-    const pesoTotalOutput = document.getElementById("pesoTotalOutput");
-    const lista = document.getElementById("lista-imagenes");
-    const nuevasImagenes = Array.from(event.target.files);
-    const maxFiles = 32; // Máximo de archivos
-    const maxPeso = 50 * 1024 * 1024; // Máximo de 50MB en bytes
-    let totalPesoImagenes = 0; // Inicializar el peso total
 
-    // Actualizar el número de imágenes en el campo de solo lectura
-    imageCountInput.value = nuevasImagenes.length;
-    imageCountInput.setAttribute("readonly", true);
+        // Manejando la carga de imágenes y actualizando conteo y peso total
+        document.getElementById("imagenes").addEventListener("change", (event) => {
+            const imageCountInput = document.getElementById("imageCount");
+            const imageCountOutput = document.getElementById("imageCountOutput");
+            const pesoTotalOutput = document.getElementById("pesoTotalOutput");
+            const lista = document.getElementById("lista-imagenes");
+            const nuevasImagenes = Array.from(event.target.files);
+            const maxFiles = 32; // Máximo de archivos
+            const maxPeso = 50 * 1024 * 1024; // Máximo de 50MB en bytes
+            let totalPesoImagenes = 0; // Inicializar el peso total
 
-    // Validar el número de archivos
-    if (nuevasImagenes.length + orderedImages.length > maxFiles) {
-        alert(`No puedes cargar más de ${maxFiles} imágenes.`);
-        return;
-    }
+            // Actualizar el número de imágenes en el campo de solo lectura
+            imageCountInput.value = nuevasImagenes.length;
+            imageCountInput.setAttribute("readonly", true);
 
-    // Calcular y mostrar el peso total
-    nuevasImagenes.forEach(file => {
-        totalPesoImagenes += file.size; // Sumar el tamaño de cada archivo
-    });
+            // Validar el número de archivos
+            if (nuevasImagenes.length + orderedImages.length > maxFiles) {
+                alert(`No puedes cargar más de ${maxFiles} imágenes.`);
+                return;
+            }
 
-    // Validar el peso total
-    if (totalPesoImagenes + orderedImages.reduce((total, img) => total + img.size, 0) > maxPeso) {
-        alert("El peso total de las imágenes no puede exceder los 50MB.");
-        totalPesoImagenes -= nuevasImagenes.reduce((total, file) => total + file.size, 0); // Restar el peso de las imágenes añadidas
-        return;
-    }
-
-    // Actualizar el conteo y el peso total en los outputs correspondientes
-    imageCountOutput.value = orderedImages.length + nuevasImagenes.length;
-    pesoTotalOutput.value = (totalPesoImagenes / (1024 * 1024)).toFixed(2) + " MB"; // Mostrar en MB
-
-    // Añadir las nuevas imágenes a la lista existente y al array de imágenes
-    nuevasImagenes.forEach((file, index) => {
-        const listItem = document.createElement("li");
-        listItem.classList.add("image-preview-item");
-        listItem.dataset.index = orderedImages.length + index;
-
-        const img = document.createElement("img");
-        img.classList.add("image-preview");
-        img.src = URL.createObjectURL(file);
-        img.alt = `Imagen ${orderedImages.length + index + 1}`;
-
-        const label = document.createElement("span");
-        label.classList.add("image-order-label");
-        label.textContent = orderedImages.length + index + 1;
-
-        // Botón de eliminación
-        const removeButton = document.createElement("button");
-        removeButton.textContent = "X";
-        removeButton.style.position = "absolute";
-        removeButton.style.top = "5px";
-        removeButton.style.right = "5px";
-        removeButton.onclick = () => {
-            totalPesoImagenes -= file.size; // Restar el tamaño del archivo eliminado
-            orderedImages.splice(orderedImages.indexOf(file), 1);
-            listItem.remove();
-            actualizarOrden();
-            // Actualizar el conteo y el peso total después de eliminar una
-            imageCountOutput.value = orderedImages.length;
-            pesoTotalOutput.value = (totalPesoImagenes / (1024 * 1024)).toFixed(2) + " MB"; // Actualizar el peso total
-        };
-
-        listItem.appendChild(img);
-        listItem.appendChild(label);
-        listItem.appendChild(removeButton);
-        lista.appendChild(listItem);
-    });
-
-    orderedImages.push(...nuevasImagenes);
-
-    // Mantener la funcionalidad de arrastrar y soltar
-    new Sortable(lista, {
-        animation: 150,
-        onUpdate: () => {
-            const imageElements = lista.querySelectorAll("li");
-            orderedImages = Array.from(imageElements).map((li) => {
-                const originalIndex = li.dataset.index;
-                return orderedImages[originalIndex];
+            // Calcular y mostrar el peso total
+            nuevasImagenes.forEach(file => {
+                totalPesoImagenes += file.size; // Sumar el tamaño de cada archivo
             });
-            imageElements.forEach((li, index) => {
-                li.querySelector(".image-order-label").textContent = index + 1;
-            });
-        }
-    });
-});
 
+            // Validar el peso total
+            if (totalPesoImagenes + orderedImages.reduce((total, img) => total + img.size, 0) > maxPeso) {
+                alert("El peso total de las imágenes no puede exceder los 50MB.");
+                totalPesoImagenes -= nuevasImagenes.reduce((total, file) => total + file.size, 0); // Restar el peso de las imágenes añadidas
+                return;
+            }
+
+            // Actualizar el conteo y el peso total en los outputs correspondientes
+            const totalImages = orderedImages.length + nuevasImagenes.length;
+            imageCountOutput.value = `${totalImages} Imágenes`; // Formato deseado para el conteo
+            pesoTotalOutput.value = `${(totalPesoImagenes / (1024 * 1024)).toFixed(2)} MB`; // Formato deseado para el peso
+
+            // Añadir las nuevas imágenes a la lista existente y al array de imágenes
+            nuevasImagenes.forEach((file, index) => {
+                const listItem = document.createElement("li");
+                listItem.classList.add("image-preview-item");
+                listItem.dataset.index = orderedImages.length + index;
+
+                const img = document.createElement("img");
+                img.classList.add("image-preview");
+                img.src = URL.createObjectURL(file);
+                img.alt = `Imagen ${orderedImages.length + index + 1}`;
+
+                const label = document.createElement("span");
+                label.classList.add("image-order-label");
+                label.textContent = orderedImages.length + index + 1;
+
+
+                // Botón de eliminación
+                const removeButton = document.createElement("button");
+                removeButton.textContent = "X";
+                removeButton.style.position = "absolute";
+                removeButton.style.top = "5px";
+                removeButton.style.right = "5px";
+
+                // Asignar eventos para eliminar la imagen
+                const handleRemove = () => {
+                    totalPesoImagenes -= file.size; // Restar el tamaño del archivo eliminado
+                    orderedImages.splice(orderedImages.indexOf(file), 1);
+                    listItem.remove();
+                    actualizarOrden();
+
+                    // Actualizar el conteo y el peso total después de eliminar una
+                    const updatedTotalImages = orderedImages.length;
+                    imageCountOutput.value = `${updatedTotalImages} Imágenes`; // Actualizar el conteo
+                    pesoTotalOutput.value = `${(totalPesoImagenes / (1024 * 1024)).toFixed(2)} MB`; // Actualizar el peso total
+                };
+
+                removeButton.onclick = handleRemove;
+                removeButton.addEventListener("touchstart", handleRemove); // Agregar soporte para dispositivos táctiles
+
+                listItem.appendChild(img);
+                listItem.appendChild(label);
+                listItem.appendChild(removeButton);
+                lista.appendChild(listItem);
+            });
+
+            orderedImages.push(...nuevasImagenes);
+
+            // Mantener la funcionalidad de arrastrar y soltar
+            new Sortable(lista, {
+                animation: 150,
+                onUpdate: () => {
+                    const imageElements = lista.querySelectorAll("li");
+                    orderedImages = Array.from(imageElements).map((li) => {
+                        const originalIndex = li.dataset.index;
+                        return orderedImages[originalIndex];
+                    });
+                    imageElements.forEach((li, index) => {
+                        li.querySelector(".image-order-label").textContent = index + 1;
+                    });
+                }
+            });
+        });
 
 
         // Función para actualizar la lista visual y el orden después de eliminar
@@ -472,7 +480,7 @@ document.getElementById("imagenes").addEventListener("change", (event) => {
                         <option value="alquiler">Alquilar</option>
                     </select>
                     <br><br>
-                    
+
 
                     <label for="tipoPropiedad">Tipo de Propiedad:</label>
                     <select id="tipoPropiedad" required>
@@ -484,23 +492,25 @@ document.getElementById("imagenes").addEventListener("change", (event) => {
                     <br><br>
 
                     <label for="idPropiedad">ID de la Propiedad:</label>
-                    <input type="text" id="idPropiedad" placeholder="vc10001" readonly="" required="" style="padding: 12px 10px;color: #59eeff; font-size: 17px;">
+                    <input type="text" id="idPropiedad" placeholder="vc10001" readonly="" required=""
+                        style="padding: 12px 10px;color: #59eeff; font-size: 17px;">
                     <br><br>
 
                     <label for="icon">Icono de propiedad:</label>
                     <div id="icon-options" class="icon-buttons">
                         <button type="button" class="icon-button" value="houseIcon" id="icon-casa">
                             <img src="./img/casa4.png" alt="Casa" class="icon-image" style="border-color: #ff5f64;">
-                            
+
                             <p>Casa<br> Estándar</p>
                         </button>
                         <button type="button" class="icon-button" value="buildingIcon" id="icon-apartamento">
-                            <img src="./img/apartamento3.png" alt="Apartamento" class="icon-image" style="border-color: #1090e7;">
-                        <p>Apartamento<br> Estándar</p>
+                            <img src="./img/apartamento3.png" alt="Apartamento" class="icon-image"
+                                style="border-color: #1090e7;">
+                            <p>Apartamento<br> Estándar</p>
                         </button>
                         <button type="button" class="icon-button" value="landIcon" id="icon-terrero">
                             <img src="./img/solar2.png" alt="Terreno" class="icon-image" style="border-color: #59a739;">
-                        <p>Terreno<br> Estándar</p>
+                            <p>Terreno<br> Estándar</p>
                         </button>
                     </div>
                     <input type="hidden" id="icon" name="icon" required>
@@ -552,11 +562,13 @@ document.getElementById("imagenes").addEventListener("change", (event) => {
                     <input type="file" id="imagenes" multiple required accept="image/*">
                     <ul id="lista-imagenes"></ul>
 
-                    <label for="imageCountOutput">Número Total de Imágenes:</label>
-                    <output id="imageCountOutput" style="padding: 12px 10px; color: #59eeff; font-size: 17px;">0</output>
+                    <label for="imageCountOutput"></label>
+                    <output id="imageCountOutput" style="padding: 12px 10px; color: #59eeff; font-size: 17px;">0
+                        Imágenes</output>
 
-                    <label for="pesoTotalOutput">Peso Total de las Imágenes:</label>
-                    <output id="pesoTotalOutput" style="padding: 12px 10px; color: #59eeff; font-size: 17px;">0 MB</output>
+                    <label for="pesoTotalOutput"></label>
+                    <output id="pesoTotalOutput" style="padding: 12px 10px; color: #59eeff; font-size: 17px;">0
+                        MB</output>
                     <div class="form-divisor"></div> <!-- Divisor -->
 
 
@@ -566,9 +578,10 @@ document.getElementById("imagenes").addEventListener("change", (event) => {
 
 
 
-                    
+
                     <label for="caracteristicas">Detalles de la Propiedad:</label>
-                    <textarea id="caracteristicas" placeholder="Escriba aquí detalles adicionales..." required></textarea>
+                    <textarea id="caracteristicas" placeholder="Escriba aquí detalles adicionales..."
+                        required></textarea>
 
                     <div class="form-divisor"></div> <!-- Divisor -->
 
@@ -797,19 +810,19 @@ document.getElementById("imagenes").addEventListener("change", (event) => {
 
 
         document.querySelectorAll(".icon-button").forEach(button => {
-  button.addEventListener("click", () => {
-    // 1. Remover clase "active" de todos los botones
-    document.querySelectorAll(".icon-button.active").forEach(btn => {
-      btn.classList.remove("active"); 
-    });
+            button.addEventListener("click", () => {
+                // 1. Remover clase "active" de todos los botones
+                document.querySelectorAll(".icon-button.active").forEach(btn => {
+                    btn.classList.remove("active");
+                });
 
-    // 2. Agregar clase "active" al botón clickeado
-    button.classList.add("active"); 
-    
-    // 3. Actualizar el valor del input oculto
-    document.getElementById("icon").value = button.value;
-  });
-});
+                // 2. Agregar clase "active" al botón clickeado
+                button.classList.add("active");
+
+                // 3. Actualizar el valor del input oculto
+                document.getElementById("icon").value = button.value;
+            });
+        });
     </script>
 
 </body>
