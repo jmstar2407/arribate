@@ -17,6 +17,7 @@ input {
     background: #22252c;
     color: white;
     position: relative;
+    -webkit-tap-highlight-color: transparent;
 }
 
 select {
@@ -29,6 +30,7 @@ select {
     border: none;
     margin: 5px 0px;
     cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
 }
 
 #content {
@@ -368,7 +370,7 @@ select {
     height: 1px;
     width: 100%;
     margin: 24px 0px;
-    background: #ebebeb;
+    background: #2c313d;
 }
 
 
@@ -403,7 +405,6 @@ label {
 #lista-imagenes {
     background: #2e2c31;
     display: block;
-    height: 60px;
     border-radius: 14px;
 }
 
