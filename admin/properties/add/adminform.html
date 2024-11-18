@@ -285,67 +285,97 @@
 
 
         // Modifica el evento para manejar la carga de imágenes adicionales
-        document.getElementById("imagenes").addEventListener("change", (event) => {
-            const imageCountInput = document.getElementById("imageCount");
-            const lista = document.getElementById("lista-imagenes");
-            const nuevasImagenes = Array.from(event.target.files);
+       // Manejando la carga de imágenes y actualizando conteo y peso total
+document.getElementById("imagenes").addEventListener("change", (event) => {
+    const imageCountInput = document.getElementById("imageCount");
+    const imageCountOutput = document.getElementById("imageCountOutput");
+    const pesoTotalOutput = document.getElementById("pesoTotalOutput");
+    const lista = document.getElementById("lista-imagenes");
+    const nuevasImagenes = Array.from(event.target.files);
+    const maxFiles = 32; // Máximo de archivos
+    const maxPeso = 50 * 1024 * 1024; // Máximo de 50MB en bytes
+    let totalPesoImagenes = 0; // Inicializar el peso total
 
-            // Actualizar el número de imágenes en el campo de solo lectura
-            imageCountInput.value = nuevasImagenes.length;
-            imageCountInput.setAttribute("readonly", true);
+    // Actualizar el número de imágenes en el campo de solo lectura
+    imageCountInput.value = nuevasImagenes.length;
+    imageCountInput.setAttribute("readonly", true);
 
-            // Añadir las nuevas imágenes a la lista existente y al array de imágenes
-            nuevasImagenes.forEach((file, index) => {
-                const listItem = document.createElement("li");
-                listItem.classList.add("image-preview-item");
-                listItem.dataset.index = orderedImages.length + index;
+    // Validar el número de archivos
+    if (nuevasImagenes.length + orderedImages.length > maxFiles) {
+        alert(`No puedes cargar más de ${maxFiles} imágenes.`);
+        return;
+    }
 
-                const img = document.createElement("img");
-                img.classList.add("image-preview");
-                img.src = URL.createObjectURL(file);
-                img.alt = `Imagen ${orderedImages.length + index + 1}`;
+    // Calcular y mostrar el peso total
+    nuevasImagenes.forEach(file => {
+        totalPesoImagenes += file.size; // Sumar el tamaño de cada archivo
+    });
 
-                const label = document.createElement("span");
-                label.classList.add("image-order-label");
-                label.textContent = orderedImages.length + index + 1;
+    // Validar el peso total
+    if (totalPesoImagenes + orderedImages.reduce((total, img) => total + img.size, 0) > maxPeso) {
+        alert("El peso total de las imágenes no puede exceder los 50MB.");
+        totalPesoImagenes -= nuevasImagenes.reduce((total, file) => total + file.size, 0); // Restar el peso de las imágenes añadidas
+        return;
+    }
 
-                // Botón de eliminación
-                const removeButton = document.createElement("button");
-                removeButton.textContent = "X";
-                removeButton.style.position = "absolute";
-                removeButton.style.top = "5px";
-                removeButton.style.right = "5px";
-                removeButton.onclick = () => {
-                    orderedImages.splice(orderedImages.indexOf(file), 1);
-                    listItem.remove();
-                    actualizarOrden();
-                    // Actualizar el número de imágenes después de eliminar una
-                    imageCountInput.value = orderedImages.length;
-                };
+    // Actualizar el conteo y el peso total en los outputs correspondientes
+    imageCountOutput.value = orderedImages.length + nuevasImagenes.length;
+    pesoTotalOutput.value = (totalPesoImagenes / (1024 * 1024)).toFixed(2) + " MB"; // Mostrar en MB
 
-                listItem.appendChild(img);
-                listItem.appendChild(label);
-                listItem.appendChild(removeButton);
-                lista.appendChild(listItem);
+    // Añadir las nuevas imágenes a la lista existente y al array de imágenes
+    nuevasImagenes.forEach((file, index) => {
+        const listItem = document.createElement("li");
+        listItem.classList.add("image-preview-item");
+        listItem.dataset.index = orderedImages.length + index;
+
+        const img = document.createElement("img");
+        img.classList.add("image-preview");
+        img.src = URL.createObjectURL(file);
+        img.alt = `Imagen ${orderedImages.length + index + 1}`;
+
+        const label = document.createElement("span");
+        label.classList.add("image-order-label");
+        label.textContent = orderedImages.length + index + 1;
+
+        // Botón de eliminación
+        const removeButton = document.createElement("button");
+        removeButton.textContent = "X";
+        removeButton.style.position = "absolute";
+        removeButton.style.top = "5px";
+        removeButton.style.right = "5px";
+        removeButton.onclick = () => {
+            totalPesoImagenes -= file.size; // Restar el tamaño del archivo eliminado
+            orderedImages.splice(orderedImages.indexOf(file), 1);
+            listItem.remove();
+            actualizarOrden();
+            // Actualizar el conteo y el peso total después de eliminar una
+            imageCountOutput.value = orderedImages.length;
+            pesoTotalOutput.value = (totalPesoImagenes / (1024 * 1024)).toFixed(2) + " MB"; // Actualizar el peso total
+        };
+
+        listItem.appendChild(img);
+        listItem.appendChild(label);
+        listItem.appendChild(removeButton);
+        lista.appendChild(listItem);
+    });
+
+    orderedImages.push(...nuevasImagenes);
+
+    // Mantener la funcionalidad de arrastrar y soltar
+    new Sortable(lista, {
+        animation: 150,
+        onUpdate: () => {
+            const imageElements = lista.querySelectorAll("li");
+            orderedImages = Array.from(imageElements).map((li) => {
+                const originalIndex = li.dataset.index;
+                return orderedImages[originalIndex];
             });
-
-            orderedImages.push(...nuevasImagenes);
-
-            // Mantener la funcionalidad de arrastrar y soltar
-            new Sortable(lista, {
-                animation: 150,
-                onUpdate: () => {
-                    const imageElements = lista.querySelectorAll("li");
-                    orderedImages = Array.from(imageElements).map((li) => {
-                        const originalIndex = li.dataset.index;
-                        return orderedImages[originalIndex];
-                    });
-                    imageElements.forEach((li, index) => {
-                        li.querySelector(".image-order-label").textContent = index + 1;
-                    });
-                }
+            imageElements.forEach((li, index) => {
+                li.querySelector(".image-order-label").textContent = index + 1;
             });
-        });
+        }
+    });
+});
 
 
 
@@ -474,7 +504,6 @@
                         </button>
                     </div>
                     <input type="hidden" id="icon" name="icon" required>
-                    <br><br>
 
 
                     <div class="form-divisor"></div> <!-- Divisor -->
@@ -484,8 +513,9 @@
                     <br><br>
 
                     <label for="price">Precio de la Propiedad:</label>
-                    <input type="number" id="price" placeholder="Solo en RD$" required>
-                    <br><br>
+                    <input type="number" id="price" placeholder="Cantidad en peso (RD$)" required>
+
+                    <div class="form-divisor"></div> <!-- Divisor -->
 
                     <label for="rooms">Cantidad de Habitaciones:</label>
                     <input type="number" id="rooms" placeholder="0" required>
@@ -501,7 +531,8 @@
 
                     <label for="area">Metros Cuadrados (m²):</label>
                     <input type="number" id="area" placeholder="0" required>
-                    <br><br>
+
+                    <div class="form-divisor"></div> <!-- Divisor -->
 
                     <label for="imageCount" style="display: none;">Número de Imágenes:</label> <!-- hiden-->
                     <input type="number" id="imageCount" readonly style="display: none;"> <!-- hiden-->
@@ -520,20 +551,36 @@
                     <label for="imagenes">Subir Imágenes:</label>
                     <input type="file" id="imagenes" multiple required accept="image/*">
                     <ul id="lista-imagenes"></ul>
-                    <br><br>
+
+                    <label for="imageCountOutput">Número Total de Imágenes:</label>
+                    <output id="imageCountOutput" style="padding: 12px 10px; color: #59eeff; font-size: 17px;">0</output>
+
+                    <label for="pesoTotalOutput">Peso Total de las Imágenes:</label>
+                    <output id="pesoTotalOutput" style="padding: 12px 10px; color: #59eeff; font-size: 17px;">0 MB</output>
+                    <div class="form-divisor"></div> <!-- Divisor -->
 
 
+
+
+
+
+
+
+                    
                     <label for="caracteristicas">Detalles de la Propiedad:</label>
                     <textarea id="caracteristicas" placeholder="Escriba aquí detalles adicionales..." required></textarea>
-                    <br><br>
+
+                    <div class="form-divisor"></div> <!-- Divisor -->
 
                     <!-- <label for="latLng">LatLng (coordenadas):</label>
-            <input type="text" id="latLng" placeholder="Ej: 18.54,-69.90" required> -->
+                    <input type="text" id="latLng" placeholder="Ej: 18.54,-69.90" required> -->
 
                     <label for="latLng">Ubicación de la Propiedad (Coordenadas):</label>
                     <input type="text" id="latLng" placeholder="Seleccione en el mapa" readonly>
                     <div id="map"></div>
-                    <br><br>
+
+
+                    <div class="form-divisor"></div> <!-- Divisor -->
 
 
                     <div class="slider-container">
@@ -601,7 +648,7 @@
             // Barra de búsqueda de Google Places
             const input = document.createElement("input");
             input.type = "text";
-            input.placeholder = "Buscar lugar o dirección en RD";
+            input.placeholder = "Buscar dirección o lugar en RD";
             input.style = "width: 100%; margin-bottom: 10px;";
             document.getElementById("map").insertAdjacentElement("beforebegin", input);
 
