@@ -458,12 +458,22 @@
                     <br><br>
 
                     <label for="icon">Icono de propiedad:</label>
-                    <select id="icon" required>
-                        <option value="">Selecciona</option>
-                        <option value="houseIcon">Casa - Estándar</option>
-                        <option value="buildingIcon">Apartamento - Estándar</option>
-                        <option value="landIcon">Terreno - Estándar</option>
-                    </select>
+                    <div id="icon-options" class="icon-buttons">
+                        <button type="button" class="icon-button" value="houseIcon" id="icon-casa">
+                            <img src="./img/casa4.png" alt="Casa" class="icon-image" style="border-color: #ff5f64;">
+                            
+                            <p>Casa<br> Estándar</p>
+                        </button>
+                        <button type="button" class="icon-button" value="buildingIcon" id="icon-apartamento">
+                            <img src="./img/apartamento3.png" alt="Apartamento" class="icon-image" style="border-color: #1090e7;">
+                        <p>Apartamento<br> Estándar</p>
+                        </button>
+                        <button type="button" class="icon-button" value="landIcon" id="icon-terrero">
+                            <img src="./img/solar2.png" alt="Terreno" class="icon-image" style="border-color: #59a739;">
+                        <p>Terreno<br> Estándar</p>
+                        </button>
+                    </div>
+                    <input type="hidden" id="icon" name="icon" required>
                     <br><br>
 
 
@@ -735,6 +745,24 @@
             // ... (Aquí iría tu código para manejar el envío del formulario) ...
             return false;
         }
+
+
+
+
+        document.querySelectorAll(".icon-button").forEach(button => {
+  button.addEventListener("click", () => {
+    // 1. Remover clase "active" de todos los botones
+    document.querySelectorAll(".icon-button.active").forEach(btn => {
+      btn.classList.remove("active"); 
+    });
+
+    // 2. Agregar clase "active" al botón clickeado
+    button.classList.add("active"); 
+    
+    // 3. Actualizar el valor del input oculto
+    document.getElementById("icon").value = button.value;
+  });
+});
     </script>
 
 </body>
