@@ -385,6 +385,7 @@
                 }
             });
         });
+        
 
 
         // Función para actualizar la lista visual y el orden después de eliminar
@@ -523,8 +524,12 @@
                     <br><br>
 
                     <label for="price">Precio de la Propiedad:</label>
-                    <input type="number" id="price" placeholder="Cantidad en peso (RD$)" required>
-
+                    <div class="input-precio">
+                        
+                        <input type="text" id="price" placeholder="Cantidad en peso (RD$)" required oninput="formatearPrecio(this)" onblur="validarPrecio(this)">
+                        <div class="Tipo-Moneda">RD$</div>
+                    </div>
+                    
                     <div class="form-divisor"></div> <!-- Divisor -->
 
                     <label for="rooms">Cantidad de Habitaciones:</label>
@@ -633,6 +638,37 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function formatearPrecio(input) {
+            // Eliminar comas existentes
+            let valor = input.value.replace(/,/g, '');
+    
+            // Verificar si es un número válido
+            if (!isNaN(valor) && valor !== '') {
+                // Convertir a número y formatear como string con comas
+                valor = Number(valor).toLocaleString('en-US');
+                input.value = valor; // Asignar el valor formateado al campo de entrada
+            }
+        }
+    
+        function validarPrecio(input) {
+            // Eliminar comas y verificar si es un número válido
+            let valor = input.value.replace(/,/g, '');
+            if (valor === '' || isNaN(valor)) {
+                input.value = ''; // Limpiar el campo si no es un número válido
+            }
+        }
+    
+        // Al enviar el formulario, convertir el valor a número
+        document.getElementById("formulario-propiedades").addEventListener("submit", function(event) {
+            const priceInput = document.getElementById("price");
+            const valorSinComas = priceInput.value.replace(/,/g, '');
+            priceInput.value = valorSinComas; // Asigna el valor sin comas al campo antes de enviar
+        });
+    </script>
+
+
 
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.10.2/Sortable.min.js"></script>
 
@@ -832,6 +868,26 @@
             });
         });
     </script>
+
+
+<script>
+    // Función para manejar el cambio en el propósito de la propiedad
+    function cambiarTextoLabel() {
+        const categoria = document.getElementById("categoria").value;
+        const labelPrecio = document.querySelector("label[for='price']");
+
+        if (categoria === "alquiler") {
+            labelPrecio.textContent = "Renta de la Propiedad:";
+        } else {
+            labelPrecio.textContent = "Precio de la Propiedad:";
+        }
+    }
+
+    // Asignar el evento de cambio al select de categoría
+    document.getElementById("categoria").addEventListener("change", cambiarTextoLabel);
+</script>
+
+
 
 </body>
 
