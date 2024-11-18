@@ -406,8 +406,9 @@ label {
     background: #2e2c31;
     display: block;
     border-radius: 14px;
+    min-height: 60px;
+    padding: 0px 60px 0px 0px;
 }
-
 
 .image-list {
     list-style-type: none;
