@@ -256,7 +256,7 @@ select {
     height: 95px;
     width: 150px;
     border-radius: 14px;
-    margin: 0px 0px;
+    margin: 0px 7px;
     box-shadow: 10px 7px 43px -13px #2195f300, 10px 7px 43px 12px #585e6f inset;
     transition: 0.7s;
     display: inline-flex;
@@ -288,14 +288,17 @@ select {
 
 #icon-casa {
     background: #c35858;
+    background: #c3585879;
 }
 
 #icon-apartamento {
     background: #5ea3d9;
+    background: #5ea4d98c;
 }
 
 #icon-terrero {
     background: #55ab64;
+    background: #55ab636c;
 }
 
 
