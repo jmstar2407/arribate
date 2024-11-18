@@ -406,10 +406,11 @@ label {
     background: #2e2c31;
     display: block;
     border-radius: 14px;
-    min-height: 60px;
-    padding: 0px 60px 0px 0px;
+    min-height: 0px;
+    max-height: 334px;
+    padding: 0px 30px 0px 0px;
+    overflow: overlay;
 }
-
 .image-list {
     list-style-type: none;
     display: flex;
