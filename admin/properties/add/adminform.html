@@ -219,7 +219,7 @@
 
                 // Actualiza el contenido del modal
                 document.getElementById("nombre-usuario").textContent = `¡La propiedad se agregó con éxito!`;
-                document.getElementById("mensaje-adicional").textContent = `ID: ${idPropiedad}`;
+                document.getElementById("mensaje-adicional").textContent = `${idPropiedad}`;
                 document.getElementById("mensaje-modal").textContent = "Enlace de la propiedad generado:";
 
                 // Establece el enlace y lo muestra
@@ -266,7 +266,7 @@
 
                     // Revertir el texto del botón después de 3 segundos
                     setTimeout(() => {
-                        botonCopiar.textContent = "Copiar";
+                        botonCopiar.textContent = "Copiar enlace";
                     }, 3000); // 3000 milisegundos = 3 segundos
                 })
                 .catch(err => console.error("Error al copiar el enlace: " + err)); // Usar console.error para errores
@@ -612,12 +612,20 @@
                 </div>
 
                 <div id="modal-exito" class="modal">
+
+                    <div class="animation-wrapper">
+                        <div class="particle particle-1"></div>
+                        <div class="particle particle-2"></div>
+                        <div class="particle particle-3"></div>
+                        <div class="particle particle-4"></div>
+                    </div>
+
                     <div class="modal-content">
                         <span id="nombre-usuario"></span>
+                        <img src="./img/logo_de_Arribate_1_transparente - Linea3.png">
                         <div id="mensaje-adicional"></div>
                         <p id="mensaje-modal"></p>
-                        <a id="enlace-propiedad" href="#" target="_blank"
-                            style="display: none; color: green; text-decoration: none;"></a>
+                        <a id="enlace-propiedad" href="#" target="_blank"></a>
                         <button id="copiar-enlace">Copiar enlace</button>
                         <button id="cerrar-modal">Listo</button>
                     </div>
