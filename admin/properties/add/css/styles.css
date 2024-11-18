@@ -324,17 +324,32 @@ select {
 
 
 
+.input-precio {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    margin-top: 7px;
+}
 
+.Tipo-Moneda {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    pointer-events: none;
+    background: #303441;
+    color: #02cf14;
+    height: 100%;
+    padding: 0px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px 0px 0px 14px;
+}
 
-
-
-
-
-
-
-
-
-
+#price {
+    padding-left: 57px;
+    margin-top: 0px;
+}
 
 
 .form-admin-add-property-Master {
@@ -531,13 +546,27 @@ li {
     color: white;
 }
 
-#cerrar-modal{
+#copiar-enlace:hover {
+    background: #0a71a5;
+    transform: scale(0.9);
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#cerrar-modal {
     margin-top: 15px;
     background: #33a341;
     padding: 10px;
     border: none;
     border-radius: 10px;
     color: white;
+}
+
+#cerrar-modal:hover {
+    background: #2a8f38;
+    transform: scale(0.9);
+    cursor: pointer;
+    transition: 0.3s;
 }
 
 
