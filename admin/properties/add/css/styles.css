@@ -256,7 +256,7 @@ select {
     height: 95px;
     width: 150px;
     border-radius: 14px;
-    margin: 0px 10px;
+    margin: 0px 0px;
     box-shadow: 10px 7px 43px -13px #2195f300, 10px 7px 43px 12px #585e6f inset;
     transition: 0.7s;
     display: inline-flex;
