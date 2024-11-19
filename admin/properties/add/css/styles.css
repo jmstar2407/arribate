@@ -34,8 +34,66 @@ select {
 }
 
 .portada {
-    position: relative;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background: #1c1d22;
+    background-image: url(../img/background_formulario_admin_1.png);
+    background-size: 74%;
+    background-position: right;
+    width: 100%;
+    padding: 0px 35px;
+    background-repeat: no-repeat;
 }
+
+
+.form-divisor {
+    position: relative;
+    height: 1px;
+    width: 100%;
+    margin: 24px 0px;
+    background: #2c313d;
+}
+
+
+label {
+    display: block;
+    margin-top: 10px;
+}
+
+#alqvend {
+    display: block;
+    margin-top: -10px;
+}
+
+#inputalq {
+    width: auto;
+}
+
+#titlelabel {
+    margin-bottom: 14px;
+}
+
+#welcome-message {
+    font-family: system-ui;
+    font-size: 2em;
+    font-weight: 300;
+    margin-block-start: 14px;
+    margin-block-end: 70px;
+}
+
+#welcome-message span {
+    position: relative;
+    font-size: 42px;
+    font-weight: bold;
+}
+
+.titulo {
+    font-family: system-ui;
+    font-size: 27px;
+    font-weight: 300;
+}
+
 
 #content {
     display: block;
@@ -70,6 +128,17 @@ select {
     background-size: 28px;
     background-position: center;
     background-repeat: no-repeat;
+    transition: 0.3s;
+}
+
+#logout-button:hover {
+    background: #191d3d4f;
+    background-image: url(../img/logout_1.png);
+    background-size: 28px;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: 0.3s;
+    cursor: pointer;
 }
 
 .logonombre {
@@ -404,53 +473,6 @@ select {
     color: white;
 }
 
-.form-divisor {
-    position: relative;
-    height: 1px;
-    width: 100%;
-    margin: 24px 0px;
-    background: #2c313d;
-}
-
-
-label {
-    display: block;
-    margin-top: 10px;
-}
-
-#alqvend {
-    display: block;
-    margin-top: -10px;
-}
-
-#inputalq {
-    width: auto;
-}
-
-#titlelabel {
-    margin-bottom: 14px;
-}
-
-#welcome-message {
-    font-family: system-ui;
-    font-size: 2em;
-    font-weight: 300;
-    margin-block-start: 24px;
-    margin-block-end: 70px;
-}
-
-#welcome-message span {
-    position: relative;
-    font-size: 42px;
-    font-weight: bold;
-}
-
-.titulo {
-    font-family: system-ui;
-    font-size: 27px;
-    font-weight: 300;
-}
-
 
 /* Estilos para la lista y las imágenes de vista previa */
 
@@ -754,6 +776,10 @@ li {
         height: 100%;
         width: 100%;
         padding: 20px 20px;
+    }
+
+    .portada {
+        padding: 0px 20px;
     }
 }
 
