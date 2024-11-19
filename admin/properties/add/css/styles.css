@@ -34,8 +34,7 @@ select {
 }
 
 .portada {
-    position: absolute;
-    top: 0px;
+    position: fixed;
     left: 0px;
     background: #1c1d2200;
     background-image: url(../img/background_formulario_admin_2.png);
@@ -75,6 +74,49 @@ label {
     margin-bottom: 14px;
 }
 
+
+.form-admin-add-property-Master {
+    top: 25px;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    max-width: 750px;
+    height: calc(100% - 50px);
+    min-height: 60px;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.form-admin-add-property {
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #22252d;
+    max-height: 1440px;
+    width: 100%;
+    border-radius: 0px;
+    height: 95%;
+    overflow: auto;
+    /* padding: 20px 35px; */
+    box-sizing: border-box;
+    color: white;
+}
+
+
+#formulario-propiedades {
+    position: relative;
+    padding: 7px 35px 20px 35px;
+    box-sizing: border-box;
+    background: #1b1d23f2;
+    backdrop-filter: blur(12px);
+    box-shadow: 0px -35px 32px -37px rgb(1 52 81);
+    /* box-shadow: 0px -35px 32px -37px rgb(0 0 0 / 10%); */
+    border-radius: 27px 27px 0px 0px;
+    margin-top: 190px;
+}
+
+
 #welcome-message {
     font-family: system-ui;
     font-size: 2em;
@@ -89,12 +131,13 @@ label {
     font-weight: bold;
 }
 
-.titulo {
+.titulo { 
     font-family: system-ui;
-    font-size: 27px;
+    font-size: 24px;
     font-weight: 300;
+    text-align: center;
+    color: #1180cb;
 }
-
 
 #content {
     display: block;
@@ -446,33 +489,6 @@ label {
 
 
 
-.form-admin-add-property-Master {
-    top: 25px;
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-    width: 80%;
-    max-width: 750px;
-    height: calc(100% - 50px);
-    min-height: 60px;
-    border-radius: 15px;
-    overflow: hidden;
-}
-
-.form-admin-add-property {
-    position: relative;
-    margin-left: auto;
-    margin-right: auto;
-    background-color: #1b1d23;
-    max-height: 1440px;
-    width: 100%;
-    border-radius: 0px;
-    height: 95%;
-    overflow: auto;
-    padding: 20px 35px;
-    box-sizing: border-box;
-    color: white;
-}
 
 
 /* Estilos para la lista y las imágenes de vista previa */
@@ -773,10 +789,15 @@ li {
         border-radius: 0px;
     }
 
+    #formulario-propiedades {
+        padding: 2px 35px 20px 35px;
+    }
+    
+
     .form-admin-add-property {
         height: 100%;
         width: 100%;
-        padding: 20px 20px;
+        /*padding: 20px 20px;*/
     }
 
     .portada {
