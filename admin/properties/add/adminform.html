@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulario de Propiedades</title>
     <link rel="stylesheet" href="./css/styles.css" />
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
         import { getFirestore, collection, query, orderBy, limit, getDocs, addDoc, where } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
@@ -663,8 +665,8 @@
                     <div class="form-divisor"></div> <!-- Divisor -->
 
                     <label for="caracteristicas">Detalles de la Propiedad:</label>
-                    <textarea id="caracteristicas" placeholder="Escriba aquí detalles adicionales..."
-                        required></textarea>
+                    <div id="editor" style="height: 200px;"></div>
+                    <input type="hidden" id="caracteristicas" name="caracteristicas" required>
 
                     <div class="form-divisor"></div> <!-- Divisor -->
 
@@ -716,6 +718,25 @@
             </div>
         </div>
     </div>
+
+    <script>
+        var quill = new Quill('#editor', {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    ['bold', 'italic', 'underline'],        // toggled buttons
+                    ['link', 'image', 'blockquote'],       // link and image
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }] // lists
+                ]
+            }
+        });
+    
+        // Cuando se envíe el formulario, guardar el contenido de Quill en el input oculto
+        document.getElementById("formulario-propiedades").addEventListener("submit", function() {
+            var caracteristicas = document.getElementById("caracteristicas");
+            caracteristicas.value = quill.root.innerHTML; // Guardar contenido
+        });
+    </script>
 
     <script>
         function formatearPrecio(input) {
