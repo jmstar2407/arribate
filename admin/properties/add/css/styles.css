@@ -54,6 +54,21 @@ select {
 
 }
 
+#logout-button {
+    position: absolute;
+    border: none;
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    width: 60px;
+    margin-left: 10px;
+    background: #41414100;
+    background-image: url(../img/logout_1.png);
+    background-size: 28px;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
 .logonombre {
     position: relative;
     display: inline-flex;
@@ -458,11 +473,10 @@ label {
     border-radius: 14px;
 }
 
-
 .outputs {
     display: flex;
-    flex-direction: column; /* Colocamos los outputs uno encima del otro */
-    font-size: 12px;
+    flex-direction: column;
+    font-size: 13px;
     color: #59eeff;
 }
 
