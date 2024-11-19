@@ -7,6 +7,20 @@ button {
     -webkit-tap-highlight-color: transparent;
 }
 
+.ql-link,
+.ql-image,
+.ql-blockquote {
+    display: none;
+}
+
+#editor {
+    height: 250px;
+    background: #313847;
+    color: #ffffff;
+    border: none;
+    border-radius: 0px 0px 14px 14px;
+}
+
 input {
     width: 100%;
     padding: 16px 10px;
@@ -117,7 +131,7 @@ label {
     font-family: system-ui;
     font-size: 2em;
     font-weight: 300;
-    margin-block-start: 14px;
+    margin-block-start: 40px;
     margin-block-end: 70px;
 }
 
@@ -479,9 +493,32 @@ label {
 }
 
 
+.input-cantidad {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    margin-top: 7px;
+}
 
+.cantidad-img {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    pointer-events: none;
+    background: #303441;
+    color: #02cf14;
+    height: 100%;
+    padding: 0px 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px 0px 0px 14px;
+}
 
-
+.cantidad-img img {
+    height: 30px;
+    margin: 10px;
+}
 
 
 
