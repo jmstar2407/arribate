@@ -283,109 +283,172 @@
 
 
 
+// Manejando la carga de imágenes y actualizando conteo y peso total
+const lista = document.getElementById("lista-imagenes");
+
+document.getElementById("imagenes").addEventListener("change", (event) => {
+    agregarImagenes(Array.from(event.target.files));
+});
+
+// Manejar el evento de arrastrar y soltar
+lista.addEventListener("dragover", (event) => {
+    event.preventDefault();
+});
+
+lista.addEventListener("drop", (event) => {
+    event.preventDefault();
+    const archivos = Array.from(event.dataTransfer.files);
+    agregarImagenes(archivos);
+});
 
 
-        // Manejando la carga de imágenes y actualizando conteo y peso total
-        document.getElementById("imagenes").addEventListener("change", (event) => {
-            const imageCountInput = document.getElementById("imageCount");
-            const imageCountOutput = document.getElementById("imageCountOutput");
-            const pesoTotalOutput = document.getElementById("pesoTotalOutput");
-            const lista = document.getElementById("lista-imagenes");
-            const nuevasImagenes = Array.from(event.target.files);
-            const maxFiles = 32; // Máximo de archivos
-            const maxPeso = 50 * 1024 * 1024; // Máximo de 50MB en bytes
-            let totalPesoImagenes = 0; // Inicializar el peso total
 
-            // Actualizar el número de imágenes en el campo de solo lectura
-            imageCountInput.value = nuevasImagenes.length;
-            imageCountInput.setAttribute("readonly", true);
 
-            // Validar el número de archivos
-            if (nuevasImagenes.length + orderedImages.length > maxFiles) {
-                alert(`No puedes cargar más de ${maxFiles} imágenes.`);
-                return;
+
+
+// Función para agregar imágenes desde archivos
+function agregarImagenes(nuevasImagenes) {
+    const imageCountInput = document.getElementById("imageCount");
+    const imageCountOutput = document.getElementById("imageCountOutput");
+    const pesoTotalOutput = document.getElementById("pesoTotalOutput");
+    const maxFiles = 32; // Máximo de archivos
+    const maxPeso = 50 * 1024 * 1024; // Máximo de 50MB en bytes
+    let totalPesoImagenes = 0; // Inicializar el peso total
+
+    // Calcular el nuevo total de imágenes
+    const totalImages = orderedImages.length + nuevasImagenes.length;
+
+    // Validar el número de archivos
+    if (totalImages > maxFiles) {
+        alert(`No puedes cargar más de ${maxFiles} imágenes.`);
+        return;
+    }
+
+    // Calcular y mostrar el peso total
+    nuevasImagenes.forEach(file => {
+        totalPesoImagenes += file.size; // Sumar el tamaño de cada archivo
+    });
+
+    // Validar el peso total
+    if (totalPesoImagenes + orderedImages.reduce((total, img) => total + img.size, 0) > maxPeso) {
+        alert("El peso total de las imágenes no puede exceder los 50MB.");
+        return;
+    }
+
+    // Actualizar el conteo y el peso total en los outputs correspondientes
+    imageCountInput.value = totalImages; // Actualizar el input de conteo de imágenes
+    imageCountOutput.value = `${totalImages} Imágenes`; // Formato deseado para el conteo
+    pesoTotalOutput.value = `${((totalPesoImagenes + orderedImages.reduce((total, img) => total + img.size, 0)) / (1024 * 1024)).toFixed(2)} MB`; // Formato deseado para el peso
+
+    // Añadir las nuevas imágenes a la lista existente y al array de imágenes
+    nuevasImagenes.forEach((file, index) => {
+        const listItem = document.createElement("li");
+        listItem.classList.add("image-preview-item");
+        listItem.dataset.index = orderedImages.length + index;
+
+        const img = document.createElement("img");
+        img.classList.add("image-preview");
+        img.src = URL.createObjectURL(file);
+        img.alt = `Imagen ${orderedImages.length + index + 1}`;
+
+        const label = document.createElement("span");
+        label.classList.add("image-order-label");
+        label.textContent = orderedImages.length + index + 1;
+
+        // Botón de eliminación
+        const removeButton = document.createElement("button");
+        removeButton.textContent = "X";
+        removeButton.style.position = "absolute";
+        removeButton.style.top = "5px";
+        removeButton.style.right = "5px";
+
+        // Asignar eventos para eliminar la imagen
+        const handleRemove = () => {
+            // Restar el tamaño del archivo eliminado
+            totalPesoImagenes -= file.size; 
+            orderedImages.splice(orderedImages.indexOf(file), 1);
+            listItem.remove();
+            actualizarOrden();
+
+            // Actualizar el conteo y el peso total después de eliminar una
+            const updatedTotalImages = orderedImages.length;
+            imageCountOutput.value = `${updatedTotalImages} Imágenes`; // Actualizar el conteo
+            pesoTotalOutput.value = `${((totalPesoImagenes / (1024 * 1024)).toFixed(2))} MB`; // Actualizar el peso total
+
+            // Actualizar el input de conteo de imágenes
+            imageCountInput.value = updatedTotalImages; // Actualizar el input
+
+            // Mostrar el mensaje si no hay imágenes
+            const mensaje = document.querySelector(".imagen-upload-mensaje");
+            if (updatedTotalImages === 0 && mensaje) {
+                mensaje.style.display = "block"; // Mostrar el mensaje si no hay imágenes
             }
+        };
 
-            // Calcular y mostrar el peso total
-            nuevasImagenes.forEach(file => {
-                totalPesoImagenes += file.size; // Sumar el tamaño de cada archivo
+        removeButton.onclick = handleRemove;
+        removeButton.addEventListener("touchstart", handleRemove); // Agregar soporte para dispositivos táctiles
+
+        listItem.appendChild(img);
+        listItem.appendChild(label);
+        listItem.appendChild(removeButton);
+        lista.appendChild(listItem);
+    });
+    orderedImages.push(...nuevasImagenes);
+
+    // Ocultar el mensaje de "subir imagen" si hay al menos una imagen
+    const mensaje = document.querySelector(".imagen-upload-mensaje");
+    if (mensaje) {
+        mensaje.style.display = "none"; // Oculta el mensaje
+    }
+
+    // Actualiza el input de archivos con las nuevas imágenes
+    const inputFile = document.getElementById("imagenes");
+    const dataTransfer = new DataTransfer();
+
+    // Agregar las imágenes existentes (incluidas las nuevas)
+    orderedImages.forEach(image => {
+        dataTransfer.items.add(image);
+    });
+
+    // Asignar los archivos al input
+    inputFile.files = dataTransfer.files;
+
+    // Mantener la funcionalidad de arrastrar y soltar
+    new Sortable(lista, {
+        animation: 150,
+        onUpdate: () => {
+            const imageElements = lista.querySelectorAll("li");
+            orderedImages = Array.from(imageElements).map((li) => {
+                const originalIndex = li.dataset.index;
+                return orderedImages[originalIndex];
             });
-
-            // Validar el peso total
-            if (totalPesoImagenes + orderedImages.reduce((total, img) => total + img.size, 0) > maxPeso) {
-                alert("El peso total de las imágenes no puede exceder los 50MB.");
-                totalPesoImagenes -= nuevasImagenes.reduce((total, file) => total + file.size, 0); // Restar el peso de las imágenes añadidas
-                return;
-            }
-
-            // Actualizar el conteo y el peso total en los outputs correspondientes
-            const totalImages = orderedImages.length + nuevasImagenes.length;
-            imageCountOutput.value = `${totalImages} Imágenes`; // Formato deseado para el conteo
-            pesoTotalOutput.value = `${(totalPesoImagenes / (1024 * 1024)).toFixed(2)} MB`; // Formato deseado para el peso
-
-            // Añadir las nuevas imágenes a la lista existente y al array de imágenes
-            nuevasImagenes.forEach((file, index) => {
-                const listItem = document.createElement("li");
-                listItem.classList.add("image-preview-item");
-                listItem.dataset.index = orderedImages.length + index;
-
-                const img = document.createElement("img");
-                img.classList.add("image-preview");
-                img.src = URL.createObjectURL(file);
-                img.alt = `Imagen ${orderedImages.length + index + 1}`;
-
-                const label = document.createElement("span");
-                label.classList.add("image-order-label");
-                label.textContent = orderedImages.length + index + 1;
-
-
-                // Botón de eliminación
-                const removeButton = document.createElement("button");
-                removeButton.textContent = "X";
-                removeButton.style.position = "absolute";
-                removeButton.style.top = "5px";
-                removeButton.style.right = "5px";
-
-                // Asignar eventos para eliminar la imagen
-                const handleRemove = () => {
-                    totalPesoImagenes -= file.size; // Restar el tamaño del archivo eliminado
-                    orderedImages.splice(orderedImages.indexOf(file), 1);
-                    listItem.remove();
-                    actualizarOrden();
-
-                    // Actualizar el conteo y el peso total después de eliminar una
-                    const updatedTotalImages = orderedImages.length;
-                    imageCountOutput.value = `${updatedTotalImages} Imágenes`; // Actualizar el conteo
-                    pesoTotalOutput.value = `${(totalPesoImagenes / (1024 * 1024)).toFixed(2)} MB`; // Actualizar el peso total
-                };
-
-                removeButton.onclick = handleRemove;
-                removeButton.addEventListener("touchstart", handleRemove); // Agregar soporte para dispositivos táctiles
-
-                listItem.appendChild(img);
-                listItem.appendChild(label);
-                listItem.appendChild(removeButton);
-                lista.appendChild(listItem);
+            imageElements.forEach((li, index) => {
+                li.querySelector(".image-order-label").textContent = index + 1;
             });
+        }
+    });
+}
 
-            orderedImages.push(...nuevasImagenes);
 
-            // Mantener la funcionalidad de arrastrar y soltar
-            new Sortable(lista, {
-                animation: 150,
-                onUpdate: () => {
-                    const imageElements = lista.querySelectorAll("li");
-                    orderedImages = Array.from(imageElements).map((li) => {
-                        const originalIndex = li.dataset.index;
-                        return orderedImages[originalIndex];
-                    });
-                    imageElements.forEach((li, index) => {
-                        li.querySelector(".image-order-label").textContent = index + 1;
-                    });
-                }
-            });
+
+
+
+
+
+// Inicializar la funcionalidad de arrastrar y soltar en la lista de imágenes
+new Sortable(lista, {
+    animation: 150,
+    onUpdate: () => {
+        const imageElements = lista.querySelectorAll("li");
+        orderedImages = Array.from(imageElements).map((li) => {
+            const originalIndex = li.dataset.index;
+            return orderedImages[originalIndex];
         });
-        
+        imageElements.forEach((li, index) => {
+            li.querySelector(".image-order-label").textContent = index + 1;
+        });
+    }
+});
 
 
         // Función para actualizar la lista visual y el orden después de eliminar
@@ -549,8 +612,8 @@
 
                     <div class="form-divisor"></div> <!-- Divisor -->
 
-                    <label for="imageCount" style="display: none;">Número de Imágenes:</label> <!-- hiden-->
-                    <input type="number" id="imageCount" readonly style="display: none;"> <!-- hiden-->
+                    <label for="imageCount" style="display: ;">Número de Imágenes:</label> <!-- hiden-->
+                    <input type="number" id="imageCount" readonly style="display: ;"> <!-- hiden-->
 
                     <label for="imageFolder" style="display: none;">Carpeta de Imágenes:</label> <!-- hiden-->
                     <input type="text" id="imageFolder" readonly style="display: none;"> <!-- hiden-->
@@ -562,24 +625,42 @@
                     <input type="checkbox" id="jacuzzi" style="display: none;"> <!-- hiden-->
 
 
+                    
+                    <label for="img">Imagenes de la Propiedad</label>
+                    <div class="input-imagenes">
+                    <label for="imagenes" class="custom-imagen-upload">
+                        <img src="./img/subir-imagen-1.png" alt="Añadir" class="icono-añadir">
+                        Añadir imagen
+                    </label>
 
-                    <label for="imagenes">Subir Imágenes:</label>
-                    <input type="file" id="imagenes" multiple required accept="image/*">
-                    <ul id="lista-imagenes"></ul>
-
-                    <label for="imageCountOutput"></label>
                     <output id="imageCountOutput" style="padding: 12px 10px; color: #59eeff; font-size: 17px;">0
                         Imágenes</output>
 
-                    <label for="pesoTotalOutput"></label>
                     <output id="pesoTotalOutput" style="padding: 12px 10px; color: #59eeff; font-size: 17px;">0
                         MB</output>
+
+                    <input type="file" id="imagenes" multiple required accept="image/*" style="display: none;">
+                </div>
+
+                <div class="lista-imagenes-master">  
+                    <ul id="lista-imagenes"></ul>
+
+                    <div class="imagen-upload-mensaje">
+                    <img src="./img/subir-imagen-1.png" alt="Subir Imagen">
+                    <p>O arrastra y suelta las imágenes aquí<br>
+                    <span>32 imágenes y 50MB Max.</span></p>
+                    
+                </div>
+                    
+                </div>
+               
+
+
+
+
+
+
                     <div class="form-divisor"></div> <!-- Divisor -->
-
-
-
-
-
 
 
 
@@ -668,7 +749,41 @@
         });
     </script>
 
+<script>
+    
+//script para resaltar la zona de la lista de imagenes al arrastrar imagenes
 
+        document.addEventListener("DOMContentLoaded", () => {
+            const lista = document.getElementById("lista-imagenes");
+
+            // Agregar eventos de arrastre
+            lista.addEventListener("dragenter", () => {
+                lista.classList.add("highlight"); // Agregar clase de resaltado
+            });
+
+            lista.addEventListener("dragover", (event) => {
+                event.preventDefault(); // Evitar el comportamiento predeterminado
+            });
+
+            lista.addEventListener("dragleave", () => {
+                lista.classList.remove("highlight"); // Quitar clase de resaltado
+            });
+
+            lista.addEventListener("drop", (event) => {
+                event.preventDefault(); // Evitar el comportamiento predeterminado
+                lista.classList.remove("highlight"); // Quitar clase de resaltado
+
+                const files = event.dataTransfer.files; // Obtener archivos arrastrados
+                agregarImagenes(files); // Llamar a la función para agregar imágenes
+            });
+
+            // Función para agregar imágenes desde archivos
+            function agregarImagenes(nuevasImagenes) {
+                // Aquí va tu implementación existente para agregar imágenes
+                console.log(nuevasImagenes); // Ejemplo de uso
+            }
+        });
+</script>
 
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.10.2/Sortable.min.js"></script>
 
