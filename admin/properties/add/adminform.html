@@ -33,6 +33,7 @@
         let orderedImages = [];
 
 
+
         // Configuración de tiempo de inactividad en milisegundos (10 minutos = 600000 ms)
         const tiempoInactividad = 6000000;
         let temporizadorInactividad;
@@ -40,7 +41,7 @@
         // Función para redirigir al usuario tras la inactividad
         function cerrarPorInactividad() {
             signOut(auth).then(() => {
-                window.location.href = "auth.html";
+                window.location.href = "../auth.html";
             }).catch((error) => {
                 console.error("Error al cerrar sesión por inactividad: ", error);
             });
@@ -76,7 +77,7 @@
                 welcomeMessage.innerHTML = `HOLA, <br><span style="font-weight: bold;">${userName}</span>`;
                 correoUsuario = user.email;
             } else {
-                window.location.href = "auth.html";
+                window.location.href = "../auth.html";
             }
         });
 
@@ -131,7 +132,7 @@
                 document.getElementById("idPropiedad").value = idGenerado;
 
                 // Actualizar la carpeta de imágenes automáticamente
-                const imageFolderPath = `propiedades/${categoria}/${idGenerado}/img`;
+                const imageFolderPath = `propiedades/${idGenerado}/img/`;
                 document.getElementById("imageFolder").value = imageFolderPath;
             }
         }
@@ -172,7 +173,7 @@
             }
 
             // Asignar la ruta de la carpeta de imágenes con el ID actualizado
-            const imageFolder = `propiedades/${categoria}/${idPropiedad}/img`;
+            const imageFolder = `propiedades/${idPropiedad}/img/`;
             document.getElementById("imageFolder").value = imageFolder;
 
             const area = parseInt(document.getElementById("area").value);
@@ -363,6 +364,12 @@
                 removeButton.style.position = "absolute";
                 removeButton.style.top = "5px";
                 removeButton.style.right = "5px";
+                // Añadiendo los estilos CSS
+                removeButton.style.background = "#9d1b1b";
+                removeButton.style.border = "none";
+                removeButton.style.borderRadius = "5px";
+                removeButton.style.fontSize = "15px";
+                removeButton.style.color = "#ffffff";
 
                 // Asignar eventos para eliminar la imagen
                 const handleRemove = () => {
@@ -492,7 +499,7 @@
         // Función para cerrar sesión
         function cerrarSesion() {
             signOut(auth).then(() => {
-                window.location.href = "auth.html";
+                window.location.href = "../auth.html";
             }).catch((error) => {
                 alert("Error al cerrar sesión: " + error.message);
             });
@@ -539,7 +546,7 @@
                 <div class="portada">
                     <h1 id="welcome-message">HOLA,</h1>
 
-                    
+
                 </div>
 
 
@@ -594,7 +601,7 @@
                     <div class="form-divisor"></div> <!-- Divisor -->
 
                     <label for="title">Título de la Publicación:</label>
-                    <input type="text" id="title" placeholder="36 caracteres max." maxlength="36">
+                    <input type="text" id="title" placeholder="36 caracteres max." maxlength="36" required>
                     <br><br>
 
                     <label for="price">Precio de la Propiedad:</label>
@@ -607,20 +614,37 @@
 
                     <div class="form-divisor"></div> <!-- Divisor -->
 
+
                     <label for="rooms">Cantidad de Habitaciones:</label>
-                    <input type="number" id="rooms" placeholder="0" required style="font-size: 22px;padding: 9px 12px;">
+                    <div class="input-cantidad">
+                        <input type="number" id="rooms" placeholder="0" required
+                            style="font-size: 19px;padding: 13px 60px;margin-top: 0px;">
+                        <div class="cantidad-img"><img src="./img/habitaciones_1.png"></div>
+                    </div>
                     <br><br>
 
                     <label for="bathrooms">Cantidad de Baños:</label>
-                    <input type="number" id="bathrooms" placeholder="0" required style="font-size: 22px;padding: 9px 12px;">
+                    <div class="input-cantidad">
+                        <input type="number" id="bathrooms" placeholder="0" required
+                            style="font-size: 19px;padding: 13px 60px;margin-top: 0px;">
+                        <div class="cantidad-img"><img src="./img/baños_1.png"></div>
+                    </div>
                     <br><br>
 
                     <label for="parking">Cantidad de Parqueos:</label>
-                    <input type="number" id="parking" placeholder="0" required style="font-size: 22px;padding: 9px 12px;">
+                    <div class="input-cantidad">
+                        <input type="number" id="parking" placeholder="0" required
+                            style="font-size: 19px;padding: 13px 60px;margin-top: 0px;">
+                        <div class="cantidad-img"><img src="./img/parqueos_1.png"></div>
+                    </div>
                     <br><br>
 
                     <label for="area">Metros Cuadrados (m²):</label>
-                    <input type="number" id="area" placeholder="0" required style="font-size: 22px;padding: 9px 12px;">
+                    <div class="input-cantidad">
+                        <input type="number" id="area" placeholder="0" required
+                            style="font-size: 19px;padding: 13px 60px;margin-top: 0px;">
+                        <div class="cantidad-img"><img src="./img/area_1.png"></div>
+                    </div>
 
                     <div class="form-divisor"></div> <!-- Divisor -->
 
@@ -726,13 +750,13 @@
                 toolbar: [
                     ['bold', 'italic', 'underline'],        // toggled buttons
                     ['link', 'image', 'blockquote'],       // link and image
-                    [{ 'list': 'ordered'}, { 'list': 'bullet' }] // lists
+                    [{ 'list': 'ordered' }, { 'list': 'bullet' }] // lists
                 ]
             }
         });
-    
+
         // Cuando se envíe el formulario, guardar el contenido de Quill en el input oculto
-        document.getElementById("formulario-propiedades").addEventListener("submit", function() {
+        document.getElementById("formulario-propiedades").addEventListener("submit", function () {
             var caracteristicas = document.getElementById("caracteristicas");
             caracteristicas.value = quill.root.innerHTML; // Guardar contenido
         });
@@ -1020,6 +1044,30 @@
         document.getElementById("categoria").addEventListener("change", cambiarTextoLabel);
     </script>
 
+
+    <script>
+        //JM EDITOR DE TEXTO
+        // Función para ocultar elementos y aplicar estilos a la barra de herramientas
+        function modificarElementos() {
+            // Ocultar elementos con las clases .ql-link, .ql-image, .ql-blockquote
+            const elementosOcultar = document.querySelectorAll('.ql-link, .ql-image, .ql-blockquote');
+            elementosOcultar.forEach(elemento => {
+                elemento.style.display = 'none';
+            });
+
+            // Aplicar estilos a los elementos con la clase .ql-toolbar
+            const toolbars = document.querySelectorAll('.ql-toolbar');
+            toolbars.forEach(toolbar => {
+                toolbar.style.borderRadius = '14px 14px 0px 0px';
+                toolbar.style.border = 'none';
+                toolbar.style.background = '#868fa5';
+                toolbar.style.marginTop = '7px';
+            });
+        }
+
+        // Llama a la función para modificar los elementos al cargar la página
+        document.addEventListener('DOMContentLoaded', modificarElementos);
+    </script>
 
 
 </body>
