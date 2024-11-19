@@ -37,12 +37,13 @@ select {
     position: absolute;
     top: 0px;
     left: 0px;
-    background: #1c1d22;
-    background-image: url(../img/background_formulario_admin_1.png);
-    background-size: 74%;
+    background: #1c1d2200;
+    background-image: url(../img/background_formulario_admin_2.png);
+    background-size: 56%;
     background-position: right;
     width: 100%;
     padding: 0px 35px;
+    box-sizing: border-box;
     background-repeat: no-repeat;
 }
 
