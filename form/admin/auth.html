@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -63,18 +64,243 @@
             document.getElementById("register-button").addEventListener("click", registrarUsuario);
         };
     </script>
+
+    <style>
+        body {
+            background: #17181c;
+            margin: 0;
+            color: white;
+        }
+
+        .background-master {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            background: rgb(0, 0, 0);
+        }
+
+
+        .cube-login {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #17181c;
+            backdrop-filter: blur(5px);
+            border-radius: 24px;
+            cursor: auto;
+            padding: 29px 17px;
+            width: 80%;
+            max-width: 550px;
+            font-family: system-ui;
+        }
+
+        .cube-login img {
+            position: relative;
+            height: 150px;
+            margin: 14px 0px;
+        }
+
+        #login-form {
+            width: 100%;
+        }
+
+        input {
+            width: 100%;
+            padding: 24px 24px;
+            box-sizing: border-box;
+            margin-top: 5px;
+            border-radius: 22px;
+            border: none;
+            background: #22252c;
+            color: #ffffff;
+            position: relative;
+            font-size: 17px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        h1 {
+            margin-block-start: 5px;
+            margin-block-end: 9px;
+        }
+
+        button {
+            margin-top: 90px;
+            width: 100%;
+            height: 60px;
+            border-radius: 22px;
+            background: #3258b1;
+            border: none;
+            color: white;
+            font-size: 20px;
+        }
+
+
+        @media (max-width: 700px) {
+
+            .background-master {
+                background: #17181c;
+            }
+
+        }
+
+
+
+
+
+        .logonombre h1 {
+            font-family: system-ui;
+            position: relative;
+            top: 2px;
+            font-size: 30px;
+            margin-block-start: 0px;
+            margin-block-end: 0px;
+            font-weight: bold;
+            background: linear-gradient(90deg, #096caf, #096caf, #096caf, #096caf, #096caf, #096caf, #096caf, #096caf, #ffffff, #cd1025, #cd1025, #cd1025, #cd1025, #cd1025, #cd1025, #cd1025, #cd1025, #ffffff, #096caf, #096caf, #096caf, #096caf, #096caf, #096caf, #096caf, #096caf);
+            background-size: 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientMove linear 7s infinite;
+        }
+
+        .logonombre span {
+            text-align: center;
+            color: #a5a5a5;
+            font-size: 24px;
+        }
+
+        @keyframes gradientMove {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            100% {
+                background-position: 100% 50%;
+            }
+        }
+
+
+
+
+        #forgot-password {
+            margin-top: 10px;
+            margin-right: 10px;
+            cursor: pointer;
+            color: #8c8c9b;
+            text-decoration: none;
+            text-align: right;
+            display: block;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0, 0, 0);
+            background-color: rgba(0, 0, 0, 0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 300px;
+            text-align: center;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
 </head>
+
 <body>
-    <h1>Iniciar sesión en ArríbaTe</h1>
-    <form id="login-form">
-        <label for="email">Correo electrónico:</label>
-        <input type="email" id="email" required>
-        <br><br>
-        <label for="password">Contraseña:</label>
-        <input type="password" id="password" required>
-        <br><br>
-        <button type="submit">Iniciar sesión</button>
-        <!-- <button id="register-button" type="button">Registrarse</button> -->
-    </form>
+
+
+    <div class="background-master">
+        <div class="cube-login">
+            <h1>Bienvenido!</h1>
+            <img src="https://arribate.com/img/logo_arribate_linea_1.png" alt="Logo">
+            <div class="logonombre">
+                <div style="text-align: center;">
+                    <span>Administrador</span>
+                </div>
+            </div>
+            <form id="login-form">
+                <label for="email"></label>
+                <input type="email" id="email" placeholder="Correo electrónico" required>
+                <br><br>
+                <label for="password"></label>
+                <input type="password" id="password" placeholder="Contraseña" required>
+                <div id="forgot-password">Olvidaste tu contraseña?</div>
+                <button type="submit">Iniciar sesión</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p>Olvidaste tu contraseña?</p>
+            <p>Contactate con el administrador:</p>
+            <a id="contact-button"
+                href="https://wa.me/18299149394?text=Olvid%C3%A9%20mi%20contrase%C3%B1a%20del%20Administrador%20de%20ArribaTe"
+                target="_blank">
+                <button>Contactar</button>
+            </a>
+        </div>
+    </div>
+
+
+    <script>
+        // Obtener el modal
+        var modal = document.getElementById("myModal");
+
+        // Obtener el botón que abre el modal
+        var btn = document.getElementById("forgot-password");
+
+        // Obtener el elemento <span> que cierra el modal
+        var span = document.getElementsByClassName("close")[0];
+
+        // Cuando el usuario hace clic en el botón, abre el modal 
+        btn.onclick = function () {
+            modal.style.display = "block";
+        }
+
+        // Cuando el usuario hace clic en <span> (x), cierra el modal
+        span.onclick = function () {
+            modal.style.display = "none";
+        }
+
+        // Cuando el usuario hace clic en cualquier parte fuera del modal, cierra el modal
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+
+
 </body>
+
 </html>
