@@ -423,19 +423,22 @@
             inputFile.files = dataTransfer.files;
 
             // Mantener la funcionalidad de arrastrar y soltar
-            new Sortable(lista, {
-                animation: 150,
-                onUpdate: () => {
-                    const imageElements = lista.querySelectorAll("li");
-                    orderedImages = Array.from(imageElements).map((li) => {
-                        const originalIndex = li.dataset.index;
-                        return orderedImages[originalIndex];
-                    });
-                    imageElements.forEach((li, index) => {
-                        li.querySelector(".image-order-label").textContent = index + 1;
-                    });
-                }
-            });
+// Inicializar la funcionalidad de arrastrar y soltar en la lista de imágenes
+new Sortable(lista, {
+    animation: 150,
+    onUpdate: () => {
+        const imageElements = lista.querySelectorAll("li");
+        orderedImages = Array.from(imageElements).map((li) => {
+            const originalIndex = li.dataset.index;
+            return orderedImages[originalIndex];
+        });
+        imageElements.forEach((li, index) => {
+            li.querySelector(".image-order-label").textContent = index + 1;
+        });
+    },
+    // Asegúrate de que soporte táctil
+    touchStartThreshold: 10, // Ajusta este valor si es necesario
+});
         }
 
 
@@ -445,19 +448,22 @@
 
 
         // Inicializar la funcionalidad de arrastrar y soltar en la lista de imágenes
-        new Sortable(lista, {
-            animation: 150,
-            onUpdate: () => {
-                const imageElements = lista.querySelectorAll("li");
-                orderedImages = Array.from(imageElements).map((li) => {
-                    const originalIndex = li.dataset.index;
-                    return orderedImages[originalIndex];
-                });
-                imageElements.forEach((li, index) => {
-                    li.querySelector(".image-order-label").textContent = index + 1;
-                });
-            }
+// Inicializar la funcionalidad de arrastrar y soltar en la lista de imágenes
+new Sortable(lista, {
+    animation: 150,
+    onUpdate: () => {
+        const imageElements = lista.querySelectorAll("li");
+        orderedImages = Array.from(imageElements).map((li) => {
+            const originalIndex = li.dataset.index;
+            return orderedImages[originalIndex];
         });
+        imageElements.forEach((li, index) => {
+            li.querySelector(".image-order-label").textContent = index + 1;
+        });
+    },
+    // Asegúrate de que soporte táctil
+    touchStartThreshold: 10, // Ajusta este valor si es necesario
+});
 
 
         // Función para actualizar la lista visual y el orden después de eliminar
