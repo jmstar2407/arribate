@@ -33,6 +33,10 @@ select {
     -webkit-tap-highlight-color: transparent;
 }
 
+.portada {
+    position: relative;
+}
+
 #content {
     display: block;
     font-family: Arial, sans-serif;
@@ -318,18 +322,18 @@ select {
 }
 
 
-  /* Estilos específicos para cada botón activo */
-  #icon-casa.active { 
+/* Estilos específicos para cada botón activo */
+#icon-casa.active {
     background: #e92222;
     box-shadow: 10px 7px 43px -13px #f32121, 10px 7px 43px 12px #585e6f inset;
-  }
-  
-  #icon-apartamento.active {
+}
+
+#icon-apartamento.active {
     background: #007cdb;
     box-shadow: 10px 7px 43px -13px #2196f3, 10px 7px 43px 12px #585e6f inset;
-  }
-  
-  #icon-terrero.active {
+}
+
+#icon-terrero.active {
     background: #00a91c;
     box-shadow: 10px 7px 43px -13px #07ca27, 10px 7px 43px 12px #585e6f inset;
 }
@@ -430,10 +434,23 @@ label {
 #welcome-message {
     font-family: system-ui;
     font-size: 2em;
-    font-weight: 500;
-    margin-block-start: 0px;
-    margin-block-end: 0px;
+    font-weight: 300;
+    margin-block-start: 24px;
+    margin-block-end: 70px;
 }
+
+#welcome-message span {
+    position: relative;
+    font-size: 42px;
+    font-weight: bold;
+}
+
+.titulo {
+    font-family: system-ui;
+    font-size: 27px;
+    font-weight: 300;
+}
+
 
 /* Estilos para la lista y las imágenes de vista previa */
 
@@ -451,7 +468,8 @@ label {
 }
 
 .custom-imagen-upload:hover {
-    background-color: #0056b3; /* Color azul más oscuro al pasar el mouse */
+    background-color: #0056b3;
+    /* Color azul más oscuro al pasar el mouse */
     transition: 0.3s;
 }
 
@@ -631,7 +649,7 @@ li {
     margin: 7px 0px;
 }
 
-#mensaje-adicional{
+#mensaje-adicional {
     color: #ffffff;
     background: #0d7fb9;
     padding: 2px 5px;
@@ -912,4 +930,3 @@ li {
         transform: translateY(-2560px);
     }
 }
-
