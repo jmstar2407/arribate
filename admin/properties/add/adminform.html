@@ -905,40 +905,24 @@
 const sliderButton = document.querySelector('.slider-button');
 const sliderText = document.querySelector('.slider-text');
 const buttonContent = document.querySelector('.button-content');
-const sliderDotsContainer = document.querySelector('.slider-dots');
 const numDots = 10; // Número de puntos
 const vibrationThresholds = []; // Para almacenar las posiciones de los puntos
 let isSliding = false;
 
-function initializeText() {
-    const letters = sliderText.innerText.split('').map(letter => `<span>${letter}</span>`).join('');
-    sliderText.innerHTML = letters;
-}
-
-initializeText();
-
 // Crear los puntos en el slider
 for (let i = 0; i < numDots; i++) {
-    const dot = document.createElement('div');
-    dot.classList.add('slider-dot');
     const position = (i + 1) * (100 / (numDots + 1)); // Distribuir puntos entre 0% y 100%
-    dot.style.left = `${position}%`;
-    sliderDotsContainer.appendChild(dot);
-    vibrationThresholds.push((position / 100) * (sliderCircle.parentElement.offsetWidth)); // Guardar la posición en píxeles
+    vibrationThresholds.push((position / 100) * (sliderButton.offsetWidth)); // Guardar la posición en píxeles
 }
 
 sliderCircle.addEventListener('mousedown', startSlide);
 sliderCircle.addEventListener('touchstart', startSlide);
-buttonContent.addEventListener('click', event => event.preventDefault());
 
-sliderCircle.addEventListener('click', () => {
-    const sliderContainer = sliderCircle.parentElement;
-    const containerWidth = sliderContainer.offsetWidth;
-    const circleWidth = sliderCircle.offsetWidth;
+sliderButton.addEventListener('click', () => {
     const left = parseFloat(sliderCircle.style.left) || 0;
-
-    if (left >= containerWidth - circleWidth) {
-        sliderButton.click();
+    if (left >= sliderButton.offsetWidth - sliderCircle.offsetWidth) {
+        // Aquí puedes manejar el evento de publicación
+        alert('Propiedad publicada!');
         resetSlider();
     }
 });
@@ -947,7 +931,7 @@ function startSlide(event) {
     if (isSliding) return;
     isSliding = true;
 
-    const sliderContainer = sliderCircle.parentElement;
+    const sliderContainer = sliderButton; // Usamos el botón como contenedor
     const containerWidth = sliderContainer.offsetWidth;
     const circleWidth = sliderCircle.offsetWidth;
 
@@ -955,7 +939,6 @@ function startSlide(event) {
         const mouseX = e.clientX || e.touches[0].clientX;
         const left = Math.min(Math.max(mouseX - sliderContainer.getBoundingClientRect().left - circleWidth / 2, 0), containerWidth - circleWidth);
         sliderCircle.style.left = `${left}px`;
-        sliderButton.style.backgroundColor = left >= containerWidth * 0.7 ? '#29ab4a' : '#0053ab';
 
         // Comprobar si el círculo está cerca de algún punto y vibrar
         vibrationThresholds.forEach(threshold => {
@@ -966,23 +949,11 @@ function startSlide(event) {
             }
         });
 
-        const letterSpans = sliderText.querySelectorAll('span');
-        const textWidth = sliderText.offsetWidth;
-        const letterWidth = textWidth / letterSpans.length;
-
-        letterSpans.forEach((span, i) => {
-            const letterLeft = (containerWidth / 2) - (textWidth / 2) + (letterWidth * i);
-            const visibility = (left + circleWidth) - letterLeft;
-
-            span.style.opacity = visibility < 0 ? 1 :
-                visibility < letterWidth ? Math.max(0, 1 - (visibility / letterWidth)) : 0;
-        });
-
         if (left >= containerWidth - circleWidth) {
-            sliderButton.click();
-            resetSlider();
-            e.preventDefault();
-            e.stopPropagation();
+            // Si el círculo llega al final, se puede activar el botón
+            sliderButton.classList.add('active'); // Puedes añadir una clase para cambiar el estilo
+        } else {
+            sliderButton.classList.remove('active');
         }
     };
 
@@ -1009,8 +980,7 @@ function startSlide(event) {
 
 function resetSlider() {
     sliderCircle.style.left = '0px';
-    sliderButton.style.backgroundColor = '#007bff';
-    sliderText.querySelectorAll('span').forEach(span => span.style.opacity = 1);
+    sliderButton.classList.remove('active');
 }
 
         function handleSubmit(event) {
