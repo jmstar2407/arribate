@@ -5,7 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulario de Propiedades</title>
-    <link rel="stylesheet" href="/admin/properties/add/css/styles.css" />
+    <link rel="stylesheet" href="./css/styles.css" />
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
         import { getFirestore, collection, query, orderBy, limit, getDocs, addDoc, where } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
@@ -31,6 +33,7 @@
         let orderedImages = [];
 
 
+
         // Configuración de tiempo de inactividad en milisegundos (10 minutos = 600000 ms)
         const tiempoInactividad = 6000000;
         let temporizadorInactividad;
@@ -38,7 +41,7 @@
         // Función para redirigir al usuario tras la inactividad
         function cerrarPorInactividad() {
             signOut(auth).then(() => {
-                window.location.href = "auth.html";
+                window.location.href = "../auth.html";
             }).catch((error) => {
                 console.error("Error al cerrar sesión por inactividad: ", error);
             });
@@ -74,10 +77,9 @@
                 welcomeMessage.innerHTML = `HOLA, <br><span style="font-weight: bold;">${userName}</span>`;
                 correoUsuario = user.email;
             } else {
-                window.location.href = "auth.html";
+                window.location.href = "../auth.html";
             }
         });
-
 
 
 
@@ -130,7 +132,7 @@
                 document.getElementById("idPropiedad").value = idGenerado;
 
                 // Actualizar la carpeta de imágenes automáticamente
-                const imageFolderPath = `propiedades/${categoria}/${idGenerado}/img`;
+                const imageFolderPath = `propiedades/${idGenerado}/img/`;
                 document.getElementById("imageFolder").value = imageFolderPath;
             }
         }
@@ -148,9 +150,16 @@
         }
 
 
-        // Función para manejar el envío del formulario
+        let isSubmitting = false;
+
         async function agregarPropiedad(e) {
             e.preventDefault();
+
+            // Verificar si ya se está enviando
+            if (isSubmitting) return;
+
+            isSubmitting = true; // Iniciar el proceso de envío
+            document.querySelector('.slider-button').disabled = true; // Deshabilitar el botón de envío
 
             const categoria = document.getElementById("categoria").value;
             const tipoPropiedad = document.getElementById("tipoPropiedad").value;
@@ -164,7 +173,7 @@
             }
 
             // Asignar la ruta de la carpeta de imágenes con el ID actualizado
-            const imageFolder = `propiedades/${categoria}/${idPropiedad}/img`;
+            const imageFolder = `propiedades/${idPropiedad}/img/`;
             document.getElementById("imageFolder").value = imageFolder;
 
             const area = parseInt(document.getElementById("area").value);
@@ -177,8 +186,6 @@
             const title = document.getElementById("title").value;
             const caracteristicas = document.getElementById("caracteristicas").value;
             const imageCount = parseInt(document.getElementById("imageCount").value);
-            //const piscina = document.getElementById("piscina").checked;
-            //const jacuzzi = document.getElementById("jacuzzi").checked;
             const FechaDePublicacion = obtenerFechaActual();
 
             const nuevaPropiedad = {
@@ -194,8 +201,6 @@
                 caracteristicas,
                 imageCount,
                 imageFolder,
-                //piscina,
-                //jacuzzi,
                 FechaDePublicacion,
                 usuario: correoUsuario
             };
@@ -204,7 +209,7 @@
 
             try {
                 if (orderedImages.length === 0) {
-                    alert("Por favor, selecciona al menos una imagen.");
+                    alert("Por favor, selecciona al menos 5 imagenes.");
                     return;
                 }
 
@@ -213,12 +218,20 @@
                 await addDoc(collection(db, coleccion), nuevaPropiedad);
 
                 // Mostrar modal de éxito
-                const enlacePropiedad = categoria === "venta"
-                    ? `https://arribate.com/venta/${idPropiedad}`
-                    : `https://arribate.com/alquiler/${idPropiedad}`;
-                document.getElementById("nombre-usuario").textContent = `¡${correoUsuario}, la propiedad se agregó con éxito!`;
-                document.getElementById("mensaje-modal").textContent = "Puedes copiar el enlace de tu propiedad:";
-                document.getElementById("enlace-propiedad").value = enlacePropiedad;
+                const enlacePropiedad = `https://arribate.com/#id-${idPropiedad}`;
+
+                // Actualiza el contenido del modal
+                document.getElementById("nombre-usuario").textContent = `¡La propiedad se agregó con éxito!`;
+                document.getElementById("mensaje-adicional").textContent = `${idPropiedad}`;
+                document.getElementById("mensaje-modal").textContent = "Enlace de la propiedad generado:";
+
+                // Establece el enlace y lo muestra
+                const enlaceElement = document.getElementById("enlace-propiedad");
+                enlaceElement.href = enlacePropiedad; // Establece el enlace
+                enlaceElement.textContent = enlacePropiedad; // Muestra la URL como texto
+                enlaceElement.style.display = "block"; // Muestra el enlace
+
+                // Muestra el modal
                 document.getElementById("modal-exito").style.display = "block";
 
                 // Resetear el formulario y limpiar la lista de imágenes
@@ -229,9 +242,12 @@
             } catch (e) {
                 console.error("Error al guardar los datos: ", e);
                 alert("Ocurrió un error al guardar los datos. Revisa la consola para más detalles.");
+            } finally {
+                // Rehabilitar el botón de envío y restablecer el flag
+                isSubmitting = false;
+                document.querySelector('.slider-button').disabled = false; // Habilitar el botón de envío nuevamente
             }
         }
-
 
 
 
@@ -241,24 +257,28 @@
         document.getElementById("copiar-enlace").addEventListener("click", () => {
             const enlaceInput = document.getElementById("enlace-propiedad");
             const botonCopiar = document.getElementById("copiar-enlace"); // Obtener el botón
-            enlaceInput.select();
-            enlaceInput.setSelectionRange(0, 99999);  // Para dispositivos móviles
-            navigator.clipboard.writeText(enlaceInput.value)
+
+            // Obtener el valor del atributo href del enlace
+            const enlace = enlaceInput.getAttribute("href");
+
+            // Copiar el enlace al portapapeles
+            navigator.clipboard.writeText(enlace)
                 .then(() => {
-                    // Cambiar el texto del botón a "Copiado"
+                    // Cambiar el texto del botón a "¡Copiado!"
                     botonCopiar.textContent = "¡Copiado!";
 
-                    // Revertir el texto del botón después de 5 segundos
+                    // Revertir el texto del botón después de 3 segundos
                     setTimeout(() => {
-                        botonCopiar.textContent = "Copiar";
-                    }, 3000); // 5000 milisegundos = 3 segundos
+                        botonCopiar.textContent = "Copiar enlace";
+                    }, 3000); // 3000 milisegundos = 3 segundos
                 })
                 .catch(err => console.error("Error al copiar el enlace: " + err)); // Usar console.error para errores
         });
 
-        // Manejar el cierre del modal (Este código se mantiene igual)
+        // Manejar el cierre del modal
         document.getElementById("cerrar-modal").addEventListener("click", () => {
-            document.getElementById("modal-exito").style.display = "none";
+            // Refrescar la página
+            location.reload();
         });
 
 
@@ -266,16 +286,62 @@
 
 
 
+        // Manejando la carga de imágenes y actualizando conteo y peso total
+        const lista = document.getElementById("lista-imagenes");
 
-        // Modifica el evento para manejar la carga de imágenes adicionales
         document.getElementById("imagenes").addEventListener("change", (event) => {
-            const imageCountInput = document.getElementById("imageCount");
-            const lista = document.getElementById("lista-imagenes");
-            const nuevasImagenes = Array.from(event.target.files);
+            agregarImagenes(Array.from(event.target.files));
+        });
 
-            // Actualizar el número de imágenes en el campo de solo lectura
-            imageCountInput.value = nuevasImagenes.length;
-            imageCountInput.setAttribute("readonly", true);
+        // Manejar el evento de arrastrar y soltar
+        lista.addEventListener("dragover", (event) => {
+            event.preventDefault();
+        });
+
+        lista.addEventListener("drop", (event) => {
+            event.preventDefault();
+            const archivos = Array.from(event.dataTransfer.files);
+            agregarImagenes(archivos);
+        });
+
+
+
+
+
+
+        // Función para agregar imágenes desde archivos
+        function agregarImagenes(nuevasImagenes) {
+            const imageCountInput = document.getElementById("imageCount");
+            const imageCountOutput = document.getElementById("imageCountOutput");
+            const pesoTotalOutput = document.getElementById("pesoTotalOutput");
+            const maxFiles = 32; // Máximo de archivos
+            const maxPeso = 50 * 1024 * 1024; // Máximo de 50MB en bytes
+            let totalPesoImagenes = 0; // Inicializar el peso total
+
+            // Calcular el nuevo total de imágenes
+            const totalImages = orderedImages.length + nuevasImagenes.length;
+
+            // Validar el número de archivos
+            if (totalImages > maxFiles) {
+                alert(`No puedes cargar más de ${maxFiles} imágenes.`);
+                return;
+            }
+
+            // Calcular y mostrar el peso total
+            nuevasImagenes.forEach(file => {
+                totalPesoImagenes += file.size; // Sumar el tamaño de cada archivo
+            });
+
+            // Validar el peso total
+            if (totalPesoImagenes + orderedImages.reduce((total, img) => total + img.size, 0) > maxPeso) {
+                alert("El peso total de las imágenes no puede exceder los 50MB.");
+                return;
+            }
+
+            // Actualizar el conteo y el peso total en los outputs correspondientes
+            imageCountInput.value = totalImages; // Actualizar el input de conteo de imágenes
+            imageCountOutput.value = `${totalImages} Imágenes`; // Formato deseado para el conteo
+            pesoTotalOutput.value = `${((totalPesoImagenes + orderedImages.reduce((total, img) => total + img.size, 0)) / (1024 * 1024)).toFixed(2)} MB`; // Formato deseado para el peso
 
             // Añadir las nuevas imágenes a la lista existente y al array de imágenes
             nuevasImagenes.forEach((file, index) => {
@@ -298,21 +364,63 @@
                 removeButton.style.position = "absolute";
                 removeButton.style.top = "5px";
                 removeButton.style.right = "5px";
-                removeButton.onclick = () => {
+                // Añadiendo los estilos CSS
+                removeButton.style.background = "#9d1b1b";
+                removeButton.style.border = "none";
+                removeButton.style.borderRadius = "5px";
+                removeButton.style.fontSize = "15px";
+                removeButton.style.color = "#ffffff";
+
+                // Asignar eventos para eliminar la imagen
+                const handleRemove = () => {
+                    // Restar el tamaño del archivo eliminado
+                    totalPesoImagenes -= file.size;
                     orderedImages.splice(orderedImages.indexOf(file), 1);
                     listItem.remove();
                     actualizarOrden();
-                    // Actualizar el número de imágenes después de eliminar una
-                    imageCountInput.value = orderedImages.length;
+
+                    // Actualizar el conteo y el peso total después de eliminar una
+                    const updatedTotalImages = orderedImages.length;
+                    imageCountOutput.value = `${updatedTotalImages} Imágenes`; // Actualizar el conteo
+                    pesoTotalOutput.value = `${((totalPesoImagenes / (1024 * 1024)).toFixed(2))} MB`; // Actualizar el peso total
+
+                    // Actualizar el input de conteo de imágenes
+                    imageCountInput.value = updatedTotalImages; // Actualizar el input
+
+                    // Mostrar el mensaje si no hay imágenes
+                    const mensaje = document.querySelector(".imagen-upload-mensaje");
+                    if (updatedTotalImages === 0 && mensaje) {
+                        mensaje.style.display = "block"; // Mostrar el mensaje si no hay imágenes
+                    }
                 };
+
+                removeButton.onclick = handleRemove;
+                removeButton.addEventListener("touchstart", handleRemove); // Agregar soporte para dispositivos táctiles
 
                 listItem.appendChild(img);
                 listItem.appendChild(label);
                 listItem.appendChild(removeButton);
                 lista.appendChild(listItem);
             });
-
             orderedImages.push(...nuevasImagenes);
+
+            // Ocultar el mensaje de "subir imagen" si hay al menos una imagen
+            const mensaje = document.querySelector(".imagen-upload-mensaje");
+            if (mensaje) {
+                mensaje.style.display = "none"; // Oculta el mensaje
+            }
+
+            // Actualiza el input de archivos con las nuevas imágenes
+            const inputFile = document.getElementById("imagenes");
+            const dataTransfer = new DataTransfer();
+
+            // Agregar las imágenes existentes (incluidas las nuevas)
+            orderedImages.forEach(image => {
+                dataTransfer.items.add(image);
+            });
+
+            // Asignar los archivos al input
+            inputFile.files = dataTransfer.files;
 
             // Mantener la funcionalidad de arrastrar y soltar
             new Sortable(lista, {
@@ -328,7 +436,9 @@
                     });
                 }
             });
-        });
+        }
+
+
 
 
 
@@ -343,8 +453,6 @@
         }
 
 
-
-
         // Modifica la función `subirImagenes` para usar `orderedImages`
         async function subirImagenes(imagenes, carpeta) {
             document.getElementById("loading-indicator").style.display = "block";  // Mostrar indicador de carga
@@ -354,7 +462,7 @@
             for (let i = 0; i < imageElements.length; i++) {
                 const imagen = orderedImages[i];
                 const label = imageElements[i].querySelector(".image-order-label");
-                const nombreImagen = `${label.textContent}.${imagen.name.split('.').pop()}`;
+                const nombreImagen = `${i + 1}.jpg`;
                 const imagenRef = ref(storage, `${carpeta}/${nombreImagen}`);
 
                 try {
@@ -373,7 +481,7 @@
         // Función para cerrar sesión
         function cerrarSesion() {
             signOut(auth).then(() => {
-                window.location.href = "auth.html";
+                window.location.href = "../auth.html";
             }).catch((error) => {
                 alert("Error al cerrar sesión: " + error.message);
             });
@@ -401,12 +509,11 @@
 </head>
 
 <body>
-
-    
     <div id="content" style="display: none;">
         <div class="form-admin-add-property-Master">
 
             <div class="menu-master">
+                <button id="logout-button"></button>
                 <div class="logonombre">
                     <div class="logo1"></div>
                     <div style="margin-left: 10px;">
@@ -418,18 +525,18 @@
 
             <div class="form-admin-add-property">
 
-                
-            <div class="animation-wrapper">
-                <div class="particle particle-1"></div>
-                <div class="particle particle-2"></div>
-                <div class="particle particle-3"></div>
-                <div class="particle particle-4"></div>
-              </div>
+                <div class="portada">
+                    <h1 id="welcome-message">HOLA,</h1>
 
-              
-                <button id="logout-button">Cerrar sesión</button>
-                <h1 id="welcome-message">HOLA,</h1>
+
+                </div>
+
+
+
                 <form id="formulario-propiedades">
+                    <div class="titulo">Formulario</div>
+                    <div class="form-divisor" style="margin: 4px 0;"></div>
+
                     <label for="categoria">Propósito de la Propiedad:</label>
                     <select id="categoria" required>
                         <option value="">Selecciona</option>
@@ -437,6 +544,7 @@
                         <option value="alquiler">Alquilar</option>
                     </select>
                     <br><br>
+
 
                     <label for="tipoPropiedad">Tipo de Propiedad:</label>
                     <select id="tipoPropiedad" required>
@@ -448,44 +556,104 @@
                     <br><br>
 
                     <label for="idPropiedad">ID de la Propiedad:</label>
-                    <input type="text" id="idPropiedad" placeholder="vc10001" readonly required>
+                    <input type="text" id="idPropiedad" placeholder="vc10001" readonly="" required=""
+                        style="padding: 12px 10px;color: #59eeff; font-size: 17px;">
                     <br><br>
 
                     <label for="icon">Icono de propiedad:</label>
-                    <select id="icon" required>
-                        <option value="">Selecciona</option>
-                        <option value="houseIcon">Casa - Estándar</option>
-                        <option value="buildingIcon">Apartamento - Estándar</option>
-                        <option value="landIcon">Terreno - Estándar</option>
-                    </select>
-                    <br><br>
+                    <div id="icon-options" class="icon-buttons">
+                        <button type="button" class="icon-button" value="houseIcon" id="icon-casa">
+                            <img src="./img/casa4.png" alt="Casa" class="icon-image" style="border-color: #ff5f64;">
+
+                            <p>Casa<br> Estándar</p>
+                        </button>
+                        <button type="button" class="icon-button" value="buildingIcon" id="icon-apartamento">
+                            <img src="./img/apartamento3.png" alt="Apartamento" class="icon-image"
+                                style="border-color: #1090e7;">
+                            <p>Apartamento<br> Estándar</p>
+                        </button>
+                        <button type="button" class="icon-button" value="landIcon" id="icon-terrero">
+                            <img src="./img/solar2.png" alt="Terreno" class="icon-image" style="border-color: #59a739;">
+                            <p>Terreno<br> Estándar</p>
+                        </button>
+                    </div>
+                    <input type="hidden" id="icon" name="icon" required>
 
 
                     <div class="form-divisor"></div> <!-- Divisor -->
 
                     <label for="title">Título de la Publicación:</label>
-                    <input type="text" id="title" placeholder="36 caracteres max." maxlength="36">
+                    <input type="text" id="title" placeholder="36 caracteres max." maxlength="36" required>
                     <br><br>
 
                     <label for="price">Precio de la Propiedad:</label>
-                    <input type="number" id="price" placeholder="Solo en RD$" required>
-                    <br><br>
+                    <div class="input-precio">
+
+                        <input type="text" id="price" placeholder="Cantidad en peso (RD$)" required
+                            oninput="formatearPrecio(this)" onblur="validarPrecio(this)">
+                        <div class="Tipo-Moneda">RD$</div>
+                    </div>
+
+                    <div class="form-divisor"></div> <!-- Divisor -->
+
 
                     <label for="rooms">Cantidad de Habitaciones:</label>
-                    <input type="number" id="rooms" placeholder="0" required>
+                    <div class="input-cantidad">
+                        <input type="number" id="rooms" placeholder="0" required
+                            style="font-size: 19px;padding: 13px 13px 13px 60px;margin-top: 0px;">
+                        <div class="cantidad-img"><img src="./img/habitaciones_1.png"></div>
+                    </div>
                     <br><br>
 
                     <label for="bathrooms">Cantidad de Baños:</label>
-                    <input type="number" id="bathrooms" placeholder="0" required>
+                    <div class="input-cantidad">
+                        <input type="number" id="bathrooms" placeholder="0" required
+                            style="font-size: 19px;padding: 13px 13px 13px 60px;margin-top: 0px;">
+                        <div class="cantidad-img"><img src="./img/baños_1.png"></div>
+                    </div>
                     <br><br>
 
                     <label for="parking">Cantidad de Parqueos:</label>
-                    <input type="number" id="parking" placeholder="0" required>
+                    <div class="input-cantidad">
+                        <input type="number" id="parking" placeholder="0" required
+                            style="font-size: 19px;padding: 13px 13px 13px 60px;margin-top: 0px;">
+                        <div class="cantidad-img"><img src="./img/parqueos_1.png"></div>
+                    </div>
                     <br><br>
 
                     <label for="area">Metros Cuadrados (m²):</label>
-                    <input type="number" id="area" placeholder="0" required>
-                    <br><br>
+                    <div class="input-cantidad">
+                        <input type="number" id="area" placeholder="0" required
+                            style="font-size: 19px;padding: 13px 13px 13px 60px;margin-top: 0px;">
+                        <div class="cantidad-img"><img src="./img/area_1.png"></div>
+                    </div>
+
+                    <div class="form-divisor"></div> <!-- Divisor -->
+
+
+                    <label for="img">Imagenes de la Propiedad</label>
+                    <div class="input-imagenes">
+                        <label for="imagenes" class="custom-imagen-upload">
+                            <img src="./img/subir-imagen-1.png" alt="Añadir" class="icono-añadir">
+                            Añadir imagen
+                        </label>
+                        <div class="outputs">
+                            <output id="imageCountOutput" style="margin-bottom: 2px;">0 Imagen</output>
+                            <output id="pesoTotalOutput">0 MB</output>
+                        </div>
+                        <input type="file" id="imagenes" multiple required accept="image/*" style="display: none;">
+                    </div>
+
+                    <div class="lista-imagenes-master">
+                        <ul id="lista-imagenes"></ul>
+                        <div class="imagen-upload-mensaje">
+                            <img src="./img/subir-imagen-1.png" alt="Subir Imagen">
+                            <p>O arrastra y suelta las imágenes aquí<br>
+                                <span>32 imágenes y 50MB Max.</span>
+                            </p>
+                        </div>
+                    </div>
+
 
                     <label for="imageCount" style="display: none;">Número de Imágenes:</label> <!-- hiden-->
                     <input type="number" id="imageCount" readonly style="display: none;"> <!-- hiden-->
@@ -500,45 +668,58 @@
                     <input type="checkbox" id="jacuzzi" style="display: none;"> <!-- hiden-->
 
 
-
-                    <label for="imagenes">Subir Imágenes:</label>
-                    <input type="file" id="imagenes" multiple required accept="image/*">
-                    <ul id="lista-imagenes"></ul>
-                    <br><br>
-
+                    <div class="form-divisor"></div> <!-- Divisor -->
 
                     <label for="caracteristicas">Detalles de la Propiedad:</label>
-                    <input type="text" id="caracteristicas" placeholder="Escriba aquí detalles adicionales..." required>
-                    <br><br>
+                    <div id="editor" style="height: 200px;"></div>
+                    <input type="hidden" id="caracteristicas" name="caracteristicas" required>
+
+                    <div class="form-divisor"></div> <!-- Divisor -->
 
                     <!-- <label for="latLng">LatLng (coordenadas):</label>
-            <input type="text" id="latLng" placeholder="Ej: 18.54,-69.90" required> -->
+                    <input type="text" id="latLng" placeholder="Ej: 18.54,-69.90" required> -->
 
                     <label for="latLng">Ubicación de la Propiedad (Coordenadas):</label>
                     <input type="text" id="latLng" placeholder="Seleccione en el mapa" readonly>
                     <div id="map"></div>
-                    <br><br>
 
-                    <div class="slider-container"  style="height: 50px; width: 100%;">
-                        <button class="slider-button">
-                          <div class="button-content"> 
-                            <span class="slider-text">Publicar Propiedad</span>
-                            <div class="circle" id="sliderCircle"></div>
-                          </div>
+
+                    <div class="form-divisor"></div> <!-- Divisor -->
+
+
+                    <div class="slider-container">
+                        <button type="submit" class="slider-button">
+                            <div class="button-content">
+                                <span class="slider-text">Publicar Propiedad</span>
+                                <div class="circle" id="sliderCircle">
+                                    <img src="./img/enviar_1.png"
+                                        style="margin: 10px 6px 10px 14px;height: 30px;pointer-events: none;">
+                                </div>
+                            </div>
                         </button>
-                      </div>
-                </form>
+                    </div>
 
+                </form>
 
                 <div id="loading-indicator" style="display: none;">
                     <p>Cargando...</p>
                 </div>
 
                 <div id="modal-exito" class="modal">
+
+                    <div class="animation-wrapper">
+                        <div class="particle particle-1"></div>
+                        <div class="particle particle-2"></div>
+                        <div class="particle particle-3"></div>
+                        <div class="particle particle-4"></div>
+                    </div>
+
                     <div class="modal-content">
                         <span id="nombre-usuario"></span>
+                        <img src="./img/logo_arribate_linea_1.png">
+                        <div id="mensaje-adicional"></div>
                         <p id="mensaje-modal"></p>
-                        <input type="text" id="enlace-propiedad" readonly>
+                        <a id="enlace-propiedad" href="#" target="_blank"></a>
                         <button id="copiar-enlace">Copiar enlace</button>
                         <button id="cerrar-modal">Listo</button>
                     </div>
@@ -547,19 +728,106 @@
         </div>
     </div>
 
+    <script>
+        var quill = new Quill('#editor', {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    ['bold', 'italic', 'underline'],        // toggled buttons
+                    ['link', 'image', 'blockquote'],       // link and image
+                    [{ 'list': 'ordered' }, { 'list': 'bullet' }] // lists
+                ]
+            }
+        });
+
+        // Cuando se envíe el formulario, guardar el contenido de Quill en el input oculto
+        document.getElementById("formulario-propiedades").addEventListener("submit", function () {
+            var caracteristicas = document.getElementById("caracteristicas");
+            caracteristicas.value = quill.root.innerHTML; // Guardar contenido
+        });
+    </script>
+
+    <script>
+        function formatearPrecio(input) {
+            // Eliminar comas existentes
+            let valor = input.value.replace(/,/g, '');
+
+            // Verificar si es un número válido
+            if (!isNaN(valor) && valor !== '') {
+                // Convertir a número y formatear como string con comas
+                valor = Number(valor).toLocaleString('en-US');
+                input.value = valor; // Asignar el valor formateado al campo de entrada
+            }
+        }
+
+        function validarPrecio(input) {
+            // Eliminar comas y verificar si es un número válido
+            let valor = input.value.replace(/,/g, '');
+            if (valor === '' || isNaN(valor)) {
+                input.value = ''; // Limpiar el campo si no es un número válido
+            }
+        }
+
+        // Al enviar el formulario, convertir el valor a número
+        document.getElementById("formulario-propiedades").addEventListener("submit", function (event) {
+            const priceInput = document.getElementById("price");
+            const valorSinComas = priceInput.value.replace(/,/g, '');
+            priceInput.value = valorSinComas; // Asigna el valor sin comas al campo antes de enviar
+        });
+    </script>
+
+    <script>
+
+        //script para resaltar la zona de la lista de imagenes al arrastrar imagenes
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const lista = document.getElementById("lista-imagenes");
+
+            // Agregar eventos de arrastre
+            lista.addEventListener("dragenter", () => {
+                lista.classList.add("highlight"); // Agregar clase de resaltado
+            });
+
+            lista.addEventListener("dragover", (event) => {
+                event.preventDefault(); // Evitar el comportamiento predeterminado
+            });
+
+            lista.addEventListener("dragleave", () => {
+                lista.classList.remove("highlight"); // Quitar clase de resaltado
+            });
+
+            lista.addEventListener("drop", (event) => {
+                event.preventDefault(); // Evitar el comportamiento predeterminado
+                lista.classList.remove("highlight"); // Quitar clase de resaltado
+
+                const files = event.dataTransfer.files; // Obtener archivos arrastrados
+                agregarImagenes(files); // Llamar a la función para agregar imágenes
+            });
+
+            // Función para agregar imágenes desde archivos
+            function agregarImagenes(nuevasImagenes) {
+                // Aquí va tu implementación existente para agregar imágenes
+                console.log(nuevasImagenes); // Ejemplo de uso
+            }
+        });
+    </script>
+
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.10.2/Sortable.min.js"></script>
 
 
     <script>
         let map;
         let marker;
-        let circle; // Variable para el círculo
 
         function initMap() {
+            // Detectar el ancho de la pantalla y ajustar el nivel de zoom
+            const screenWidth = window.innerWidth;
+            const initialZoom = screenWidth < 700 ? 7 : 8;
+
             // Configuración inicial del mapa
             map = new google.maps.Map(document.getElementById("map"), {
                 center: { lat: 19.011018, lng: -70.348341 }, // Coordenadas iniciales (Santiago)
-                zoom: 8,
+                zoom: initialZoom,
             });
 
             // Inicializa el marcador
@@ -582,7 +850,7 @@
             // Barra de búsqueda de Google Places
             const input = document.createElement("input");
             input.type = "text";
-            input.placeholder = "Buscar lugar o dirección en RD";
+            input.placeholder = "Buscar dirección o lugar en RD";
             input.style = "width: 100%; margin-bottom: 10px;";
             document.getElementById("map").insertAdjacentElement("beforebegin", input);
 
@@ -628,125 +896,170 @@
 
     <script
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAnl6BmNpeFzqsmxapeB316ZFO4oIQQRZk&libraries=places&callback=initMap"
-        async defer>
-        </script>
+        async defer></script>
 
-<script>
-    const sliderCircle = document.getElementById('sliderCircle');
-    const sliderButton = document.querySelector('.slider-button');
-    const sliderText = document.querySelector('.slider-text');
-    const buttonContent = document.querySelector('.button-content');
-    let isSliding = false;
 
-    function initializeText() {
-      const letters = sliderText.innerText.split('');
-      let updatedText = "";
-      for (let i = 0; i < letters.length; i++) {
-        updatedText += `<span>${letters[i]}</span>`;
-      }
-      sliderText.innerHTML = updatedText;
-    }
 
-    initializeText();
+    <script type="text/javascript">
+        const sliderCircle = document.getElementById('sliderCircle');
+        const sliderButton = document.querySelector('.slider-button');
+        const sliderText = document.querySelector('.slider-text');
+        const buttonContent = document.querySelector('.button-content');
+        let isSliding = false;
 
-    sliderCircle.addEventListener('mousedown', startSlide);
-    sliderCircle.addEventListener('touchstart', startSlide);
-
-    buttonContent.addEventListener('click', (event) => {
-      event.preventDefault(); 
-    });
-
-    sliderCircle.addEventListener('click', () => {
-      const sliderContainer = sliderCircle.parentElement;
-      const containerWidth = sliderContainer.offsetWidth;
-      const circleWidth = sliderCircle.offsetWidth;
-      const left = parseFloat(sliderCircle.style.left) || 0; // Obtener la posición actual
-
-      // Verificar si el círculo está en la posición final (100%)
-      if (left >= containerWidth - circleWidth) { 
-        sliderButton.click();
-        resetSlider();
-      }
-    });
-
-    function startSlide(event) {
-      if (isSliding) return;
-      isSliding = true;
-
-      const sliderContainer = sliderCircle.parentElement;
-      const containerWidth = sliderContainer.offsetWidth;
-      const circleWidth = sliderCircle.offsetWidth;
-
-      const onMove = (e) => {
-        const mouseX = e.clientX || e.touches[0].clientX;
-        const left = Math.min(Math.max(mouseX - sliderContainer.getBoundingClientRect().left - circleWidth / 2, 0), containerWidth - circleWidth);
-        sliderCircle.style.left = left + 'px';
-
-        if (left >= containerWidth * 0.95) {
-          sliderButton.style.backgroundColor = 'red';
-        } else {
-          sliderButton.style.backgroundColor = '#007bff';
+        function initializeText() {
+            const letters = sliderText.innerText.split('').map(letter => `<span>${letter}</span>`).join('');
+            sliderText.innerHTML = letters;
         }
 
-        const letterSpans = sliderText.querySelectorAll('span');
-        const textWidth = sliderText.offsetWidth;
+        initializeText();
 
-        letterSpans.forEach((span, i) => {
-          const letterWidth = textWidth / letterSpans.length;
-          const letterLeft = (containerWidth / 2) - (textWidth / 2) + (letterWidth * i);
-          const visibility = (left + circleWidth) - letterLeft;
+        sliderCircle.addEventListener('mousedown', startSlide);
+        sliderCircle.addEventListener('touchstart', startSlide);
+        buttonContent.addEventListener('click', event => event.preventDefault());
 
-          if (visibility < 0) {
-            span.style.opacity = 1;
-          } else if (visibility < letterWidth) {
-            const opacity = Math.max(0, 1 - (visibility / letterWidth));
-            span.style.opacity = opacity;
-          } else {
-            span.style.opacity = 0;
-          }
+        sliderCircle.addEventListener('click', () => {
+            const sliderContainer = sliderCircle.parentElement;
+            const containerWidth = sliderContainer.offsetWidth;
+            const circleWidth = sliderCircle.offsetWidth;
+            const left = parseFloat(sliderCircle.style.left) || 0;
+
+            if (left >= containerWidth - circleWidth) {
+                sliderButton.click();
+                resetSlider();
+            }
         });
 
-        if (left >= containerWidth - circleWidth) {
-          sliderButton.click();
-          resetSlider();
-          e.preventDefault();
-          e.stopPropagation();
+        function startSlide(event) {
+            if (isSliding) return;
+            isSliding = true;
+
+            const sliderContainer = sliderCircle.parentElement;
+            const containerWidth = sliderContainer.offsetWidth;
+            const circleWidth = sliderCircle.offsetWidth;
+
+            const onMove = (e) => {
+                const mouseX = e.clientX || e.touches[0].clientX;
+                const left = Math.min(Math.max(mouseX - sliderContainer.getBoundingClientRect().left - circleWidth / 2, 0), containerWidth - circleWidth);
+                sliderCircle.style.left = `${left}px`;
+                sliderButton.style.backgroundColor = left >= containerWidth * 0.9 ? '#29ab4a' : '#0053ab';
+
+                const letterSpans = sliderText.querySelectorAll('span');
+                const textWidth = sliderText.offsetWidth;
+                const letterWidth = textWidth / letterSpans.length;
+
+                letterSpans.forEach((span, i) => {
+                    const letterLeft = (containerWidth / 2) - (textWidth / 2) + (letterWidth * i);
+                    const visibility = (left + circleWidth) - letterLeft;
+
+                    span.style.opacity = visibility < 0 ? 1 :
+                        visibility < letterWidth ? Math.max(0, 1 - (visibility / letterWidth)) : 0;
+                });
+
+                if (left >= containerWidth - circleWidth) {
+                    sliderButton.click();
+                    resetSlider();
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+            };
+
+            const onEnd = () => {
+                if (parseFloat(sliderCircle.style.left) < containerWidth - circleWidth) {
+                    resetSlider();
+                }
+                isSliding = false;
+                cleanupEventListeners();
+            };
+
+            const cleanupEventListeners = () => {
+                document.removeEventListener('mousemove', onMove);
+                document.removeEventListener('mouseup', onEnd);
+                document.removeEventListener('touchmove', onMove);
+                document.removeEventListener('touchend', onEnd);
+            };
+
+            document.addEventListener('mousemove', onMove);
+            document.addEventListener('mouseup', onEnd);
+            document.addEventListener('touchmove', onMove);
+            document.addEventListener('touchend', onEnd);
         }
-      };
 
-      const onEnd = () => {
-        if (parseFloat(sliderCircle.style.left) < containerWidth - circleWidth) {
-          resetSlider();
+        function resetSlider() {
+            sliderCircle.style.left = '0px';
+            sliderButton.style.backgroundColor = '#007bff';
+            sliderText.querySelectorAll('span').forEach(span => span.style.opacity = 1);
         }
-        isSliding = false;
-        document.removeEventListener('mousemove', onMove);
-        document.removeEventListener('mouseup', onEnd);
-        document.removeEventListener('touchmove', onMove);
-        document.removeEventListener('touchend', onEnd);
-      };
 
-      document.addEventListener('mousemove', onMove);
-      document.addEventListener('mouseup', onEnd);
-      document.addEventListener('touchmove', onMove);
-      document.addEventListener('touchend', onEnd);
-    }
+        function handleSubmit(event) {
+            event.preventDefault();
+            // ... (Aquí iría tu código para manejar el envío del formulario) ...
+            return false;
+        }
 
-    function resetSlider() {
-      sliderCircle.style.left = '0px';
-      sliderButton.style.backgroundColor = '#007bff';
 
-      const letterSpans = sliderText.querySelectorAll('span');
-      letterSpans.forEach(span => {
-        span.style.opacity = 1;
-      });
-    }
 
-    function handleSubmit(event) {
-      event.preventDefault();
-      // ... (Aquí iría tu código para manejar el envío del formulario) ...
-      return false;
-    }
-  </script>
+
+        document.querySelectorAll(".icon-button").forEach(button => {
+            button.addEventListener("click", () => {
+                // 1. Remover clase "active" de todos los botones
+                document.querySelectorAll(".icon-button.active").forEach(btn => {
+                    btn.classList.remove("active");
+                });
+
+                // 2. Agregar clase "active" al botón clickeado
+                button.classList.add("active");
+
+                // 3. Actualizar el valor del input oculto
+                document.getElementById("icon").value = button.value;
+            });
+        });
+    </script>
+
+
+    <script>
+        // Función para manejar el cambio en el propósito de la propiedad
+        function cambiarTextoLabel() {
+            const categoria = document.getElementById("categoria").value;
+            const labelPrecio = document.querySelector("label[for='price']");
+
+            if (categoria === "alquiler") {
+                labelPrecio.textContent = "Renta de la Propiedad:";
+            } else {
+                labelPrecio.textContent = "Precio de la Propiedad:";
+            }
+        }
+
+        // Asignar el evento de cambio al select de categoría
+        document.getElementById("categoria").addEventListener("change", cambiarTextoLabel);
+    </script>
+
+
+    <script>
+        //JM EDITOR DE TEXTO
+        // Función para ocultar elementos y aplicar estilos a la barra de herramientas
+        function modificarElementos() {
+            // Ocultar elementos con las clases .ql-link, .ql-image, .ql-blockquote
+            const elementosOcultar = document.querySelectorAll('.ql-link, .ql-image, .ql-blockquote');
+            elementosOcultar.forEach(elemento => {
+                elemento.style.display = 'none';
+            });
+
+            // Aplicar estilos a los elementos con la clase .ql-toolbar
+            const toolbars = document.querySelectorAll('.ql-toolbar');
+            toolbars.forEach(toolbar => {
+                toolbar.style.borderRadius = '14px 14px 0px 0px';
+                toolbar.style.border = 'none';
+                toolbar.style.background = '#868fa5';
+                toolbar.style.marginTop = '7px';
+            });
+        }
+
+        // Llama a la función para modificar los elementos al cargar la página
+        document.addEventListener('DOMContentLoaded', modificarElementos);
+    </script>
+
+
 </body>
 
 </html>
