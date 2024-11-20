@@ -440,15 +440,13 @@
                 modal.style.display = "none";
             }
         }
-    </script>
 
-<script>
-    // Evitar que el botón de atrás cierre la página
-    window.history.pushState(null, document.title, window.location.href);
-    window.addEventListener('popstate', function (event) {
+        // Evitar que el botón de atrás cierre la página
         window.history.pushState(null, document.title, window.location.href);
-    });
-</script>
+        window.addEventListener('popstate', function (event) {
+            window.history.pushState(null, document.title, window.location.href);
+        });
+    </script>
 
 
 </body>
