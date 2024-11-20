@@ -866,7 +866,7 @@ li {
     position: relative;
     width: 100%;
     height: 100%;
-    background-color: #0065d1;
+    background-color: #004c9d;
     border: none;
     border-radius: 25px;
     color: white;
@@ -879,7 +879,7 @@ li {
     transition: background-color 0.3s ease;
     padding: 0px;
     -webkit-tap-highlight-color: transparent;
-    box-shadow: 3px 4px 12px 1px rgb(0 49 98) inset;
+    /* box-shadow: 3px 4px 12px 1px rgb(0 49 98) inset; */
 }
 
 .slider-text {
@@ -1038,20 +1038,3 @@ li {
         transform: translateY(-2560px);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
