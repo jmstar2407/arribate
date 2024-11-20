@@ -830,6 +830,10 @@
      //Seleccionar icono de propiedad automaticamente FIN
 
 
+
+
+
+     //cambiar tmaño de editor de texto
      const editor = document.getElementById('editor');
 const resizer = document.getElementById('resizer');
 
@@ -839,18 +843,39 @@ resizer.addEventListener('mousedown', (e) => {
     isResizing = true;
 });
 
+resizer.addEventListener('touchstart', (e) => {
+    isResizing = true;
+    e.preventDefault(); // Prevent default touch behavior
+});
+
 document.addEventListener('mousemove', (e) => {
     if (!isResizing) return;
 
     const newHeight = e.clientY - editor.getBoundingClientRect().top;
 
-    // Limitar la altura máxima a 350px
-    if (newHeight <= 350 && newHeight >= 100) { // Puedes ajustar el mínimo si lo deseas
+    // Limit maximum height to 350px
+    if (newHeight <= 350 && newHeight >= 100) { // Adjust minimum if desired
         editor.style.height = newHeight + 'px';
     }
 });
 
 document.addEventListener('mouseup', () => {
+    isResizing = false;
+});
+
+document.addEventListener('touchmove', (e) => {
+    if (!isResizing) return;
+
+    const touch = e.touches[0]; // Get the first touch point
+    const newHeight = touch.clientY - editor.getBoundingClientRect().top;
+
+    // Limit maximum height to 350px
+    if (newHeight <= 350 && newHeight >= 100) { // Adjust minimum if desired
+        editor.style.height = newHeight + 'px';
+    }
+});
+
+document.addEventListener('touchend', () => {
     isResizing = false;
 });
 
