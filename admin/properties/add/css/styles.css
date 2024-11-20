@@ -841,6 +841,10 @@ li {
         width: 100%;
         padding: 0px 20px;
     }
+
+    #map {
+        height: 310px;
+    }
 }
 
 
