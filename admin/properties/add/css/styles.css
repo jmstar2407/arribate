@@ -13,6 +13,20 @@ button {
     display: none;
 }
 
+
+/* Estilo específico para el autocompletado */
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 30px rgb(34 37 44) inset !important;
+    box-shadow: 0 0 0 30px rgb(68 70 75) inset !important;
+    -webkit-text-fill-color: white !important;
+}
+
+/* Estilo para el autocompletado seleccionado */
+input:-webkit-autofill:focus {
+    background-color: #22252c !important;
+    color: white !important;
+}
+
 #editor {
     height: 250px;
     background: #313847;
