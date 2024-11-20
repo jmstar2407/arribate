@@ -527,11 +527,9 @@
 
                 <div class="portada">
                     <h1 id="welcome-message">HOLA,</h1>
-
-
                 </div>
 
-
+                <!-- <div class="light" style="position: relative;background: #1180cb;border-radius: 35px;top: 228px;height: 9px;width: 103px;margin-left: auto;margin-right: auto;box-shadow: 0px 0px 56px 29px rgb(2 74 197);"></div> -->
 
                 <form id="formulario-propiedades">
                     <div class="titulo">Formulario</div>
@@ -671,7 +669,7 @@
                     <div class="form-divisor"></div> <!-- Divisor -->
 
                     <label for="caracteristicas">Detalles de la Propiedad:</label>
-                    <div id="editor" style="height: 200px;"></div>
+                    <div id="editor"></div><div id="resizer"></div>
                     <input type="hidden" id="caracteristicas" name="caracteristicas" required>
 
                     <div class="form-divisor"></div> <!-- Divisor -->
@@ -830,6 +828,31 @@
             });
         });
      //Seleccionar icono de propiedad automaticamente FIN
+
+
+     const editor = document.getElementById('editor');
+const resizer = document.getElementById('resizer');
+
+let isResizing = false;
+
+resizer.addEventListener('mousedown', (e) => {
+    isResizing = true;
+});
+
+document.addEventListener('mousemove', (e) => {
+    if (!isResizing) return;
+
+    const newHeight = e.clientY - editor.getBoundingClientRect().top;
+
+    // Limitar la altura máxima a 350px
+    if (newHeight <= 350 && newHeight >= 100) { // Puedes ajustar el mínimo si lo deseas
+        editor.style.height = newHeight + 'px';
+    }
+});
+
+document.addEventListener('mouseup', () => {
+    isResizing = false;
+});
 
     </script>
 
