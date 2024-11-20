@@ -810,6 +810,27 @@
                 console.log(nuevasImagenes); // Ejemplo de uso
             }
         });
+
+
+     //Seleccionar icono de propiedad automaticamente
+        document.addEventListener('DOMContentLoaded', () => {
+            const propertyTypeSelect = document.getElementById('tipoPropiedad');
+            const houseIconButton = document.getElementById('icon-casa');
+            const buildingIconButton = document.getElementById('icon-apartamento');
+            const landIconButton = document.getElementById('icon-terrero');
+
+            propertyTypeSelect.addEventListener('change', () => {
+                if (propertyTypeSelect.value === 'casa') {
+                    houseIconButton.click();
+                } else if (propertyTypeSelect.value === 'apartamento') {
+                    buildingIconButton.click();
+                } else if (propertyTypeSelect.value === 'terreno') {
+                    landIconButton.click();
+                }
+            });
+        });
+     //Seleccionar icono de propiedad automaticamente FIN
+
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.10.2/Sortable.min.js"></script>
