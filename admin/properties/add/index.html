@@ -41,7 +41,7 @@
         // Función para redirigir al usuario tras la inactividad
         function cerrarPorInactividad() {
             signOut(auth).then(() => {
-                window.location.href = "../auth.html";
+                window.location.href = "https://arribate.com/admin/login/";
             }).catch((error) => {
                 console.error("Error al cerrar sesión por inactividad: ", error);
             });
@@ -77,7 +77,7 @@
                 welcomeMessage.innerHTML = `HOLA, <br><span style="font-weight: bold;">${userName}</span>`;
                 correoUsuario = user.email;
             } else {
-                window.location.href = "../auth.html";
+                window.location.href = "https://arribate.com/admin/login/";
             }
         });
 
@@ -481,7 +481,7 @@
         // Función para cerrar sesión
         function cerrarSesion() {
             signOut(auth).then(() => {
-                window.location.href = "../auth.html";
+                window.location.href = "https://arribate.com/admin/login/";
             }).catch((error) => {
                 alert("Error al cerrar sesión: " + error.message);
             });
