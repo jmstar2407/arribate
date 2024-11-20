@@ -37,7 +37,7 @@ button {
     background: #2c313d;
     cursor: ns-resize;
     position: relative;
-    bottom: -4px;
+    bottom: 0px;
     left: 0;
     margin-left: auto;
     margin-right: auto;
