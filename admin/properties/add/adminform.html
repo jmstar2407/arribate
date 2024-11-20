@@ -691,7 +691,10 @@
                         <button type="submit" class="slider-button">
                             <div class="button-content">
                                 <span class="slider-text">Publicar Propiedad</span>
-                                <div class="circle" id="sliderCircle"></div>
+                                <div class="circle" id="sliderCircle">
+                                    <img src="./img/enviar_1.png"
+                                        style="margin: 10px 6px 10px 14px;height: 30px;pointer-events: none;">
+                                </div>
                             </div>
                         </button>
                     </div>
@@ -815,12 +818,12 @@
     <script>
         let map;
         let marker;
-    
+
         function initMap() {
             // Detectar el ancho de la pantalla y ajustar el nivel de zoom
             const screenWidth = window.innerWidth;
             const initialZoom = screenWidth < 700 ? 7 : 8;
-    
+
             // Configuración inicial del mapa
             map = new google.maps.Map(document.getElementById("map"), {
                 center: { lat: 19.011018, lng: -70.348341 }, // Coordenadas iniciales (Santiago)
