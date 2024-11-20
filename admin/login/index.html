@@ -31,7 +31,7 @@
 
             try {
                 await signInWithEmailAndPassword(auth, email, password);
-                window.location.href = "formulario.html"; // Redirige al formulario
+                window.location.href = "https://arribate.com/admin/properties/add/adminform.html"; // Redirige al formulario
             } catch (error) {
                 alert("No se ha podido iniciar sesión. Verifica tu correo electrónico y contraseña.");
             }
@@ -45,7 +45,7 @@
             try {
                 await createUserWithEmailAndPassword(auth, email, password);
                 alert("Usuario registrado exitosamente");
-                window.location.href = "formulario.html"; // Redirige al formulario
+                window.location.href = "https://arribate.com/admin/properties/add/adminform.html"; // Redirige al formulario
             } catch (error) {
                 alert("Error al registrar el usuario: " + error.message);
             }
@@ -54,7 +54,7 @@
         // Redirigir al formulario si el usuario ya está autenticado
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                window.location.href = "formulario.html";
+                window.location.href = "https://arribate.com/admin/properties/add/adminform.html";
             }
         });
 
@@ -170,11 +170,7 @@
             animation: gradientMove linear 7s infinite;
         }
 
-        .logonombre span {
-            text-align: center;
-            color: #adadad;
-            font-size: 20px;
-        }
+     
 
         @keyframes gradientMove {
             0% {
