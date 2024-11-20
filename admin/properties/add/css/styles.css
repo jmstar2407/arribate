@@ -885,7 +885,25 @@ li {
     transition: opacity 0.3s ease;
     white-space: nowrap;
     -webkit-tap-highlight-color: transparent;
+    font-weight: bold;
+    background: linear-gradient(90deg, #001a36, #001a36, #001a36, #ffffff, #001a36, #001a36, #001a36);
+    background-size: 400%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientMove2 linear 2s infinite;
 }
+
+@keyframes gradientMove2 {
+    0% {
+        background-position: 100%;
+    }
+
+    100% {
+        background-position: 0%;
+    }
+}
+
+
 
 .circle {
     position: absolute;
@@ -1016,3 +1034,20 @@ li {
         transform: translateY(-2560px);
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
