@@ -129,7 +129,7 @@
             font-size: 27px;
         }
 
-        button {
+        #login {
             margin-top: 70px;
             margin-bottom: 100px;
             width: 100%;
@@ -139,7 +139,42 @@
             border: none;
             color: white;
             font-size: 18px;
+            transition: 0.3s;
         }
+
+        #login:hover {
+            cursor: pointer;
+            background: #3258b1;
+            transition: 0.3s;
+        }
+
+        #soporte {
+    position: relative;
+    margin-top: 0px;
+    margin-bottom: 20px;
+    width: 100%;
+    height: 55px;
+    border-radius: 20px;
+    background: #3258b1;
+    border: none;
+    color: white;
+    font-size: 18px;
+    transition: 0.3s;
+}
+
+        #soporte:hover {
+            cursor: pointer;
+            background: #2f65e4;
+            transition: 0.3s;
+        }
+
+        #soporte a {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0px;
+    left: 0px;
+}
 
 
 
@@ -210,24 +245,39 @@
             height: 100%;
             overflow: auto;
             background-color: rgb(0, 0, 0);
-            background-color: rgba(0, 0, 0, 0.4);
-            padding-top: 60px;
+            background-color: rgb(0 0 0 / 29%);
+            backdrop-filter: blur(8px);
         }
 
         .modal-content {
-            background-color: #fefefe;
-            margin: 5% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: system-ui;
+            font-size: 17px;
+            background-color: #22252c;
+            padding: 30px;
+            border: none;
+            border-radius: 22px;
+            width: 85%;
             text-align: center;
+            box-sizing: border-box;
         }
 
         .close {
-            color: #aaa;
+            background: #750f0f;
+            border: none;
+            padding: 10px 23px;
+            border-radius: 13px;
+            color: #e5cece;
             float: right;
-            font-size: 28px;
-            font-weight: bold;
+            font-size: 22px;
+            font-weight: normal;
+            transition: 0.3s;
         }
 
         .close:hover,
@@ -235,6 +285,7 @@
             color: black;
             text-decoration: none;
             cursor: pointer;
+            transition: 0.3s;
         }
 
         .copyright {
@@ -391,7 +442,7 @@
                 <label for="password"></label>
                 <input type="password" id="password" placeholder="Contraseña" required>
                 <div id="forgot-password">Olvidaste tu contraseña?</div>
-                <button type="submit">Iniciar sesión</button>
+                <button id="login" type="submit">Iniciar sesión</button>
             </form>
         </div>
 
@@ -402,14 +453,13 @@
 
     <div id="myModal" class="modal">
         <div class="modal-content">
-            <span class="close">&times;</span>
             <p>Olvidaste tu contraseña?</p>
-            <p>Contactate con el administrador:</p>
-            <a id="contact-button"
-                href="https://wa.me/18299149394?text=Olvid%C3%A9%20mi%20contrase%C3%B1a%20del%20Administrador%20de%20ArribaTe"
-                target="_blank">
-                <button>Contactar</button>
-            </a>
+            <p>Contactate con soporte técnico:</p>
+            <button id="soporte"><a id="contact-button"
+                    href="https://wa.me/18299149394?text=Olvid%C3%A9%20mi%20contrase%C3%B1a%20del%20Administrador%20de%20ArribaTe"
+                    target="_blank"></a>Soporte Técnico</button>
+
+            <button class="close">Cerrar</button>
         </div>
     </div>
 
