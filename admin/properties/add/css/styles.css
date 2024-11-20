@@ -693,6 +693,7 @@ li {
     height: 100px;
     overflow: hidden;
     margin: 2px 0px 0px 2px;
+    cursor: all-scroll;
 }
 
 .image-preview {
