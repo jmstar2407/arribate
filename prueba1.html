@@ -57,6 +57,11 @@
     
 
 <body>
+    <div class="loader">
+        <div class="loader-logo"></div>
+        <!-- <img src="./img/logo2.svg" id="loader-img" alt="Logo de carga"> -->
+        <img src="./img/logonombre2.png" alt="Logo de Arríbate - Plataforma de búsqueda de propiedades en República Dominicana" style="animation: loadernombre 3s forwards; ">
+    </div>
 
     <div class="boxmaster">
 
@@ -68,7 +73,7 @@
                     <div class="logo1"></div>
                     <div style="margin-left: 10px;">
                         <h1>ArríbaTe</h1>
-                        <span>República Dominicana</span>
+                        <span>República dominicana</span>
                     </div>
                 </div>
 
@@ -473,6 +478,76 @@
 
 
 
+    <!-- PublicaTE -->
+    <div id="background-publicate-modal" class="modal-background">
+        <div id="publicate-modal" class="modal-publicate">
+            <div class="publicate-titulo">
+                <p>Publíca<span style="color: #cd1025;">Te</span></p>
+                <button id="close-publicate-modal" class="vibrar-button">X</button>
+            </div>
+            <div class="publicate-body">
+                <p style="font-size: 14px;">¿Quieres <span style="color: #096caf;">alquilar</span> o <span
+                        style="color: #cd1025;">vender</span> tu propiedad?<br>
+                    <span style="font-size: 13px;">Comunícate con nosotros y nosotros nos encargamos del resto.</span>
+                </p>
+                <p style="font-weight: 100;color: #1e1e1e;font-size: 12px;text-align: left;">Como administradores de
+                    propiedades, facilitamos el proceso y nos ocupamos de todo para que tú no tengas que preocuparte.
+                </p>
+
+                <div class="beneficios-publicate" style="font-family: sans-serif;font-size: 14px;margin-bottom: 18px;">
+                    <p>Beneficios:</p>
+                    Atención personalizada.<br>
+                    Proceso sencillo y sin complicaciones.<br>
+                    Experiencia en el mercado inmobiliario.<br>
+                    Asesoría para la mejor valorización de la propiedad.
+                </div>
+                <div class="publicate-btns">
+                    <button id="publicate-btn-alquilar"><img src="./img/icons/whatsapp2.svg">
+                        <div>
+                            <h3>ALQUILAR</h3><span>propiedad</span>
+                        </div>
+                    </button>
+
+                    <button id="publicate-btn-vender" style="margin-right: 0px;"><img src="./img/icons/whatsapp2.svg">
+                        <div>
+                            <h3>VENDER</h3><span>propiedad</span>
+                        </div>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- PublicaTE FIN -->
+
+
+    <!-- Terminos y condiciones -->
+
+    <div class="terminos-politica-back" id="open-terminos-politica">
+        <div class="terminos-politica-content">
+            <div class="terminos-politica-titulo">
+                <h1>Informaciones</h1>
+                <button class="cerrar-cuadro">X</button>
+
+                <div class="terminos-botones-box">
+                    <button data-seccion="sobre-nosotros" class="vibrar-button">Sobre Nosotros</button>
+                    <button data-seccion="terminos-de-uso" class="vibrar-button">Condiciones de Uso</button>
+                    <button data-seccion="politicas-de-privacidad" class="vibrar-button">Políticas de privacidad</button>
+                </div>
+            </div>
+
+            <div class="terminos-politica-body">
+
+                <div class="display-info-all"></div>
+            </div>
+            <div class="terminos-politica-end">
+                <p>Copyright © 2024 ArríbaTe.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terminos y condiciones FIN -->
+
 
     <script>
 
@@ -751,6 +826,7 @@ function getIconFromFirebase(iconKey) {
         var ventas = [];
 
 // Función para obtener propiedades de Firestore
+// Función para obtener propiedades de Firestore
 async function obtenerPropiedadesDeFirestore() {
     const alquileresFirestore = [];
     const ventasFirestore = [];
@@ -759,22 +835,24 @@ async function obtenerPropiedadesDeFirestore() {
     const alquileresSnapshot = await db.collection('alquileres').get();
     alquileresSnapshot.forEach(doc => {
         const data = doc.data();
-        // Convertir latLng de string a array
         const latLng = data.latLng.split(',').map(Number);
-        alquileresFirestore.push({
-            id: data.id,
-            latLng: latLng,
-            title: data.title,
-            price: data.price,
-            icon: getIconFromFirebase(data.icon), // Obtener el ícono directamente desde Firebase
-            rooms: data.rooms,
-            bathrooms: data.bathrooms,
-            parking: data.parking,
-            area: data.area,
-            imageFolder: data.imageFolder,
-            imageCount: data.imageCount,
-            caracteristicas: data.caracteristicas
-        });
+        
+        if (data.mostrar) {
+            alquileresFirestore.push({
+                id: data.id,
+                latLng: latLng,
+                title: data.title,
+                price: data.price,
+                icon: getIconFromFirebase(data.icon),
+                rooms: data.rooms,
+                bathrooms: data.bathrooms,
+                parking: data.parking,
+                area: data.area,
+                imageFolder: data.imageFolder,
+                imageCount: data.imageCount,
+                caracteristicas: data.caracteristicas
+            });
+        }
     });
 
     // Obtener propiedades de venta
@@ -782,20 +860,23 @@ async function obtenerPropiedadesDeFirestore() {
     ventasSnapshot.forEach(doc => {
         const data = doc.data();
         const latLng = data.latLng.split(',').map(Number);
-        ventasFirestore.push({
-            id: data.id,
-            latLng: latLng,
-            title: data.title,
-            price: data.price,
-            icon: getIconFromFirebase(data.icon), // Obtener el ícono directamente desde Firebase
-            rooms: data.rooms,
-            bathrooms: data.bathrooms,
-            parking: data.parking,
-            area: data.area,
-            imageFolder: data.imageFolder,
-            imageCount: data.imageCount,
-            caracteristicas: data.caracteristicas
-        });
+        
+        if (data.mostrar) {
+            ventasFirestore.push({
+                id: data.id,
+                latLng: latLng,
+                title: data.title,
+                price: data.price,
+                icon: getIconFromFirebase(data.icon),
+                rooms: data.rooms,
+                bathrooms: data.bathrooms,
+                parking: data.parking,
+                area: data.area,
+                imageFolder: data.imageFolder,
+                imageCount: data.imageCount,
+                caracteristicas: data.caracteristicas
+            });
+        }
     });
 
     // Combinar datos locales con datos de Firestore
@@ -809,8 +890,32 @@ async function obtenerPropiedadesDeFirestore() {
 
 // Llamar a la función para obtener propiedades
 obtenerPropiedadesDeFirestore().then(() => {
-    // Inicializar los marcadores después de que se hayan obtenido los datos
-    toggleMarkers('venta'); // O 'alquiler' dependiendo de lo que quieras mostrar inicialmente
+    // Mostrar inicialmente solo los marcadores de venta
+    toggleMarkers('venta'); // Muestra solo las propiedades de venta al cargar la página
+
+    // Verificar el hash en la URL después de cargar los datos
+    const hash = window.location.hash;
+    console.log("Hash de la URL:", hash); // Imprimir el hash
+
+    if (hash.startsWith('#id-')) {
+        const propertyId = hash.substring('#id-'.length); // Extraer ID como cadena
+        console.log("ID extraído de la URL:", propertyId); // Imprimir el ID extraído
+
+        // Verificar si el ID no está vacío
+        if (propertyId) {
+            const property = [...alquileres, ...ventas].find(p => p.id === propertyId);
+            console.log("Propiedad encontrada:", property); // Imprimir la propiedad encontrada
+            
+            // Aquí es donde colocas la verificación
+            if (property) {
+                openModal(property); // Llama a la función para abrir el modal
+            } else {
+                console.error("No se encontró la propiedad con ID:", propertyId);
+            }
+        } else {
+            console.error("El ID extraído está vacío:", propertyId);
+        }
+    }
 });
 //firebase FIN
 
@@ -996,77 +1101,75 @@ function createMarkers(locations, markersArray) {
 
 
         function comoLlegarDesdeModal() {
-            // Obtener latitud y longitud de la propiedad actualmente mostrada en el modal
-            const propertyId = parseInt(window.location.hash.substring('#id-'.length));
-            const property = [...alquileres, ...ventas].find(p => p.id === propertyId);
+    // Obtener el ID de la propiedad desde el hash de la URL
+    const propertyId = window.location.hash.substring('#id-'.length);
+    const property = [...alquileres, ...ventas].find(p => p.id === propertyId);
 
-            if (property) {
-                const lat = property.latLng ? property.latLng[0] : property.lat;
-                const lng = property.latLng ? property.latLng[1] : property.lng;
+    if (property) {
+        const lat = property.latLng ? property.latLng[0] : property.lat;
+        const lng = property.latLng ? property.latLng[1] : property.lng;
 
-                // Verificar si estamos en un dispositivo iOS
-                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        // Verificar si estamos en un dispositivo iOS
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
-                if (isIOS) {
-                    // Crear enlaces personalizados para cada aplicación en iOS
-                    const appleMapsUrl = `maps://?q=${lat},${lng}`;
-                    const googleMapsUrl = `comgooglemaps://?q=${lat},${lng}&center=${lat},${lng}`;
-                    const wazeUrl = `waze://?ll=${lat},${lng}&navigate=yes`;
-                    const uberUrl = `uber://?action=setPickup&dropoff[latitude]=${lat}&dropoff[longitude]=${lng}`;
+        if (isIOS) {
+            // Crear enlaces personalizados para cada aplicación en iOS
+            const appleMapsUrl = `maps://?q=${lat},${lng}`;
+            const googleMapsUrl = `comgooglemaps://?q=${lat},${lng}&center=${lat},${lng}`;
+            const wazeUrl = `waze://?ll=${lat},${lng}&navigate=yes`;
+            const uberUrl = `uber://?action=setPickup&dropoff[latitude]=${lat}&dropoff[longitude]=${lng}`;
 
-                    // Función para intentar abrir la URL y mostrar un mensaje si no está instalada
-                    function tryOpenUrl(url, fallbackMessage) {
-                        const timeout = setTimeout(() => {
-                            alert(fallbackMessage); // Mostrar el mensaje personalizado
-                        }, 1500); // 1.5 segundos de espera
+            // Función para intentar abrir la URL y mostrar un mensaje si no está instalada
+            function tryOpenUrl(url, fallbackMessage) {
+                const timeout = setTimeout(() => {
+                    alert(fallbackMessage); // Mostrar el mensaje personalizado
+                }, 1500); // 1.5 segundos de espera
 
-                        window.location.href = url;
+                window.location.href = url;
 
-                        window.addEventListener('blur', () => {
-                            clearTimeout(timeout); // Si la app se abre, cancelar el timeout
-                        });
-                    }
-
-                    // Mostrar el modal
-                    const modal = document.getElementById('modal-map-ios');
-                    modal.style.display = 'block';
-
-                    // Obtener los botones y asociar las URLs con la función tryOpenUrl
-                    document.getElementById('appleMapsBtn').onclick = function () {
-                        tryOpenUrl(appleMapsUrl, 'Apple Maps no está instalada en este dispositivo.');
-                    };
-                    document.getElementById('googleMapsBtn').onclick = function () {
-                        tryOpenUrl(googleMapsUrl, 'Google Maps no está instalada en este dispositivo.');
-                    };
-                    document.getElementById('wazeBtn').onclick = function () {
-                        tryOpenUrl(wazeUrl, 'Waze no está instalada en este dispositivo.');
-                    };
-                    document.getElementById('uberBtn').onclick = function () {
-                        tryOpenUrl(uberUrl, 'Uber no está instalada en este dispositivo.');
-                    };
-
-                    // Cerrar el modal cuando se hace clic en la "X"
-                    document.querySelector('.close-modal-map-ios').onclick = function () {
-                        modal.style.display = 'none';
-                    };
-
-                    // Cerrar el modal si el usuario hace clic fuera del contenido del modal
-                    window.onclick = function (event) {
-                        if (event.target == modal) {
-                            modal.style.display = 'none';
-                        }
-                    };
-                } else {
-                    // Para Android, usar geo URI scheme
-                    const url = `geo:${lat},${lng}?q=${lat},${lng}`;
-                    window.location.href = url;
-                }
-            } else {
-                console.error("No se pudo encontrar la propiedad para obtener las coordenadas.");
+                window.addEventListener('blur', () => {
+                    clearTimeout(timeout); // Si la app se abre, cancelar el timeout
+                });
             }
+
+            // Mostrar el modal
+            const modal = document.getElementById('modal-map-ios');
+            modal.style.display = 'block';
+
+            // Obtener los botones y asociar las URLs con la función tryOpenUrl
+            document.getElementById('appleMapsBtn').onclick = function () {
+                tryOpenUrl(appleMapsUrl, 'Apple Maps no está instalada en este dispositivo.');
+            };
+            document.getElementById('googleMapsBtn').onclick = function () {
+                tryOpenUrl(googleMapsUrl, 'Google Maps no está instalada en este dispositivo.');
+            };
+            document.getElementById('wazeBtn').onclick = function () {
+                tryOpenUrl(wazeUrl, 'Waze no está instalada en este dispositivo.');
+            };
+            document.getElementById('uberBtn').onclick = function () {
+                tryOpenUrl(uberUrl, 'Uber no está instalada en este dispositivo.');
+            };
+
+            // Cerrar el modal cuando se hace clic en la "X"
+            document.querySelector('.close-modal-map-ios').onclick = function () {
+                modal.style.display = 'none';
+            };
+
+            // Cerrar el modal si el usuario hace clic fuera del contenido del modal
+            window.onclick = function (event) {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                }
+            };
+        } else {
+            // Para Android, usar geo URI scheme
+            const url = `geo:${lat},${lng}?q=${lat},${lng}`;
+            window.location.href = url;
         }
-
-
+    } else {
+        console.error("No se pudo encontrar la propiedad para obtener las coordenadas.");
+    }
+}
 
 
         //boton compartir
