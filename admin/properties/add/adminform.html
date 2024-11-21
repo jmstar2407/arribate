@@ -188,6 +188,10 @@
             const title = document.getElementById("title").value;
             const caracteristicas = document.getElementById("caracteristicas").value;
             const imageCount = parseInt(document.getElementById("imageCount").value);
+            const mostrar = document.getElementById("mostrar").checked;
+            const encargado = document.getElementById("encargado").value;
+            const nombreEncargado = document.getElementById("nombreEncargado").value;
+            const numeroContacto = document.getElementById("numeroContacto").value;
             const FechaDePublicacion = obtenerFechaActual();
 
             const nuevaPropiedad = {
@@ -204,6 +208,10 @@
                 imageCount,
                 imageFolder,
                 FechaDePublicacion,
+                mostrar,
+                encargado,
+                numeroContacto,
+                nombreEncargado,
                 usuario: correoUsuario
             };
 
@@ -766,6 +774,35 @@
                     <div class="form-divisor"></div> <!-- Divisor -->
 
 
+                    <label for="mostrar" style="display: none;">¿Mostrar?</label>
+                    <input type="checkbox" id="mostrar" name="mostrar" checked  style="display: none;"> 
+                    
+
+                    <div class="titulo">Encargado de la Propiedad</div>
+                    
+                    <label for="encargado">Encargado:</label>
+                    <select id="encargado" required>
+                        <option value="">Selecciona</option>
+                        <option value="Dueño">Dueño</option>
+                        <option value="Administrador">Administrador</option>
+                        <option value="Agente Inmobiliario">Agente inmobiliario</option>
+                    </select>
+                    <br><br>
+
+                    <label for="nombreEncargado">Nombre del Encargado:</label>
+                    <input type="text" id="nombreEncargado" placeholder="Nombre del encargado" required>
+                    <br><br>
+                    
+                    <label for="numeroContacto">Número de Contacto:</label>
+                    <input type="text" id="numeroContacto" placeholder="Número de contacto" required>
+                    <br><br>
+
+
+                    <div class="form-divisor"></div> <!-- Divisor -->
+                    <div class="form-divisor"></div> <!-- Divisor -->
+
+
+
                     <div class="slider-container">
                         <button type="submit" class="slider-button">
                             <div class="button-content">
@@ -777,6 +814,12 @@
                             </div>
                         </button>
                     </div>
+
+
+                    <div class="form-divisor"></div> <!-- Divisor -->
+                    <div class="form-divisor"></div> <!-- Divisor -->
+
+
 
                 </form>
 
