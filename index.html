@@ -5,11 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ArríbaTe | Propiedades en República Dominicana</title>
-    <meta name="description" content="Arríbate, el mapa de propiedades en República Dominicana. Alquila, vende o encuentra propiedades con nuestra herramienta fácil de usar, mapa interactivo y atención personalizada. ¡Eleva tu búsqueda de propiedades con ARRIBATE!">
+    <meta name="description"
+        content="Arríbate, el mapa de propiedades en República Dominicana. Alquila, vende o encuentra propiedades con nuestra herramienta fácil de usar, mapa interactivo y atención personalizada. ¡Eleva tu búsqueda de propiedades con ARRIBATE!">
     <meta property="og:url" content="https://arribate.com" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="ArríbaTe | Propiedades en República Dominicana" />
-    <meta property="og:description" content="Arríbate, el mapa de propiedades en República Dominicana. Alquila, vende o encuentra propiedades con nuestra herramienta fácil de usar, mapa interactivo y atención personalizada. ¡Eleva tu búsqueda de propiedades con ARRIBATE!" />
+    <meta property="og:description"
+        content="Arríbate, el mapa de propiedades en República Dominicana. Alquila, vende o encuentra propiedades con nuestra herramienta fácil de usar, mapa interactivo y atención personalizada. ¡Eleva tu búsqueda de propiedades con ARRIBATE!" />
     <meta property="og:image" content="https://arribate.com/img/og_image_1.jpg" />
 
     <link rel="icon" href="./img/icon_favicon_arribate.svg" type="image/svg+xml">
@@ -27,12 +29,30 @@
 </head>
 
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-NMJVZCLFQV"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+<script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore-compat.js"></script>
 
-  gtag('config', 'G-NMJVZCLFQV');
+<script>
+    // Firebase Config
+    const firebaseConfig = {
+        apiKey: "AIzaSyBRjDso4IPrh9WLvWWMYoPiJxNFD6Vt3RU",
+        authDomain: "arribate-com.firebaseapp.com",
+        projectId: "arribate-com",
+        storageBucket: "arribate-com.firebasestorage.app",
+        messagingSenderId: "46945634270",
+        appId: "1:46945634270:web:c74fd6781ac1fab5da7f4f",
+        measurementId: "G-Y4J11MBYKQ"
+    };
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore(app);
+</script>
+
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'G-NMJVZCLFQV');
 </script>
     
 
@@ -529,8 +549,6 @@
     <!-- Terminos y condiciones FIN -->
 
 
-
-
     <script>
 
 
@@ -729,17 +747,30 @@ rectangle._path.style.pointerEvents = "none";
 
 
 
-
-
         // Función para formatear números con comas como separadores de miles
         function formatNumber(num) {
             return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
 
-        // Variables de iconos
-        var houseIcon = './img/casa4.png';
-        var buildingIcon = './img/apartamento2.png';
-        var landIcon = './img/solar2.png';
+       // Variables de iconos
+var houseIcon = './img/casa4.png';
+var buildingIcon = './img/apartamento2.png';
+var landIcon = './img/solar2.png';
+
+// Función para obtener el ícono directamente desde el valor almacenado en Firebase
+function getIconFromFirebase(iconKey) {
+    switch (iconKey) {
+        case "houseIcon":
+            return houseIcon;
+        case "buildingIcon":
+            return buildingIcon;
+        case "landIcon":
+            return landIcon;
+        default:
+            console.warn(`Valor de ícono desconocido en Firebase: ${iconKey}`);
+            return houseIcon; // Ícono por defecto
+    }
+}
 
         // Función para obtener el color del fondo del span según el tipo de propiedad
         function getBackgroundColor(iconUrl) {
@@ -788,230 +819,125 @@ rectangle._path.style.pointerEvents = "none";
         }
 
 
+//firebase
+     // Definición de ubicaciones con información adicional
+        var alquileres = [];
 
-        // Definición de ubicaciones con información adicional
-        var alquileres = [
+        var ventas = [];
 
-        {id: 222401, latLng: [18.548386087888456, -69.90720349272286], title: 'Casa amueblada', price: 91500, icon: houseIcon, rooms: 3, bathrooms: 2, parking: 1, area: 0, imageFolder: './properties/alquiler/222401/img/', imageCount: 23,
-                caracteristicas: '<p><strong>Precio de renta: RD$91,500 / USD 1,500.</strong></p><p><strong>Exclusiva propiedad amueblada en alquiler en Villa Mella</strong><br />Ubicada en la zona sur de El Mara&ntilde;&oacute;n, a tan solo 2 minutos de la Jacobo, esta hermosa propiedad de primer nivel ofrece una combinaci&oacute;n perfecta de confort, estilo y ubicaci&oacute;n. Ideal para quienes buscan una residencia de alta calidad en una zona privilegiada.</p><p><strong>Distribuci&oacute;n:</strong></p><ul><li>3 amplias habitaciones, dos de ellas equipadas con camas de lujo</li><li>Un gimnasio dentro de una de las habitaciones, pensado para quienes valoran un estilo de vida activo.</li><li>2 ba&ntilde;os modernos y completamente equipados.</li></ul><p><strong>Comodidades adicionales:</strong></p><ul><li>Patio espacioso, ideal para momentos de relajaci&oacute;n o reuniones al aire libre.</li><li>Totalmente amueblada con muebles importados de alta gama, ofreciendo un ambiente elegante y sofisticado.</li></ul>'
-        },
+// Función para obtener propiedades de Firestore
+// Función para obtener propiedades de Firestore
+async function obtenerPropiedadesDeFirestore() {
+    const alquileresFirestore = [];
+    const ventasFirestore = [];
+    
+    // Obtener propiedades de alquiler
+    const alquileresSnapshot = await db.collection('alquileres').get();
+    alquileresSnapshot.forEach(doc => {
+        const data = doc.data();
+        const latLng = data.latLng.split(',').map(Number);
+        
+        if (data.mostrar) {
+            alquileresFirestore.push({
+                id: data.id,
+                latLng: latLng,
+                title: data.title,
+                price: data.price,
+                icon: getIconFromFirebase(data.icon),
+                rooms: data.rooms,
+                bathrooms: data.bathrooms,
+                parking: data.parking,
+                area: data.area,
+                imageFolder: data.imageFolder,
+                imageCount: data.imageCount,
+                caracteristicas: data.caracteristicas
+            });
+        }
+    });
 
-        {id: 222402, latLng: [18.47478985350045, -69.7927940153791], title: 'Casa en Los Frailes II', price: 13000, icon: houseIcon, rooms: 3, bathrooms: 1, parking: 1, area: 0, imageFolder: './properties/alquiler/222402/img/', imageCount: 9,
-                caracteristicas: '<p><strong>Casa en&nbsp;alquiler,</strong> ubicada en Calle los proceres #46 los frailes II</p><p>&nbsp;</p><p><strong>Distribuci&oacute;n:</strong><br />La propiedad cuenta con 3 c&oacute;modas habitaciones, 1 ba&ntilde;o completo, una sala amplia y una ante sala perfecta para recibir visitas o crear un espacio adicional de descanso.</p><p><strong>Comodidades:</strong><br />Incluye una marquesina para mayor comodidad, adem&aacute;s de un tinaco, bomba y cisterna compartida, garantizando suministro de agua continuo. Esta es la opci&oacute;n ideal para quienes buscan un hogar pr&aacute;ctico y bien equipado.</p>'
-        },
+    // Obtener propiedades de venta
+    const ventasSnapshot = await db.collection('ventas').get();
+    ventasSnapshot.forEach(doc => {
+        const data = doc.data();
+        const latLng = data.latLng.split(',').map(Number);
+        
+        if (data.mostrar) {
+            ventasFirestore.push({
+                id: data.id,
+                latLng: latLng,
+                title: data.title,
+                price: data.price,
+                icon: getIconFromFirebase(data.icon),
+                rooms: data.rooms,
+                bathrooms: data.bathrooms,
+                parking: data.parking,
+                area: data.area,
+                imageFolder: data.imageFolder,
+                imageCount: data.imageCount,
+                caracteristicas: data.caracteristicas
+            });
+        }
+    });
 
-        {id: 222403, latLng: [19.467930826654054, -70.65518477922201], title: 'Apartamento en Santiago', price: 24000, icon: buildingIcon, rooms: 3, bathrooms: 1.5, parking: 1, area: 0, imageFolder: './properties/alquiler/222403/img/', imageCount: 9,
-                caracteristicas: '<p><strong>Apartamento en alquiler - 4to nivel</strong></p><p>Ofrece comodidad y funcionalidad en cada rinc&oacute;n, ideal para quienes buscan un hogar bien equipado.</p><p><strong>Distribuci&oacute;n:</strong></p><ul><li>3 habitaciones amplias, con una habitaci&oacute;n principal que cuenta con su propio ba&ntilde;o privado.</li><li>Cuarto de servicio adicional, perfecto para almacenamiento o uso vers&aacute;til.</li><li>1 ba&ntilde;o com&uacute;n y un pr&aacute;ctico 1/2 ba&ntilde;o para visitas.</li><li>Sala acogedora y comedor independiente, ideales para disfrutar de la vida en familia.</li></ul><p><strong>Comodidades adicionales:</strong></p><ul><li>&Aacute;rea de lavado separada para mayor organizaci&oacute;n.</li><li>Cocina amplia y funcional, equipada para cubrir todas tus necesidades.</li><li>Parqueo disponible, proporcionando comodidad y seguridad para tu veh&iacute;culo.</li></ul><p>Este apartamento es una excelente opci&oacute;n para quienes buscan un espacio c&oacute;modo en un ambiente residencial de calidad.</p>'
-        },
+    // Combinar datos locales con datos de Firestore
+    alquileres = [...alquileres, ...alquileresFirestore];
+    ventas = [...ventas, ...ventasFirestore];
 
-        {id: 222404, latLng: [18.47541717669802, -69.93059606188034], title: 'Apartamento en Ensanche Piantini', price: 51850, icon: buildingIcon, rooms: 3, bathrooms: 2.5, parking: 1, area: 0, imageFolder: './properties/alquiler/222404/img/', imageCount: 7,
-                caracteristicas: '<p><strong>Apartamento en alquiler en Ensanche Piantini RD$51,850 / USD 850</strong><br />Ubicado en el exclusivo sector de Piantini, este apartamento en el 2do piso ofrece un espacio c&oacute;modo y elegante, ideal para quienes buscan un hogar en una de las mejores zonas de la ciudad.</p><p><strong>Caracter&iacute;sticas:</strong></p><ul><li>3 habitaciones espaciosas.</li><li>Cuarto de servicio independiente.</li><li>2.5 ba&ntilde;os, incluyendo un ba&ntilde;o en la habitaci&oacute;n principal y un medio ba&ntilde;o adicional para visitas.</li><li>Terraza privada, perfecta para disfrutar del aire libre.</li><li>Parqueo exclusivo para tu comodidad.</li></ul><p>Este apartamento combina ubicaci&oacute;n privilegiada y un dise&ntilde;o funcional, ofreciendo un espacio acogedor y conveniente.</p>'
-        },
+    // Crear marcadores después de obtener los datos
+    createMarkers(alquileres, alquilerMarkers);
+    createMarkers(ventas, ventaMarkers);
+}
 
-        {id: 222405, latLng: [18.472188, -69.964497], title: 'Casa en Sector San Gerónimo', price: 55000, icon: houseIcon, rooms: 3, bathrooms: 2.5, parking: 1, area: 0, imageFolder: './properties/alquiler/222405/img/', imageCount: 9,
-                caracteristicas: '<p><strong>Casa en alquiler en Sector San Ger&oacute;nimo</strong><br />Ubicada en la Avenida N&uacute;&ntilde;ez de C&aacute;ceres, calle 3era, esta casa es una excelente opci&oacute;n para quienes buscan un hogar c&oacute;modo en una zona bien comunicada. Ideal para uso residencial exclusivamente.</p><p><strong>Caracter&iacute;sticas:</strong></p><ul><li>3 habitaciones amplias para mayor confort.</li><li>2.5 ba&ntilde;os, incluyendo un medio ba&ntilde;o para visitas.</li><li>Sala acogedora y cocina amplia, perfecta para quienes disfrutan de cocinar en casa</li><li>&Aacute;rea de lavado independiente para mayor practicidad.</li><li>Cisterna para asegurar el suministro de agua.</li><li>Marquesina con espacio para veh&iacute;culos.</li></ul><p><strong>Nota:</strong> Esta propiedad se alquila exclusivamente para uso residencial, no apta para ning&uacute;n tipo de negocio.</p>'
-        },
+// Llamar a la función para obtener propiedades
+obtenerPropiedadesDeFirestore().then(() => {
+    // Mostrar inicialmente solo los marcadores de venta
+    toggleMarkers('venta'); // Muestra solo las propiedades de venta al cargar la página
 
-        {id: 222406, latLng: [18.48672110384055, -69.74662377851229], title: 'Apartamento en Residencial Crisfer XV,', price: 15000, icon: buildingIcon, rooms: 3, bathrooms: 2, parking: 1, area: 85, imageFolder: './properties/alquiler/222406/img/', imageCount: 7,
-                caracteristicas: '<p><strong>Apartamento en alquiler en Residencial Crisfer XV, Ciudad Juan Bosch</strong><br />Ubicado en el 3er nivel, este apartamento ofrece un espacio c&oacute;modo y funcional, ideal para quienes buscan un hogar con excelente relaci&oacute;n calidad-precio.</p><p><strong>Caracter&iacute;sticas:</strong></p><ul><li>3 habitaciones bien distribuidas.</li><li>2 ba&ntilde;os completos.</li><li>&Aacute;rea de lavado independiente para mayor organizaci&oacute;n.</li><li>Balc&oacute;n privado, perfecto para disfrutar de momentos al aire libre.</li><li>1 parqueo asignado.</li></ul><p><strong>Precio:</strong> RD$15,000 mensuales, con mantenimiento incluido.</p><p>Este apartamento ofrece comodidad y una ubicaci&oacute;n privilegiada dentro de Ciudad Juan Bosch, con todas las facilidades al alcance. &iexcl;No dejes pasar esta oportunidad!</p>'
-        },
+    // Verificar el hash en la URL después de cargar los datos
+    const hash = window.location.hash;
+    console.log("Hash de la URL:", hash); // Imprimir el hash
 
-        { id: 222407, latLng: [19.056742607641873, -70.14234023444877], title: 'Casa en alquiler de 2 niveles en Cotuí', price: 25000, icon: houseIcon, rooms: 4, bathrooms: 3.5, parking: 2, area: 300, imageFolder: './properties/alquiler/222407/img/', imageCount: 12, 
-            caracteristicas: 'p><strong>Casa de 2 niveles en Cotu&iacute;</strong><br />Esta amplia y c&oacute;moda casa de 2 niveles ofrece el espacio y la funcionalidad perfecta para disfrutar de un estilo de vida tranquilo y familiar en Cotu&iacute;.</p><p><strong>Caracter&iacute;sticas:</strong></p><ul><li><strong>&Aacute;rea:</strong> 300 m&sup2;</li><li><strong>Habitaciones:</strong> 4 habitaciones espaciosas, ideales para descansar y relajarse.</li><li><strong>Ba&ntilde;os:</strong> 3 ba&ntilde;os completos y 1 medio ba&ntilde;o, brindando privacidad y comodidad.</li><li><strong>Parqueos:</strong> Espacio para 2 veh&iacute;culos en marquesina.</li></ul><p><strong>Distribuci&oacute;n del hogar:</strong></p><ul><li><strong>Sala y antesala:</strong> Ambientes acogedores, ideales para compartir en familia o recibir visitas.</li><li><strong>Cocina:</strong> Amplia y pr&aacute;ctica, equipada para el uso diario.</li><li><strong>Patio:</strong> &Aacute;rea exterior perfecta para el esparcimiento y actividades al aire libre.</li><li><strong>Extras:</strong> Espacios adicionales que ofrecen confort y estilo, adapt&aacute;ndose a las necesidades de tu familia.</li></ul><p>Este hogar de 2 niveles combina amplitud y comodidad, ideal para quienes buscan alquilar una casa completa en un entorno seguro y familiar. &iexcl;Una gran oportunidad para establecerte en Cotu&iacute;!</p></p>'
-        },
+    if (hash.startsWith('#id-')) {
+        const propertyId = hash.substring('#id-'.length); // Extraer ID como cadena
+        console.log("ID extraído de la URL:", propertyId); // Imprimir el ID extraído
 
-        { id: 222408, latLng: [18.558923835142956, -69.94753596232246], title: 'Apartamento en Alquiler en la Jacobo Majluta', price: 16000, icon: buildingIcon, rooms: 3, bathrooms: 1, parking: 1, area: 64, imageFolder: './properties/alquiler/222408/img/', imageCount: 13, 
-            caracteristicas: '<p><strong>Apartamento en Alquiler&nbsp;en la Jacobo Majluta</strong></p><p>Apartamento ideal para quienes buscan un hogar acogedor y bien ubicado, con espacios distribuidos para una vida pr&aacute;ctica.</p><p><strong>Caracter&iacute;sticas Principales:</strong></p><ul><li><strong>&Aacute;rea Total:</strong> 64 m&sup2;</li><li><strong>Habitaciones:</strong> 3</li><li><strong>Ba&ntilde;os:</strong> 1</li><li><strong>Parqueos:</strong> 1 espacio</li></ul><h3>Detalles Adicionales:</h3><ul><li>Sala amplia y luminosa</li><li>Cocina bien equipada</li><li>&Aacute;rea de lavado</li><li>Balc&oacute;n para disfrutar de una vista agradable</li></ul><p>Este apartamento es una excelente opci&oacute;n para quienes desean un espacio c&oacute;modo y funcional, con f&aacute;cil acceso a todas las &aacute;reas esenciales.</p>'
-        },
-
-        { id: 222409, latLng: [19.453952272479455, -70.68357164687154], title: 'Casa en alquiler de 2 niveles, Santiago', price: 91500, icon: houseIcon, rooms: 3, bathrooms: 3, parking: 3, area: 0, imageFolder: './properties/alquiler/222409/img/', imageCount: 10, 
-            caracteristicas: '<p><strong>Precio: RD$ 91,500/mes - USD 1,500/mes</strong></p><p><strong>Casa en Alquiler: Amplia y C&oacute;moda, Ideal para Familia</strong></p><p>Esta hermosa casa de <strong>2 niveles</strong> es ideal para quienes buscan espacio y comodidad. Ubicada en una zona residencial tranquila, ofrece todo lo necesario para una vida confortable.</p><h3>Detalles Principales:</h3><ul><li><strong>Habitaciones:</strong> 3, cada una con su propio ba&ntilde;o</li><li><strong>Espacios de Parqueo:</strong> Marquesina con capacidad para 3 veh&iacute;culos</li><li><strong>Patios:</strong><ul><li>Patio frontal</li><li>Patio trasero amplio</li></ul></li><li><strong>Niveles:</strong> 2</li></ul><h3>Distribuci&oacute;n Interior:</h3><ul><li><strong>Sala:</strong> Muy amplia y luminosa, ideal para recibir visitas y reuniones familiares</li><li><strong>Comedor:</strong> Espacioso, perfecto para cenas familiares o eventos</li><li><strong>Cocina:</strong> Amplia y bien equipada</li><li><strong>Galer&iacute;a:</strong> Con espacio suficiente para disfrutar del aire libre</li><li><strong>Terraza:</strong> Espacio al aire libre ideal para relajarse</li></ul><p>Con amplias &aacute;reas interiores y exteriores, esta casa es perfecta para quienes valoran el espacio y la tranquilidad.</p>'
-        },
-
-        { id: 222410, latLng: [18.442553508469263, -69.95978123744065], title: 'Apartamento Amueblado en Alquiler', price: 176900, icon: buildingIcon, rooms: 3, bathrooms: 3.5, parking: 2, area: 175, imageFolder: './properties/alquiler/222410/img/', imageCount: 8, 
-            caracteristicas: '<p><strong>Precio: RD$&nbsp;176,900 - USD 2,900/mes</strong></p><p><strong>Apartamento Amueblado en Alquiler &ndash; Mirador Sur, Santo Domingo</strong></p><h3><strong>Detalles del Apartamento</strong></h3><ul><li><strong>Ubicaci&oacute;n:</strong> Mirador Sur, a una calle de la Av. Anacaona</li><li><strong>Tama&ntilde;o:</strong> 175 m&sup2;</li><li><strong>Condici&oacute;n:</strong> Amueblado y listo para habitar</li></ul><p>&nbsp;</p><h3><strong>Distribuci&oacute;n y Comodidades</strong></h3><ul><li><strong>Habitaciones:</strong><ul><li>3 habitaciones, cada una con su ba&ntilde;o y closet</li></ul></li><li><strong>Ba&ntilde;os:</strong><ul><li>3 ba&ntilde;os completos</li><li>Medio ba&ntilde;o para visitas</li></ul></li><li><strong>&Aacute;reas Sociales:</strong><ul><li>Sala espaciosa</li><li>Comedor formal</li><li>Estudio</li><li>Balc&oacute;n con buena ventilaci&oacute;n</li></ul></li><li><strong>Cocina:</strong><ul><li>Cocina equipada y funcional</li></ul></li><li><strong>&Aacute;reas de Servicio:</strong><ul><li>&Aacute;rea de lavado</li><li>Habitaci&oacute;n de servicio con ba&ntilde;o privado</li></ul></li><li><strong>Estacionamiento:</strong><ul><li>2 parqueos disponibles</li></ul></li></ul><hr /><h3><strong>Precio de Alquiler</strong></h3><p><strong>USD 2,900.00 por mes</strong></p><p>Un espacio ideal en una ubicaci&oacute;n privilegiada de Santo Domingo, perfecto para disfrutar comodidad, elegancia y acceso a la naturaleza con el Mirador Sur a pocos pasos. &iexcl;Cont&aacute;ctanos para m&aacute;s detalles o agendar una visita!</p>'
-        },
-
-        { id: 222411, latLng: [18.448390562424358, -69.65181043770977], title: 'Apartamento en Alquiler – 2do piso', price: 10500, icon: buildingIcon, rooms: 1.5, bathrooms: 1, parking: 1, area: 0, imageFolder: './properties/alquiler/222411/img/', imageCount: 7, 
-            caracteristicas: '<p><strong>Apartamento en Alquiler &ndash;&nbsp;2do&nbsp;piso</strong></p><h3><strong>Detalles del Apartamento</strong></h3><ul><li><strong>Tipo de Propiedad:</strong> Apartamento</li><li><strong>Piso:</strong> 2do</li><li><strong>Habitaciones:</strong> 1 &frac12; cuarto (perfecto para dormitorio principal y espacio adicional)</li><li><strong>Ba&ntilde;os:</strong> 1 ba&ntilde;o completo</li><li><strong>Sala/Comedor:</strong> Espacios integrados para mayor comodidad</li><li><strong>Cocina:</strong> Funcional y pr&aacute;ctica</li></ul><hr /><h3><strong>Ubicaci&oacute;n y Beneficios</strong></h3><ul><li><strong>Zona:</strong> Autopista Las Am&eacute;ricas, Km. 28 (cerca de Brisas de Caucedo Puerto, Boca Chica)</li><li><strong>Servicios Incluidos:</strong> Agua y luz 24/7, garantizando confort en todo momento</li><li><strong>Estacionamiento:</strong> 1 parqueo disponible</li></ul><hr /><h3><strong>Detalles de Pago</strong></h3><ul><li><strong>Renta Mensual:</strong> RD$10,500</li><li><strong>Dep&oacute;sito:</strong> 1 mes de renta</li><li><strong>Costo de Contrato:</strong> RD$1,500</li><li><strong>Total para Mudarse:</strong> RD$21,500</li></ul><p>Un espacio acogedor, en una excelente ubicaci&oacute;n y con todos los servicios esenciales. <strong>&iexcl;Agenda tu visita y m&uacute;date hoy mismo!</strong></p>'
-        },
-
-        { id: 222412, latLng: [18.473054937243116, -69.94693521356807], title: 'Casa en Alquiler – Urb. Fernández', price: 231800, icon: houseIcon, rooms: 4, bathrooms: 5, parking: 4, area: 800, imageFolder: './properties/venta/332428/img/', imageCount: 23, 
-            caracteristicas: "<p><strong>Precio RD$ 231,800 / USD&nbsp;3,800</strong></p><p><strong>Casa en Alquiler&ndash; Urb. Fern&aacute;ndez</strong></p><p><strong>Detalles Generales:</strong></p><ul><li><strong>Tipo de Propiedad:</strong> Casa</li><li><strong>Habitaciones:</strong> 4 (principal con walk-in closet)</li><li><strong>Ba&ntilde;os:</strong> 5</li><li><strong>Parqueos:</strong> 4 techados</li><li><strong>&Aacute;rea de Terreno:</strong> 800 m&sup2;</li><li><strong>&Aacute;rea de Construcci&oacute;n:</strong> 450 m&sup2;</li></ul><h3><strong>Distribuci&oacute;n y Comodidades:</strong></h3><p><strong>Interiores:</strong></p><ul><li>3 habitaciones principales</li><li>Estudio</li><li>3.5 ba&ntilde;os</li><li>Habitaci&oacute;n de servicio con ba&ntilde;o privado</li><li>Cuarto para chofer</li><li>Casa de hu&eacute;spedes</li></ul><p><strong>Exteriores:</strong></p><ul><li>Terraza</li><li>Amplio patio ideal para actividades sociales</li><li>Jard&iacute;n dise&ntilde;ado para disfrutar en familia</li><li>4 parqueos techados</li><li>Port&oacute;n el&eacute;ctrico para mayor seguridad</li></ul><p>Esta residencia ubicada en Urb. Fern&aacute;ndez combina lujo, comodidad y amplios espacios en un entorno exclusivo. Ideal para familias grandes.</p>"
-            },
-
-
-
-
-            {
-                id: 334501, latLng: [18.47434844864751, -69.81027832640669], title: 'Los frailes Casa', price: 25000, icon: houseIcon, rooms: 4, bathrooms: 3, parking: 6, area: 329, imageFolder: './properties/alquiler/334501/img/', imageCount: 10,
-                caracteristicas: ''
-            },
-
-            {
-                id: 334502, latLng: [18.53407239836236, -69.84790422950549], title: 'Casa Res. Don Oscar', price: 32000, icon: houseIcon, rooms: 4, bathrooms: 5, parking: 4, area: 400, imageFolder: './properties/alquiler/334502/img/', imageCount: 15,
-                caracteristicas: '<p>Esta espectacular propiedad cuenta con detalles únicos que la hacen verdaderamente especial. Dispone de una elegante piscina con sistema de iluminación nocturna, ideal para disfrutar de un ambiente relajado bajo las estrellas. Además, la casa incluye un cine privado completamente equipado, perfecto para disfrutar de películas en la comodidad de tu hogar. Los pisos de mármol en todas las áreas comunes aportan un toque de lujo, diseñado con acabados de primera calidad, y una terraza con vista panorámica, ideal para recibir invitados o simplemente relajarse.</p><ul><li><strong>Habitaciones:</strong> 3 amplias habitaciones con iluminación natural.</li></p><li><strong>Baños:</strong> 3 baños completos, equipados con modernos acabados y agua caliente.</li></p><li><strong>Piscina:</strong> Piscina privada de tamaño mediano, perfecta para relajarse en días calurosos.</li></p><li><strong>Patio:</strong> Espacioso patio trasero ideal para reuniones familiares, jardinería o actividades al aire libre.</li></p><li><strong>Frente:</strong> Fachada moderna con jardín decorativo, proporcionando un aspecto atractivo y acogedor.</li></p><li><strong>Ubicación:</strong> Excelente ubicación en un vecindario tranquilo, con acceso cercano a supermercados, escuelas y transporte público.</li></p><li><strong>Cocina:</strong> Cocina equipada con electrodomésticos de alta calidad, gabinetes espaciosos y una isla central.</li></p><li><strong>Sala:</strong> Sala de estar amplia, con ventanales que permiten una vista despejada al jardín.</li></p><li><strong>Comedor:</strong> Comedor separado con espacio para una mesa grande, perfecto para cenas familiares.</li></p><li><strong>Parqueo:</strong> Garaje techado con espacio para dos vehículos.</li></p><li><strong>Seguridad:</strong> Sistema de seguridad integrado con cámaras y alarmas.</p><li><strong>Extras:</strong> Terraza techada, cuarto de servicio, aire acondicionado en todas las habitaciones.</li></p></ul>'
-            },
-
-            {
-                id: 334503, latLng: [18.49683473654844, -69.80295189696278], title: 'San Isidro Apartamento', price: 25500, icon: buildingIcon, rooms: 3, bathrooms: 2, parking: 2, area: 150, imageFolder: './properties/alquiler/334503/img/', imageCount: 14,
-                caracteristicas: ''
-            },
-
-            {
-                id: 334505, latLng: [19.476010256988793, -70.66142702687121], title: 'Casa Santiago', price: 37000, icon: houseIcon, rooms: 4, bathrooms: 3, parking: 2, area: 982, imageFolder: './properties/alquiler/334505/img/', imageCount: 15,
-                caracteristicas: ''
-            },
-
-
-        ];
-
-        var ventas = [
-
-            { id: 332401, latLng: [18.51699595566776, -69.85126971527727], title: 'Casa en Calle Guayubin Olivo', price: 28000000, icon: houseIcon, rooms: 6, bathrooms: 4, parking: 5, area: 705, imageFolder: './properties/venta/332401/img/', imageCount: 25, 
-            caracteristicas: '<p><strong>Propiedad con 705 metros cuadrados de terreno</strong> y 700 metros cuadrados de construcción distribuidos en dos niveles.</p><p><strong>Segundo nivel:</strong></p><ul><li>4 habitaciones, incluyendo la principal con baño privado y jacuzzi.</li><li>5 balcones.</li><li>2 baños adicionales.</li><li>Escaleras en mármol.</li><li>Sala de estar.</li></ul><p><strong>Primer nivel:</strong></p><ul><li>2 salas de estar amplias.</li><li>2 comedores.</li><li>Balcón.</li><li>Cocina grande en caoba.</li><li>1 habitación con baño moderno.</li></ul><p><strong>Exterior:</strong></p><ul><li>2 dormitorios con baño.</li><li>Piscina y jacuzzi.</li><li>Patio con gazebo.</li><li>Área de juegos.</li><li>Bar en caoba.</li><li>Jardines bien cuidados.</li><li>Parqueo para 5 vehículos.</li><li>Bomba sumergible y cisterna.</li><li>Pequeña casita adicional en el terreno.</li></ul>'
-            },
-
-            { id: 332402, latLng: [18.611330376075532, -68.40871754552056], title: 'Casa tipo Villa en Bávaro', price: 6300000, icon: houseIcon, rooms: 2, bathrooms: 2.5, parking: 1, area: 170, imageFolder: './properties/venta/332402/img/', imageCount: 15, 
-            caracteristicas: '<p><strong>Ubicaci&oacute;n:</strong> Pueblo B&aacute;varo, Ver&oacute;n Punta Cana</p><p><strong>Primer piso:</strong></p><ul><li>Cocina <strong>integral moderna</strong>, perfecta para disfrutar de tus comidas en familia.</li><li>Sala-comedor <strong>amplia y luminosa</strong>, ideal para reuniones o momentos de relajaci&oacute;n.</li><li>Medio ba&ntilde;o de visitas.</li><li>Zona de lavado <strong>pr&aacute;ctica</strong> y bien ubicada.</li><li><strong>Gazebo encantador</strong>, que puede usarse como &aacute;rea de estar o comedor auxiliar, perfecto para disfrutar del aire libre.</li></ul><p><strong>Segundo piso:</strong></p><ul><li>Dos <strong>espaciosas habitaciones</strong>, cada una con su <strong>ba&ntilde;o privado</strong> para mayor comodidad y privacidad.</li></ul><p><strong>&Aacute;rea total:</strong> Aproximadamente <strong>170 m&sup2;</strong>, pensada para ofrecer un estilo de vida confortable y funcional en uno de los sectores m&aacute;s tranquilos y cotizados de Punta Cana.</p>'
-            },
-
-            { id: 332403, latLng: [19.496416112038066, -70.7046799601009], title: 'Casa en Los reyes, Santiago', price: 9000000, icon: houseIcon, rooms: 6, bathrooms: 4, parking: 2, area: 0, imageFolder: './properties/venta/332403/img/', imageCount: 11, 
-            caracteristicas: '<p>Propiedad de dos niveles, ideal para quienes buscan comodidad y espacio.</p><p><strong>Primer nivel:</strong><br />Este nivel ofrece tres amplias habitaciones, un ba&ntilde;o completo, una cocina funcional y moderna, adem&aacute;s de una marquesina con capacidad para dos veh&iacute;culos, proporcionando seguridad y conveniencia.</p><p><strong>Segundo nivel:</strong><br />Cuenta con tres elegantes habitaciones, dos ba&ntilde;os bien equipados, una cocina espaciosa y un &aacute;rea de lavado independiente, perfecta para mantener todo organizado.</p><p><strong>Azotea:</strong><br />La propiedad incluye una azotea acondicionada con ba&ntilde;o propio, ideal para disfrutar de reuniones al aire libre, relajarse o aprovechar como un espacio adicional.</p>'
-            },
-
-            { id: 332404, latLng: [19.499471579554037, -70.70265471665842], title: 'Casa en Urbanización Los jardines del rey', price: 9000000, icon: houseIcon, rooms: 3, bathrooms: 2, parking: 2, area: 152, imageFolder: './properties/venta/332404/img/', imageCount: 13, 
-            caracteristicas: '<p><strong>Hermosa propiedad en Urbanizaci&oacute;n Los Jardines del Rey (Santiago)</strong><br />Esta casa ofrece todo lo que necesitas para vivir con comodidad y estilo en una de las mejores zonas residenciales.</p><p><strong>Distribuci&oacute;n:</strong></p><ul><li>3 amplias habitaciones, incluyendo una habitaci&oacute;n principal con su propio ba&ntilde;o privado.</li><li>Ba&ntilde;o com&uacute;n bien equipado para el resto de las habitaciones.</li><li>Sala acogedora, perfecta para momentos en familia.</li><li>Cocina funcional y &aacute;rea de comedor, ideal para disfrutar de comidas en casa.</li></ul><p><strong>Comodidades adicionales:</strong></p><ul><li>Marquesina doble, con espacio para dos veh&iacute;culos.</li><li>Galer&iacute;a al frente, proporcionando un &aacute;rea exterior agradable.</li><li>&Aacute;rea de lavado independiente, para mayor comodidad.</li></ul><p>Esta propiedad ofrece un ambiente tranquilo y c&oacute;modo, ideal para quienes buscan un hogar espacioso en una excelente ubicaci&oacute;n.</p>'
-            },
-
-            { id: 332405, latLng: [18.562967573351514, -69.93967715467784], title: 'Apartamento 1er nivel', price: 2300000, icon: buildingIcon, rooms: 2, bathrooms: 1, parking: 2, area: 114, imageFolder: './properties/venta/332405/img/', imageCount: 11, 
-            caracteristicas: '<p><strong>Apartamento 1er nivel en la&nbsp;Jacobo Majluta</strong><br />Esta propiedad es ideal para quienes buscan un hogar c&oacute;modo y bien ubicado, con espacio suficiente para toda la familia.</p><p><strong>Caracter&iacute;sticas:</strong></p><ul><li><strong>Tipo de propiedad:</strong> Apartamento</li><li><strong>Habitaciones:</strong> 2 amplias habitaciones, perfectas para el descanso</li><li><strong>Ba&ntilde;os:</strong> 1 ba&ntilde;o completo, bien equipado.</li><li><strong>Parqueos:</strong> 2 espacios de parqueo, brindando seguridad y comodidad</li><li><strong>&Aacute;rea:</strong> 114 m&sup2; de construcci&oacute;n, ofreciendo un excelente espacio habitable.</li></ul><p>Este apartamento ofrece un equilibrio perfecto entre funcionalidad y comodidad. &iexcl;Una oportunidad que no puedes dejar pasar!</p>'
-            },
-
-            { id: 332406, latLng: [18.56296554854846, -69.93959237706753], title: 'Apartamento 3er nivel', price: 2300000, icon: buildingIcon, rooms: 2, bathrooms: 1, parking: 2, area: 114, imageFolder: './properties/venta/332406/img/', imageCount: 11, 
-            caracteristicas: '<p><strong>Apartamento 3er nivel en la&nbsp;Jacobo Majluta</strong><br />Esta propiedad es ideal para quienes buscan un hogar c&oacute;modo y bien ubicado, con espacio suficiente para toda la familia.</p><p><strong>Caracter&iacute;sticas:</strong></p><ul><li><strong>Tipo de propiedad:</strong> Apartamento</li><li><strong>Habitaciones:</strong> 2 amplias habitaciones, perfectas para el descanso</li><li><strong>Ba&ntilde;os:</strong> 1 ba&ntilde;o completo, bien equipado.</li><li><strong>Parqueos:</strong> 2 espacios de parqueo, brindando seguridad y comodidad</li><li><strong>&Aacute;rea:</strong> 114 m&sup2; de construcci&oacute;n, ofreciendo un excelente espacio habitable.</li></ul><p>Este apartamento ofrece un equilibrio perfecto entre funcionalidad y comodidad. &iexcl;Una oportunidad que no puedes dejar pasar!</p>'
-            },
-
-            { id: 332407, latLng: [18.48045235505483, -69.98978565041764], title: 'Apt. en Villa Aura 1er piso', price: 5400000, icon: buildingIcon, rooms: 3, bathrooms: 2, parking: 1, area: 111, imageFolder: './properties/venta/332407/img/', imageCount: 11, 
-            caracteristicas: '<p><strong>Apartamento en Venta en Villa Aura 1er&nbsp;piso</strong><br />Este c&oacute;modo apartamento en el primer nivel ofrece una distribuci&oacute;n pr&aacute;ctica y accesible, ideal para quienes buscan un hogar funcional en una zona tranquila de la ciudad.</p><p><strong>Caracter&iacute;sticas:</strong></p><ul><li><strong>&Aacute;rea:</strong> 111 m&sup2; de construcci&oacute;n</li><li><strong>Habitaciones:</strong> 3 habitaciones bien distribuidas</li><li><strong>Ba&ntilde;os:</strong> 2 ba&ntilde;os completos para mayor comodidad.</li><li><strong>Espacios Sociales:</strong> Sala y comedor integrados, brindando un ambiente acogedor.</li><li><strong>Cocina:</strong> Funcional y espaciosa, perfecta para preparar tus platillos favoritos.</li><li><strong>&Aacute;rea de lavado:</strong> Ubicada de forma independiente para mayor orden.</li><li><strong>Parqueo:</strong> 1 parqueo exclusivo.</li><li><strong>Extras:</strong> Acceso a un gazebo com&uacute;n, ideal para actividades al aire libre.</li></ul><p>Este apartamento en el primer nivel es perfecto para quienes valoran la comodidad y la accesibilidad en un espacio pr&aacute;ctico y acogedor. &iexcl;Aprovecha esta oportunidad de vivir en Villa Aura!</p>'
-            },
-
-            { id: 332408, latLng: [18.45612754760732, -69.93536457718542], title: 'Apt. 1er piso en Condominios Embajador', price: 19520000, icon: buildingIcon, rooms: 3, bathrooms: 2.5, parking: 2, area: 199.13, imageFolder: './properties/venta/332408/img/', imageCount: 15, 
-            caracteristicas: '<p><strong>Apartamento en venta en Condominios Embajador 1er piso</strong><br /><strong>RD$ 19,520,000 / USD$ 320,000</strong></p><p>Este espectacular apartamento en primer piso ofrece lujo, espacio y comodidad en cada detalle. Ubicado en Condominios Embajador, es ideal para quienes buscan un hogar de alto est&aacute;ndar en un entorno privilegiado.</p><p><strong>Caracter&iacute;sticas:</strong></p><ul><li><strong>&Aacute;rea:</strong> 199.13 m&sup2; de construcci&oacute;n con excelente distribuci&oacute;n.</li><li><strong>Habitaciones:</strong> 3 habitaciones amplias.</li><li><strong>Ba&ntilde;os:</strong> 2 ba&ntilde;os completos y 1 medio ba&ntilde;o.</li><li><strong>Espacios Sociales:</strong> Sala-comedor integrada y recibidor con sala adicional.</li><li><strong>Cocina:</strong> Moderna cocina IKEA equipada con l&iacute;nea blanca de alta calidad (GE y Panasonic).</li><li><strong>Cuarto de servicio:</strong> Con ba&ntilde;o privado</li><li><strong>&Aacute;rea de lavado</strong> y <strong>locker</strong> privado de 6 m&sup2;.</li><li><strong>Parqueo:</strong> Espacio para 2 veh&iacute;culos.</li></ul><p><strong>Detalles adicionales:</strong></p><ul><li>Puertas en caoba, con una altura de piso-techo de 3.30 m.</li><li>Piso en porcelanato y amplios ventanales, brindando luminosidad y amplitud.</li><li>Ventilaci&oacute;n cruzada y jardines alrededor, ofreciendo un ambiente fresco y natural.</li><li>Inversor y tinaco para mayor tranquilidad.</li></ul><p>Este apartamento combina elegancia y funcionalidad, en un entorno exclusivo con detalles de alta calidad en cada rinc&oacute;n. &iexcl;Una oportunidad &uacute;nica para vivir con el confort que mereces!</p>'
-            },
-
-            { id: 332409, latLng: [18.480507206100366, -69.98979580932622], title: 'Apt. en Villa Aura 2do piso', price: 5900000, icon: buildingIcon, rooms: 3, bathrooms: 2, parking: 1, area: 111, imageFolder: './properties/venta/332409/img/', imageCount: 11, 
-            caracteristicas: '<p><strong>Apartamento en Venta en Villa Aura 2do piso</strong><br />Ubicado en el segundo nivel, este amplio apartamento combina comodidad y privacidad en un entorno residencial tranquilo.</p><p><strong>Caracter&iacute;sticas:</strong></p><ul><li><strong>&Aacute;rea:</strong> 111 m&sup2; de construcci&oacute;n</li><li><strong>Habitaciones:</strong> 3 habitaciones espaciosas y bien iluminadas.</li><li><strong>Ba&ntilde;os:</strong> 2 ba&ntilde;os completos.</li><li><strong>Espacios Sociales:</strong> Sala y comedor en un ambiente abierto y funcional.</li><li><strong>Cocina:</strong> Amplia y pr&aacute;ctica, ideal para cocinar con comodidad.</li><li><strong>&Aacute;rea de lavado:</strong> Independiente, para mayor organizaci&oacute;n.</li><li><strong>Parqueo:</strong> 1 parqueo exclusivo.</li><li><strong>Extras:</strong> Gazebo com&uacute;n para disfrutar de reuniones y actividades al aire libre.</li></ul><p>Este apartamento en el segundo nivel ofrece la privacidad y tranquilidad que buscas, con espacios bien distribuidos y accesos a &aacute;reas comunes. &iexcl;Una excelente opci&oacute;n para establecer tu hogar en Villa Aura!</p>'
-            },
-
-            { id: 332410, latLng: [19.056742607641873, -70.14234023444877], title: 'Casa en venta de 2 niveles en Cotuí', price: 11700000, icon: houseIcon, rooms: 4, bathrooms: 3.5, parking: 2, area: 300, imageFolder: './properties/venta/332410/img/', imageCount: 12, 
-            caracteristicas: '<p><strong>Casa de 2 niveles en Cotu&iacute;</strong><br />Con una amplia distribuci&oacute;n y espacios bien dise&ntilde;ados, esta casa de 2 niveles es perfecta para quienes buscan un hogar c&oacute;modo y elegante, ideal para la vida familiar.</p><p><strong>Caracter&iacute;sticas:</strong></p><ul><li><strong>&Aacute;rea:</strong> 300 m&sup2;</li><li><strong>Habitaciones:</strong> 4 habitaciones amplias, ideales para el descanso y privacidad.</li><li><strong>Ba&ntilde;os:</strong> 3 ba&ntilde;os completos y 1 medio ba&ntilde;o para mayor comodidad.</li><li><strong>Parqueos:</strong> Espacio para 2 veh&iacute;culos en marquesina.</li></ul><p><strong>Distribuci&oacute;n del hogar:</strong></p><ul><li><strong>Sala y antesala:</strong> Espacios elegantes y acogedores para recibir a familiares y amigos.</li><li><strong>Cocina:</strong> Amplia y funcional, dise&ntilde;ada para satisfacer las necesidades diarias.</li><li><strong>Patio:</strong> Espacio exterior perfecto para actividades al aire libre y esparcimiento.</li><li><strong>Extras:</strong> &Aacute;reas adicionales que complementan el espacio, brindando confort y estilo.</li></ul><p>Esta casa ofrece una combinaci&oacute;n de amplitud y detalles de alta calidad, pensada para quienes buscan un hogar completo en un entorno seguro. &iexcl;No dejes pasar esta oportunidad para convertir esta propiedad en tu hogar ideal!</p>'
-            },
-
-            { id: 332411, latLng: [18.952182361603782, -70.44403234429814], title: 'Casa tipo villa en Bonao', price: 16200000, icon: houseIcon, rooms: 4, bathrooms: 3.5, parking: 4, area: 2100, imageFolder: './properties/venta/332411/img/', imageCount: 31, 
-            caracteristicas: '<p><strong>Precio:&nbsp;RD$ 16,200,000 / USD 270,000 (negociables)</strong></p><p><strong>Villa en venta con amplio terreno en Bonao</strong><br />Ubicada a solo 5 minutos de la autopista Duarte, esta hermosa villa ofrece una combinaci&oacute;n de lujo, tranquilidad y contacto directo con la naturaleza, ideal para quienes buscan una propiedad exclusiva.</p><p>&nbsp;</p><ul><li><strong>Terreno:</strong> 2,100 m&sup2;</li><li><strong>&Aacute;rea de construcci&oacute;n:</strong> 300 m&sup2;</li><li><strong>Habitaciones:</strong> 4 habitaciones, incluyendo dos en la planta superior con aire acondicionado.</li><li><strong>Ba&ntilde;os:</strong> 3 ba&ntilde;os completos y 1 medio ba&ntilde;o para visitas.</li><li><strong>Extras:</strong> T&iacute;tulo deslindado.</li></ul><p><strong>Distribuci&oacute;n del hogar:</strong></p><ul><li><strong>Sala y sala de estar:</strong> Espacios amplios y acogedores, ideales para el disfrute familiar.</li><li><strong>Cocina:</strong> Amplia y bien equipada, perfecta para preparar deliciosas comidas.</li><li><strong>Marquesina:</strong> Espacio c&oacute;modo para varios veh&iacute;culos.</li><li><strong>Terraza:</strong> Con vistas a la naturaleza, perfecta para disfrutar del aire libre.</li><li><strong>Cuarto de servicio:</strong> Con ba&ntilde;o para mayor comodidad.</li><li><strong>Casa de empleados:</strong> &Aacute;rea independiente para el personal.</li></ul><p><strong>Espacios exteriores y adicionales:</strong></p><ul><li><strong>Gazebo:</strong> Hermoso espacio con acceso al r&iacute;o, ideal para reuniones y relajaci&oacute;n.</li><li><strong>Acceso directo al r&iacute;o:</strong> La villa tiene conexi&oacute;n directa al r&iacute;o en un &aacute;rea segura, sin riesgo de inundaci&oacute;n, brindando una experiencia &uacute;nica con la naturaleza.</li></ul><p>Esta villa en Bonao es el lugar perfecto para quienes desean un espacio amplio, privado y con todas las comodidades para disfrutar de una vida de lujo en un entorno natural. &iexcl;No dejes pasar esta oportunidad exclusiva!</p>'
-            },
-
-            { id: 332412, latLng: [18.943772940303536, -70.42331243876318], title: 'Casa tipo villa en Bonao', price: 27450000, icon: houseIcon, rooms: 4, bathrooms: 4, parking: 10, area: 3900, imageFolder: './properties/venta/332412/img/', imageCount: 23, 
-            caracteristicas: '<p><strong>Precio:&nbsp;RD$ 27,450,000 / USD 450,000 (negociables)</strong></p><p><strong>Exclusiva villa amueblada en venta en Bonao</strong><br />Si buscas tranquilidad, confort y un espacio inigualable, esta villa amueblada es la opci&oacute;n ideal. Ubicada a solo 10 minutos del centro de Bonao y a 3 minutos de la Autopista Duarte, esta propiedad es perfecta para inversi&oacute;n o para disfrutar en familia en un entorno seguro y lujoso.</p><p><strong>Caracter&iacute;sticas:</strong></p><ul><li><strong>Terreno:</strong> 3,900 m&sup2;</li><li><strong>&Aacute;rea de construcci&oacute;n:</strong> 800 m&sup2;</li><li><strong>T&iacute;tulo deslindado</strong></li></ul><h3>Distribuci&oacute;n del hogar:</h3><p><strong>Primer nivel:</strong></p><ul><li><strong>Cocina:</strong> Moderna y funcional.</li><li><strong>Salas:</strong> Tres &aacute;reas para recibir y relajarse</li><li><strong>Comedor</strong></li><li><strong>&Aacute;rea de lavado</strong></li><li><strong>Habitaci&oacute;n de servicio con ba&ntilde;o</strong></li><li><strong>Habitaci&oacute;n para oficina</strong></li><li><strong>Ba&ntilde;o de visitas</strong></li><li><strong>Galer&iacute;a</strong></li><li><strong>Marquesina doble y parqueo para invitados</strong> (capacidad para 10 veh&iacute;culos)</li></ul><p><strong>Segundo nivel:</strong></p><ul><li><strong>Habitaci&oacute;n principal:</strong> Con ba&ntilde;o, vestidor y dos balcones con vistas panor&aacute;micas a las monta&ntilde;as.</li><li><strong>3 habitaciones adicionales:</strong> Cada una con su ba&ntilde;o y balc&oacute;n privado.</li></ul><h3>Amenidades y espacios adicionales:</h3><ul><li><strong>Port&oacute;n el&eacute;ctrico y c&aacute;maras de seguridad</strong></li><li><strong>Piscina</strong> para adultos y ni&ntilde;os</li><li><strong>Amplio gazebo amueblado</strong> (capacidad para 100 personas)</li><li><strong>&Aacute;rea de BBQ</strong> a gas y carb&oacute;n</li><li><strong>Patio empedrado</strong> y espacioso</li><li><strong>Casa de empleados</strong> para una familia</li><li><strong>Caballeriza</strong> para los amantes de los caballos</li><li><strong>Zona de cocina exterior</strong> ideal para eventos</li><li><strong>Perrera</strong> y <strong>&aacute;rea de juegos para ni&ntilde;os</strong></li><li><strong>Inversor</strong> de 3 kilos con 8 bater&iacute;as</li><li><strong>Pozo tubular y cuarto de m&aacute;quinas</strong></li><li><strong>Cisterna</strong> de 10,000 galones con bomba</li><li><strong>Columna decorativa iluminada</strong> en toda la verja</li></ul><p><strong>Nota:</strong><br />El segundo nivel de la villa est&aacute; construido en madera tratada, revestida por dentro y por fuera, combinando belleza y durabilidad. Ubicada en un residencial exclusivo con acceso seguro y excelente ubicaci&oacute;n.</p>'
-            },
-
-            { id: 332413, latLng: [19.304970415610654, -69.55029569053399], title: 'Casa tipo villa en Las Terrenas', price: 21350000, icon: houseIcon, rooms: 2, bathrooms: 2.5, parking: 2, area: 256, imageFolder: './properties/venta/332413/img/', imageCount: 27, 
-            caracteristicas: '<p><strong>Exclusiva Villa en Venta en Las Terrenas - Villa Mar</strong><br />A tan solo 600 metros de la playa Las Ballenas, esta hermosa villa tipo townhouse ofrece el equilibrio perfecto entre confort y lujo en un entorno tropical paradis&iacute;aco. Ideal para quienes buscan una propiedad de alta calidad en una ubicaci&oacute;n privilegiada.</p><p><strong>Precio:&nbsp;RD$ 21,350,000 / USD 350,000 (negociables</strong></p><p><strong>Caracter&iacute;sticas Generales:</strong></p><ul><li><strong>&Aacute;rea de construcci&oacute;n:</strong> 135 m&sup2;</li><li><strong>&Aacute;rea de terreno:</strong> 256 m&sup2;</li><li><strong>Niveles:</strong> 2</li></ul><h3>Distribuci&oacute;n y espacios interiores:</h3><ul><li><strong>Sala, cocina y comedor:</strong> Espacios integrados, con acabados en porcelanato de alta calidad.</li><li><strong>Cocina:</strong> Equipada con electrodom&eacute;sticos, tope de granito, puertas y muebles en roble.</li><li><strong>2 habitaciones:</strong> Cada una con cl&oacute;set y ba&ntilde;o privado; adem&aacute;s, un ba&ntilde;o adicional para visitas.</li><li><strong>&Aacute;rea de lavado</strong> equipada con lavadora y secadora el&eacute;ctricas.</li><li><strong>Terraza:</strong> Techo de pino tratado, ideal para disfrutar del clima y relajarse al aire libre.</li></ul><h3>Comodidades y equipamiento:</h3><ul><li><strong>Piscina privada</strong></li><li><strong>Aire acondicionado y abanicos</strong> en todas las habitaciones para mayor comodidad.</li><li><strong>Port&oacute;n el&eacute;ctrico</strong> e intercom para seguridad.</li><li><strong>2 parqueos</strong> y <strong>cisterna de agua</strong></li><li><strong>Inversor de 5.5 kW</strong> con bater&iacute;as para respaldo energ&eacute;tico.</li><li><strong>Calentador el&eacute;ctrico</strong> y sistema s&eacute;ptico.</li></ul><h3>Extras:</h3><ul><li><strong>Bungalow independiente:</strong> 15 m&sup2; de construcci&oacute;n, con ba&ntilde;o privado y preinstalaci&oacute;n para aire acondicionado, ideal para visitas o como espacio adicional</li></ul>'
-            },
-
-            { id: 332414, latLng: [18.951005302814934, -70.41979193479776], title: 'Terreno en Proyecto Cerrado, Bonao', price: 4400000, icon: landIcon, rooms: 0, bathrooms: 0, parking: 0, area: 1200, imageFolder: './properties/venta/332414/img/', imageCount: 18, 
-            caracteristicas: '<p><strong>Precio: RD$ 4400,000 / USD 72,000 / USD 60/m&sup2;</strong></p><p><strong>Terreno en Venta en Proyecto Cerrado - Estancia Armon&iacute;a, Bonao</strong><br />Ubicado a solo 5 minutos de la ciudad de Bonao, este terreno de 1,200 m&sup2; ofrece una oportunidad ideal para quienes buscan un espacio en el campo con todas las comodidades y tranquilidad.</p><p><strong>Caracter&iacute;sticas Principales:</strong></p><ul><li><strong>Precio:</strong> USD$ 60/m&sup2;</li><li><strong>&Aacute;rea:</strong> 1,200 m&sup2;</li><li><strong>Financiamiento disponible</strong></li></ul><h3>Detalles del Proyecto:</h3><p>Estancia Armon&iacute;a es un proyecto cerrado que permite a sus propietarios disfrutar de la naturaleza y la vida en el campo con seguridad y amenidades &uacute;nicas:</p><ul><li><strong>Estanque de peces</strong> para disfrutar y relajarse.</li><li><strong>&Aacute;rea de juegos para ni&ntilde;os</strong>.</li><li><strong>Crianza de animales</strong> como gallinas, patos y guineas, para una aut&eacute;ntica experiencia de campo.</li><li><strong>Acceso a un r&iacute;o</strong> y amplias &aacute;reas verdes, ideales para compartir en familia.</li></ul><h3>Reglas de Condominio:</h3><p>Estancia Armon&iacute;a est&aacute; dise&ntilde;ado exclusivamente para personas que buscan paz y armon&iacute;a en un entorno familiar. Se mantiene un ambiente de tranquilidad para disfrutar plenamente de la naturaleza.</p>'
-            },
-
-            { id: 332415, latLng: [18.895570747588078, -70.4458569009223], title: 'Terreno en Estancia Colonia, Bonao', price: 1015000, icon: landIcon, rooms: 0, bathrooms: 0, parking: 0, area: 350, imageFolder: './properties/venta/332415/img/', imageCount: 7, 
-            caracteristicas: '<p><strong>Precio: RD$ 1,015,000 o&nbsp;</strong><strong>RD$&nbsp;2,900/m&sup2; - Desde 350m&sup2; en adelante</strong></p><p><strong>Solar en Venta en Proyecto Cerrado - Estancia Colonial, Bonao</strong></p><p>Estancia Colonial ofrece un entorno natural incomparable, con vistas espectaculares hacia las monta&ntilde;as y acceso a balnearios. Ubicado en la carretera La Salvia, a solo 7 minutos de la ciudad de Bonao, este proyecto cerrado es una excelente opci&oacute;n para quienes buscan un estilo de vida en armon&iacute;a con la naturaleza.</p><p><strong>Caracter&iacute;sticas Principales:</strong></p><ul><li><strong>Precio:</strong> RD$2,900/m&sup2;</li><li><strong>&Aacute;rea disponible:</strong> Desde 350 m&sup2; en adelante</li><li><strong>Financiamiento disponible</strong></li></ul><h3>Beneficios y Condiciones:</h3><ul><li><strong>Reserva</strong> tu solar con solo RD$50,000.</li><li>Completa el <strong>25% del valor</strong> como inicial en el primer mes</li><li>Financiamiento accesible con cuotas desde RD$10,000 al mes, sin intereses durante el primer a&ntilde;o. Posteriormente, financiamiento del saldo restante a una tasa competitiva de <strong>1.2% mensual</strong>.</li></ul><p><strong>Disfruta de la tranquilidad y el aire puro en un lugar donde podr&aacute;s desconectarte y disfrutar de la naturaleza sin alejarte de la ciudad.</strong></p>'
-            },
-
-            { id: 332416, latLng: [18.87221145673316, -70.3676358182388], title: 'Terreno en Sonador, Bonao', price: 11400000, icon: landIcon, rooms: 0, bathrooms: 0, parking: 0, area: 37680, imageFolder: './properties/venta/332416/img/', imageCount: 12, 
-            caracteristicas: '<p><strong>Terreno en Venta en Sonador, Bonao</strong></p><p>Este terreno ofrece una excelente oportunidad de inversi&oacute;n en un entorno natural privilegiado, ideal para quienes buscan un espacio con retorno de inversi&oacute;n en producci&oacute;n de madera y posibilidad de desarrollo campestre.</p><p><strong>Caracter&iacute;sticas Principales:</strong></p><ul><li><strong>&Aacute;rea Total:</strong> 37,680 m&sup2; (60 tareas)</li><li><strong>Precio Total:</strong> RD$11,400,000</li><li><strong>Opci&oacute;n de Compra Parcial:</strong> Se vende la mitad a RD$190,000 por tarea</li><li><strong>Ubicaci&oacute;n:</strong> A solo 1 minuto de la autopista, con f&aacute;cil acceso en cualquier tipo de veh&iacute;culo</li></ul><h3>Detalles Adicionales:</h3><ul><li><strong>Terreno Mixto:</strong> Compuesto de &aacute;reas llanas y con desnivel</li><li><strong>Siembra de Pino:</strong> Propiedad sembrada de pino, con permiso para corte de madera, ideal para producci&oacute;n</li><li><strong>Infraestructura:</strong> Agua y energ&iacute;a disponibles</li><li><strong>T&iacute;tulo:</strong> Propiedad con t&iacute;tulo deslindado</li><li><strong>Vistas Naturales:</strong> Vista panor&aacute;mica hacia las monta&ntilde;as en una zona campestre y tranquila</li></ul><p>Este terreno es una excelente elecci&oacute;n tanto para inversi&oacute;n en madera como para un desarrollo en contacto con la naturaleza.</p>'
-            },
-
-            { id: 332417, latLng: [18.911542435335594, -70.26073882596432], title: 'Casa en venta en Maimón', price: 10000000, icon: houseIcon, rooms: 3, bathrooms: 2.5, parking: 2, area: 875.75, imageFolder: './properties/venta/332417/img/', imageCount: 7, 
-            caracteristicas: '<p><strong>Casa en Venta &ndash; Amplia y C&oacute;moda en Maim&oacute;n</strong></p><p>Propiedad ideal para aquellos que buscan un espacio amplio y funcional, en una zona tranquila y bien ubicada.</p><p><strong>Caracter&iacute;sticas Principales:</strong></p><ul><li><strong>Precio:</strong> RD$10,000,000</li><li><strong>&Aacute;rea Total del Terreno:</strong> 875.75 m&sup2;</li><li><strong>&Aacute;rea de Construcci&oacute;n:</strong> 320 m&sup2;</li><li><strong>Habitaciones:</strong> 3</li><li><strong>Ba&ntilde;os:</strong> 2.5</li><li><strong>Parqueos:</strong> Espacio para 2 veh&iacute;culos</li></ul><h3>Detalles Adicionales:</h3><ul><li><strong>Distribuci&oacute;n Interna:</strong><ul><li>Sala</li><li>Ante sala</li><li>Cocina espaciosa</li><li>Balc&oacute;n</li></ul></li><li><strong>Exterior:</strong> Marquesina</li><li><strong>Dise&ntilde;o Funcional:</strong> La propiedad est&aacute; pensada para maximizar el confort y la funcionalidad en cada espacio.</li></ul><p>Esta casa es ideal para quienes desean vivir en un entorno amplio y bien distribuido, con todas las comodidades necesarias para el disfrute de su hogar.</p>'
-            },
-
-            { id: 332418, latLng: [18.51776569786499, -69.8434803152621], title: 'Casa de oportuinidad en venta - Lucerna', price: 15500000, icon: houseIcon, rooms: 3, bathrooms: 3.5, parking: 3, area: 375, imageFolder: './properties/venta/332418/img/', imageCount: 9, 
-            caracteristicas: '<p><strong>Casa en Venta en Lucerna, Santo Domingo Este</strong></p><p>Oportunidad de adquirir una hermosa casa remodelada de 2 niveles, con acabados de alta calidad y espacios bien distribuidos, ideal para una vida de confort en un ambiente residencial.</p><p><strong>Caracter&iacute;sticas Principales:</strong></p><ul><li><strong>Precio:</strong> RD$15,500,000 (Tasada en RD$19,500,000 en 2023)</li><li><strong>&Aacute;rea de Terreno:</strong> 375 m&sup2;</li><li><strong>&Aacute;rea de Construcci&oacute;n:</strong> 324 m&sup2;</li><li><strong>Habitaciones:</strong> 3 con walk-in closet y ba&ntilde;o privado</li><li><strong>Ba&ntilde;os:</strong> 3 ba&ntilde;os completos y 1 medio ba&ntilde;o</li><li><strong>Parqueos:</strong> Espacio para 3 veh&iacute;culos</li></ul><h3>Detalles Adicionales:</h3><ul><li>Dos salas, comedor y family room</li><li>Cocina modular con topes de granito natural</li><li>Pisos en porcelanato</li><li>&Aacute;rea de lavado y cuarto de servicio independiente</li><li>Patio amplio con terraza y gazebo</li><li>Pozo de agua potable y cisterna</li><li>T&iacute;tulo de propiedad libre de hipotecas</li></ul><p><strong>Comodidades:</strong></p><ul><li>Lobby, vestidores, acceso controlado</li><li>&Aacute;rea de juegos infantiles</li><li>Ubicaci&oacute;n en una zona residencial tranquila, ideal para familias</li></ul><p>Esta propiedad ofrece espacios bien pensados, perfectos para disfrutar de la vida en familia, con todas las comodidades y en una ubicaci&oacute;n estrat&eacute;gica en Lucerna, Santo Domingo Este.</p>'
-            },
-
-            { id: 332419, latLng: [18.51701717847482, -69.84886994725174], title: 'Apartamento Amueblado en Venta', price: 6600000, icon: buildingIcon, rooms: 3, bathrooms: 2, parking: 2, area: 114.32, imageFolder: './properties/venta/332419/img/', imageCount: 10, 
-            caracteristicas: '<p><strong>Apartamento Amueblado en Venta - Residencial Yofisa VI, Vista Hermosa</strong></p><p>Este espacioso apartamento en el 3er piso del edificio A, completamente amueblado y con excelentes amenidades, ofrece una opci&oacute;n residencial c&oacute;moda y segura en Vista Hermosa.</p><p><strong>Caracter&iacute;sticas Principales:</strong></p><ul><li><strong>Localizaci&oacute;n:</strong> Santo Domingo Este, Vista Hermosa</li><li><strong>&Aacute;rea de Construcci&oacute;n:</strong> 114.32 m&sup2;</li><li><strong>Habitaciones:</strong> 3, cada una con aire acondicionado<ul><li>Habitaci&oacute;n principal con ba&ntilde;o privado y vestidor</li><li>Ba&ntilde;o com&uacute;n adicional</li></ul></li><li><strong>Parqueos:</strong> 2 parqueos privados</li></ul><h3>Detalles Adicionales:</h3><ul><li>Sala, comedor y cocina con desayunador en madera tratada</li><li>Balc&oacute;n con toldo y protecci&oacute;n de hierro</li><li>Cuarto de servicio con ba&ntilde;o propio</li><li>Hierros y toldos en todas las ventanas</li><li>Escalera de servicio en block</li><li>Agua potable, cisterna y inversor en &aacute;reas comunes</li></ul><p><strong>Comodidades:</strong></p><ul><li>Intercomunicador, seguridad 24 horas con c&aacute;maras y garita</li><li>Port&oacute;n el&eacute;ctrico y recogida de basura diaria</li></ul><p>Este apartamento ofrece confort, seguridad y accesibilidad, ideal para quienes buscan un hogar listo para habitar en una ubicaci&oacute;n privilegiada de Santo Domingo Este.</p>'
-            },
-
-            { id: 332420, latLng: [18.464131185542193, -68.42599957405749], title: 'Solar - Caleton Residence, Cap Cana', price: 20435000, icon: landIcon, rooms: 0, bathrooms: 0, parking: 0, area: 1050, imageFolder: './properties/venta/332420/img/', imageCount: 11, 
-            caracteristicas: '<p><strong>Precio: RD$ 20,435,000 / USD 335,000</strong></p><p><strong>Terreno en Venta - Caleton Residence, Cap Cana</strong></p><p>Disfruta del lujo y exclusividad en la comunidad de<strong>Cap Cana</strong>, con este terreno en<strong>Caleton Residence</strong>, ideal para una residencia privada en un entorno privilegiado.</p><p><strong>Caracter&iacute;sticas Principales:</strong></p><ul><li><strong>Localizaci&oacute;n:</strong> B&aacute;varo, Punta Cana, La Altagracia - Cap Cana</li><li><strong>&Aacute;rea de Terreno:</strong> 1,050 m&sup2;</li><li><strong>Condici&oacute;n:</strong> Nuevo</li><li><strong>Precio:</strong> A consultar</li></ul><h3>Comodidades:</h3><ul><li>Control de acceso y seguridad las 24 horas</li></ul><p><strong>Beneficios Exclusivos de Cap Cana:</strong></p><ul><li>Acceso a beach clubs y &aacute;reas verdes</li><li>Descuentos en resorts y restaurantes de la comunidad</li><li>Cercan&iacute;a a <strong>Punta Espada Golf Club</strong> (a solo 5 minutos)</li></ul><p>Este terreno est&aacute; ubicado en una posici&oacute;n elevada, con vistas panor&aacute;micas al mar y al farall&oacute;n, convirti&eacute;ndolo en uno de los terrenos m&aacute;s destacados de <strong>Caleton Residence</strong>.</p>'
-            },
-
-            { id: 332421, latLng: [18.668644761694377, -68.4456116627227], title: 'Casa tipo villa en Punta Cana', price: 11895000, icon: houseIcon, rooms: 3, bathrooms: 2.5, parking: 3, area: 322, imageFolder: './properties/venta/332421/img/', imageCount: 10, 
-            caracteristicas: '<p><strong>Casa en Venta - B&aacute;varo, Punta Cana</strong></p><p>Descubre el confort de esta hermosa casa&nbsp;en<strong>B&aacute;varo, Punta Cana</strong>, ideal para la vida en el Caribe con un dise&ntilde;o espacioso y modernas amenidades.</p><p><strong>Caracter&iacute;sticas Principales:</strong></p><ul><li><strong>Localizaci&oacute;n:</strong> B&aacute;varo, Punta Cana, La Altagracia &gt; B&aacute;varo</li><li><strong>&Aacute;rea de Construcci&oacute;n:</strong> 160 m&sup2;</li><li><strong>&Aacute;rea de Terreno:</strong> 322 m&sup2;</li><li><strong>Condici&oacute;n:</strong> Segundo uso (construida en 2021)</li><li><strong>Precio:</strong> A consultar</li></ul><h3>Distribuci&oacute;n:</h3><ul><li><strong>Habitaciones:</strong> 3 habitaciones con amplio walk-in closet</li><li><strong>Ba&ntilde;os:</strong> 2 ba&ntilde;os completos y 1 medio ba&ntilde;o</li><li><strong>Marquesina:</strong> 2 a 3 veh&iacute;culos</li><li><strong>Espacios Comunes:</strong> Sala, comedor, cocina moderna y cuarto de lavado independiente</li></ul><h3>Comodidades:</h3><ul><li>Piscina de agua salada de bajo mantenimiento, jacuzzi, y ducha exterior</li><li>Terraza en el techo con vistas y amplio espacio para disfrutar al aire libre</li><li>Patio con &aacute;rea para sembrar y panel solar que provee luz en el patio</li><li>Seguridad 24 horas, c&aacute;maras de vigilancia, pozo de agua propio (sin costo de agua)</li></ul><p>Esta villa es ideal para quienes buscan un lugar privado y c&oacute;modo en el Caribe, cerca de todos los servicios y rodeado de la belleza de Punta Cana.</p>'
-            },
-
-            { id: 332422, latLng: [18.47267681513523, -69.92012161219779], title: 'Casa en el sector Naco ideal para Edificio', price: 53985000, icon: houseIcon, rooms: 6, bathrooms: 4, parking: 3, area: 444.3, imageFolder: './properties/venta/332422/img/', imageCount: 7, 
-            caracteristicas: '<p><strong>Precio: RD$&nbsp;53,985,000 / USD 885,000</strong></p><p><strong>Casa en Venta - Ideal para Desarrollo en Ensanche Naco</strong></p><p>Esta propiedad es una excelente oportunidad en el coraz&oacute;n del <strong>Ensanche Naco</strong>, en <strong>Santo Domingo Centro</strong>, perfecta para quienes buscan un terreno amplio para construir un edificio residencial o de oficinas.</p><h3>Detalles Principales:</h3><ul><li><strong>Localizaci&oacute;n:</strong> Ensanche Naco, Santo Domingo Centro</li><li><strong>&Aacute;rea de Construcci&oacute;n:</strong> 320 m&sup2;</li><li><strong>&Aacute;rea de Terreno:</strong> 444.3 m&sup2;</li><li><strong>Condici&oacute;n:</strong> Segundo uso (construida en 1964)</li><li><strong>Precio:</strong> A consultar</li><li><strong>Uso Actual:</strong> Residencial, <strong>Edificable:</strong> S&iacute;</li></ul><h3>Distribuci&oacute;n Actual:</h3><ul><li><strong>Nivel 1:</strong> Jard&iacute;n frontal, galer&iacute;a, sala, comedor, cocina, terraza techada, 3 habitaciones, 2 ba&ntilde;os, patio y habitaci&oacute;n de servicio con ba&ntilde;o</li><li><strong>Nivel 2:</strong> Amplia terraza/balc&oacute;n, sala, comedor, cocina, 3 habitaciones y 2 ba&ntilde;os</li></ul><h3>Comodidades:</h3><ul><li><strong>Estacionamiento:</strong> Marquesina para 3 veh&iacute;culos</li><li><strong>Otros:</strong> Cisterna, estar familiar, patio y terraza</li></ul><p><strong>Ubicaci&oacute;n ideal en el centro de Naco</strong>, rodeado de servicios y con un terreno que permite construir un edificio, esta propiedad ofrece tanto espacio como potencial para proyectos de desarrollo residencial o comercial.</p>'
-            },
-
-            { id: 332423, latLng: [18.534783537384484, -69.86585748085987], title: 'Casa Multifamiliar, Sabana Perdida', price: 10800000, icon: houseIcon, rooms: 8, bathrooms: 4, parking: 0, area: 387, imageFolder: './properties/venta/332423/img/', imageCount: 10, 
-            caracteristicas: '<p><strong>Casa Multifamiliar en Venta en Sabana Perdida, Santo Domingo Norte</strong></p><p>Esta propiedad remodelada y moderna, construida en <strong>2020</strong>, es ideal para inversi&oacute;n en alquiler residencial en el sector de <strong>Sabana Perdida</strong>.</p><h3>Detalles Principales:</h3><ul><li><strong>Ubicaci&oacute;n:</strong> Santo Domingo Norte, Sabana Perdida</li><li><strong>&Aacute;rea de Construcci&oacute;n:</strong> 387 m&sup2;</li><li><strong>&Aacute;rea de Terreno:</strong> 173 m&sup2;</li><li><strong>Condici&oacute;n:</strong> Remodelada</li><li><strong>Uso Actual:</strong> Residencial</li></ul><h3>Distribuci&oacute;n:</h3><p>Esta propiedad consta de <strong>dos niveles</strong> con <strong>4 apartamentos independientes</strong>:</p><ul><li><strong>Cada apartamento</strong> cuenta con:<ul><li>2 habitaciones</li><li>Sala</li><li>Comedor</li><li>1 ba&ntilde;o</li><li>Galer&iacute;a</li></ul></li></ul><h3>Servicios y Comodidades:</h3><ul><li>Entrada individual a cada apartamento</li><li>Contadores el&eacute;ctricos separados</li><li>Bomba de agua y tinaco individual para cada apartamento</li><li>Certificado de t&iacute;tulo deslindado</li></ul><p>Con esta distribuci&oacute;n y ubicaci&oacute;n, esta propiedad ofrece una excelente oportunidad de inversi&oacute;n para alquiler, permitiendo ingresos constantes y una estructura lista para habitar o arrendar.</p>'
-            },
-
-            { id: 332424, latLng: [18.501945540759255, -69.96976571971648], title: 'Casa en Venta - Altos de arroyo hondo', price: 32330000, icon: houseIcon, rooms: 4, bathrooms: 5.5, parking: 6, area: 537, imageFolder: './properties/venta/332424/img/', imageCount: 14, 
-            caracteristicas: '<p><strong>Precio: RD$ 32,330,000 / USD 530,000</strong></p><p><strong>Casa en Venta en Altos de arroyo hondo &ndash; Espaciosa y Elegante</strong></p><h3>Detalles Generales:</h3><ul><li><strong>Niveles:</strong> 3</li><li><strong>&Aacute;rea Total:</strong> 537 m&sup2;</li><li><strong>Habitaciones:</strong> 4</li><li><strong>Ba&ntilde;os:</strong> 5 completos y 1 medio ba&ntilde;o</li><li><strong>Parqueos:</strong> Espacio para hasta 6 veh&iacute;culos</li></ul><h3>Distribuci&oacute;n por Niveles:</h3><p><strong>Primer Nivel (S&oacute;tano):</strong></p><ul><li>Apartamento estudio completo con entrada independiente, ideal para hu&eacute;spedes o como oficina privada.</li><li>Escalera de acceso al segundo nivel</li><li>&Aacute;rea de lavado</li><li>Patio</li></ul><p><strong>Segundo Nivel:</strong></p><ul><li>Recibidor que conecta a las &aacute;reas principales</li><li>Sala amplia</li><li>Family Room para entretenimiento</li><li>Comedor formal</li><li>Cocina fr&iacute;a y cocina caliente</li><li>Medio ba&ntilde;o para visitas</li><li>Terraza con vistas al patio</li><li>Patio adicional y un ba&ntilde;o en el &aacute;rea exterior</li></ul><p><strong>Tercer Nivel:</strong></p><ul><li>4 habitaciones, cada una con buen espacio</li><li>3 ba&ntilde;os completos</li><li>Balc&oacute;n amplio con vistas</li><li>&Aacute;rea de comedor al aire libre junto a una piscina para disfrutar del clima y relajarse</li></ul><p>Esta propiedad es ideal para quienes buscan un hogar espacioso y privado, con opciones de entretenimiento y un dise&ntilde;o pensado en la comodidad familiar y de invitados.</p>'
-            },
-
-            { id: 332425, latLng: [18.51934353422784, -69.84385688895253], title: 'Apartamentos Nuevos 1er, 2do, 3er y 4to Nivel', price: 9272000, icon: buildingIcon, rooms: 3, bathrooms: 2, parking: 2, area: 108, imageFolder: './properties/venta/332425/img/', imageCount: 10, 
-            caracteristicas: '<p><strong>Precio: RD$ 9,272,000 / USD 152,000</strong></p><p><strong>Apartamentos Nuevos en Venta &ndash; Proyecto en Santo Domingo Este, Lucerna</strong></p><h3><strong>Detalles Generales</strong></h3><ul><li><strong>Ubicaci&oacute;n:</strong> Santo Domingo Este &gt; Lucerna</li><li><strong>Condici&oacute;n:</strong> Nueva (A&ntilde;o de Construcci&oacute;n: 2024)</li><li><strong>Tama&ntilde;o de Construcci&oacute;n:</strong> 108 m&sup2; por apartamento</li><li><strong>Niveles:</strong> Edificio de 4 pisos</li><li><strong>Opciones por Piso:</strong><ul><li><strong>1er Nivel:</strong> Incluye patio amplio.</li><li><strong>4to Nivel:</strong> Penthouse con acceso exclusivo.</li></ul></li></ul><hr /><h3><strong>Descripci&oacute;n de los Apartamentos</strong></h3><ul><li>Sala espaciosa</li><li>Balc&oacute;n con vistas</li><li>Comedor</li><li>3 habitaciones<ul><li><strong>Principal:</strong> Ba&ntilde;o privado y walk-in closet</li></ul></li><li>2 ba&ntilde;os completos</li><li>Cocina estilo americana</li><li>&Aacute;rea de lavado</li><li>Parqueos:<ul><li><strong>1er y 2do nivel:</strong> 1 parqueo</li><li><strong>3er y 4to nivel:</strong> 2 parqueos</li></ul></li></ul><hr /><h3><strong>Acabados y Comodidades</strong></h3><ul><li>Pisos en porcelanato espa&ntilde;ol</li><li>Cocina y puertas en madera preciosa</li><li>Calentador instalado</li><li>Preinstalaci&oacute;n para aire acondicionado en habitaciones y sala</li><li>Preinstalaci&oacute;n para secadora de gas</li></ul><hr /><h3><strong>Beneficios Comunes</strong></h3><ul><li>Agua permanente con bomba sumergible y cisterna autom&aacute;tica</li><li>Tinacos:<ul><li>5000 y 4500 galones (garantizando agua incluso sin luz)</li><li>3500 galones para &aacute;rea com&uacute;n</li></ul></li><li>2 portones el&eacute;ctricos con motores</li><li>&Aacute;rea com&uacute;n en el 5to nivel para actividades sociales</li><li>Gas com&uacute;n</li><li>Transformador exclusivo para el edificio</li></ul><hr /><h3><strong>Precios por Piso</strong></h3><ul><li><strong>1er Nivel:</strong> $157,000 USD</li><li><strong>2do Nivel:</strong> $152,000 USD</li><li><strong>3er Nivel:</strong> $152,000 USD</li><li><strong>4to Nivel (Penthouse):</strong> $230,000 USD</li></ul><p>Este proyecto ofrece apartamentos dise&ntilde;ados para la comodidad y la elegancia, en una ubicaci&oacute;n estrat&eacute;gica con acceso a m&uacute;ltiples servicios. &iexcl;Cont&aacute;ctanos para m&aacute;s informaci&oacute;n o agendar una visita!</p>'
-            },
-
-            { id: 332426, latLng: [18.490044382947033, -69.83607190216715], title: 'Apartamento Res. Luly', price: 7350000, icon: buildingIcon, rooms: 3, bathrooms: 2, parking: 2, area: 130.24, imageFolder: './properties/venta/332426/img/', imageCount: 24, 
-            caracteristicas: '<p><strong>Apartamento en Residencial Lily &ndash; Ideal para tu Familia</strong></p><h3><strong>Detalles del Apartamento</strong></h3><ul><li><strong>Habitaciones:</strong> 3 amplias habitaciones</li><li><strong>Ba&ntilde;os:</strong> 2 ba&ntilde;os modernos y funcionales</li><li><strong>Cocina:</strong> Dise&ntilde;o moderno y abierto, perfecta para compartir momentos en familia</li><li><strong>Balc&oacute;n:</strong> Espacioso y con buena ventilaci&oacute;n</li><li><strong>&Aacute;rea de Servicios:</strong> Incluye espacio para lavander&iacute;a y m&aacute;s</li></ul><hr /><h3><strong>Comodidades Adicionales</strong></h3><ul><li><strong>Estacionamiento:</strong> 2 parqueos techados</li><li><strong>Infraestructura:</strong><ul><li>Techos decorativos que aportan estilo y elegancia</li><li>Tinaco para garantizar agua en todo momento</li><li>Inversor TRACE incluido para respaldo el&eacute;ctrico</li></ul></li></ul><hr /><p>Un hogar acogedor con todo lo que necesitas para vivir c&oacute;modamente. Residencial Lily combina funcionalidad, estilo y comodidad en un espacio pensado para ti y tu familia. &iexcl;Cont&aacute;ctanos para m&aacute;s detalles o una visita!</p>'
-            },
-
-            { id: 332427, latLng: [18.50415607944064, -69.98064985498635], title: 'Casa en Venta – Villas Claudia', price: 18300000, icon: houseIcon, rooms: 3, bathrooms: 2, parking: 4, area: 592.71, imageFolder: './properties/venta/332427/img/', imageCount: 7, 
-            caracteristicas: "<p><strong>Precio RD$ 18,300,000/ USD 300,000</strong></p><p><strong>Casa en Venta &ndash; Villas Claudia, Altos de Arroyo Hondo</strong></p><p><strong>Detalles Generales:</strong></p><ul><li><strong>Tipo de Propiedad:</strong> Casa</li><li><strong>Operaci&oacute;n:</strong> Venta</li><li><strong>Habitaciones:</strong> 3 (habitaci&oacute;n principal con walk-in closet)</li><li><strong>Ba&ntilde;os:</strong> 2</li><li><strong>Parqueos:</strong> 4 (2 techados y 2 al aire libre)</li><li><strong>&Aacute;rea de Terreno:</strong> 592.71 m&sup2;</li><li><strong>&Aacute;rea de Construcci&oacute;n</strong> 150 m&sup2;</li></ul><h3><strong>Distribuci&oacute;n y Comodidades</strong></h3><p><strong>Interiores:</strong></p><ul><li>Sala</li><li>Comedor</li><li>Cocina espaciosa</li><li>&Aacute;rea de lavado</li><li>Habitaci&oacute;n de servicio con ba&ntilde;o privado</li><li>Ventanas y puertas protegidas con hierros</li></ul><p><strong>Exteriores:</strong></p><ul><li>Amplio patio con verjas de blocks</li><li>Cisterna para garantizar suministro de agua</li><li>Proyecto cerrado con doble control de acceso</li><li>Vigilancia 24/7</li></ul><p><strong>Costo de mantenimiento mensual:</strong> RD$1,000.00</p><p>Esta propiedad ofrece la combinaci&oacute;n perfecta de seguridad, privacidad y comodidad en una zona tranquila y c&eacute;ntrica. Ideal para familias que buscan un hogar acogedor con amplios espacios y excelente ubicaci&oacute;n.</p>"
-            },
-
-            { id: 332428, latLng: [18.473054937243116, -69.94693521356807], title: 'Casa en Venta – Urb. Fernández', price: 67100000, icon: houseIcon, rooms: 4, bathrooms: 5, parking: 4, area: 800, imageFolder: './properties/venta/332428/img/', imageCount: 23, 
-            caracteristicas: "<p><strong>Precio RD$ 67,100,000 / USD 1,100,000</strong></p><p><strong>Casa en Venta &ndash; Urb. Fern&aacute;ndez</strong></p><p><strong>Detalles Generales:</strong></p><ul><li><strong>Tipo de Propiedad:</strong> Casa</li><li><strong>Habitaciones:</strong> 4 (principal con walk-in closet)</li><li><strong>Ba&ntilde;os:</strong> 5</li><li><strong>Parqueos:</strong> 4 techados</li><li><strong>&Aacute;rea de Terreno:</strong> 800 m&sup2;</li><li><strong>&Aacute;rea de Construcci&oacute;n:</strong> 450 m&sup2;</li></ul><h3><strong>Distribuci&oacute;n y Comodidades:</strong></h3><p><strong>Interiores:</strong></p><ul><li>3 habitaciones principales</li><li>Estudio</li><li>3.5 ba&ntilde;os</li><li>Habitaci&oacute;n de servicio con ba&ntilde;o privado</li><li>Cuarto para chofer</li><li>Casa de hu&eacute;spedes</li></ul><p><strong>Exteriores:</strong></p><ul><li>Terraza</li><li>Amplio patio ideal para actividades sociales</li><li>Jard&iacute;n dise&ntilde;ado para disfrutar en familia</li><li>4 parqueos techados</li><li>Port&oacute;n el&eacute;ctrico para mayor seguridad</li></ul><p>Esta residencia ubicada en Urb. Fern&aacute;ndez combina lujo, comodidad y amplios espacios en un entorno exclusivo. Ideal para familias grandes o como inversi&oacute;n.</p>"
-            },
-
-            { id: 332429, latLng: [18.49835815529696, -69.98605926797049], title: 'Apartamentos en Venta – El Condado', price: 12200000, icon: buildingIcon, rooms: 3, bathrooms: 2.5, parking: 2, area: 250, imageFolder: './properties/venta/332429/img/', imageCount: 24, 
-            caracteristicas: "<p><strong>Apartamentos en Venta &ndash; El Condado</strong></p><p><strong>Ubicaci&oacute;n:</strong><br />Detr&aacute;s del antiguo Tric&oacute;m Duarte, a una esquina de la Av. Monumental, a solo 3 minutos de Carrefour Plaza Duarte.</p><h3><strong>Opciones Disponibles y Precios:</strong></h3><ul><li><strong>C-2:</strong> 159 m&sup2; &ndash; <strong>US$ 175,000 / RD$&nbsp;10,675,000</strong></li><li><strong>A-2:</strong> 166 m&sup2; &ndash; <strong>US$ 178,500 /&nbsp;RD$&nbsp;10,858,000</strong></li><li><strong>B-2:</strong> 173 m&sup2; &ndash; <strong>US$ 186,000 /&nbsp;RD$&nbsp;11,346,000</strong></li><li><strong>C-3:</strong> 193 m&sup2; &ndash; <strong>US$ 205,000 /&nbsp;RD$&nbsp;12,505,000</strong></li><li><strong>D-1:</strong> 239 m&sup2; (con 45 m&sup2; de patio privado) &ndash; <strong>US$ 206,000 /&nbsp;RD$&nbsp;12,566,000</strong></li><li><strong>C-1:</strong> 253 m&sup2; (con 60 m&sup2; de patio privado) &ndash; <strong>US$ 210,000 /&nbsp;RD$&nbsp;12,810,000</strong></li><li><strong>B-4:</strong> 283 m&sup2; (con 117 m&sup2; de azotea privada)&nbsp;&ndash;&nbsp;<strong>US$ 212,000 /&nbsp;RD$&nbsp;12,932,00</strong></li></ul><p><strong>Caracter&iacute;sticas Generales de los Apartamentos:</strong></p><ul><li>3 habitaciones</li><li>2.5 ba&ntilde;os</li><li>2 parqueos techados y paralelos</li><li>Amplio balc&oacute;n</li><li>Cuarto de servicio</li><li>&Aacute;rea de lavado</li><li>Cocina modular con isla</li><li>Cer&aacute;micas importadas</li><li>Madera preciosa hidr&oacute;fuga</li><li>Construcci&oacute;n en hormig&oacute;n</li></ul><p><strong>Beneficios del Residencial:</strong></p><ul><li>2 ascensores de &uacute;ltima generaci&oacute;n con acceso por tarjeta digital</li><li>16 c&aacute;maras de seguridad</li><li>Intercom con c&aacute;mara</li><li>Doble control de acceso</li><li>Pozo privado y cisterna</li><li>Portones electr&oacute;nicos</li></ul><p><strong>Distribuci&oacute;n de los Edificios:</strong></p><ul><li>Edificios A y B: 9 apartamentos cada uno</li><li>Edificios C y D: 8 apartamentos cada uno</li></ul><p>Invierte en un espacio moderno y seguro, con una ubicaci&oacute;n privilegiada y acabados de alta calidad. &iexcl;Cont&aacute;ctanos para m&aacute;s informaci&oacute;n o agendar una visita!</p>"
-            },
+        // Verificar si el ID no está vacío
+        if (propertyId) {
+            const property = [...alquileres, ...ventas].find(p => p.id === propertyId);
+            console.log("Propiedad encontrada:", property); // Imprimir la propiedad encontrada
+            
+            // Aquí es donde colocas la verificación
+            if (property) {
+                openModal(property); // Llama a la función para abrir el modal
+            } else {
+                console.error("No se encontró la propiedad con ID:", propertyId);
+            }
+        } else {
+            console.error("El ID extraído está vacío:", propertyId);
+        }
+    }
+});
+//firebase FIN
 
 
-            { id: 224504, latLng: [18.457316096553225, -69.91592487067537], title: 'zona universitaria Apartamento', price: 10500000, icon: buildingIcon, rooms: 2, bathrooms: 2, parking: 2, area: 116, imageFolder: './properties/venta/224504/img/', imageCount: 7, caracteristicas: '' },
+// Carousel
 
-            { id: 224511, latLng: [19.748816219700327, -70.65440623939426], title: 'Solar, muñoz, puerto plata', price: 13400000, icon: landIcon, rooms: 0, bathrooms: 0, parking: 0, area: 908, imageFolder: './properties/venta/224511/img/', imageCount: 7, caracteristicas: '' },
-
-            { id: 224513, latLng: [18.780254470682426, -68.54500166578522], title: 'Solar Macao, Punta cana', price: 6500000, icon: landIcon, rooms: 0, bathrooms: 0, parking: 0, area: 500, imageFolder: './properties/venta/224513/img/', imageCount: 11, caracteristicas: '' },
-
-        ];
-
-
-       // Carousel
-
-        // Función para crear el carrusel
-        function createCarousel(imageFolder, imageCount) {
-  let carousel = `<div class="carousel">
+// Función para crear el carrusel
+function createCarousel(id, imageCount) {
+    let carousel = `<div class="carousel">
                     <div class="botonmaximizar"></div>
                     <div class="carousel-inner">`;
 
-  const maxImagesToShow = Math.min(imageCount, 7);
+    const maxImagesToShow = Math.min(imageCount, 7); // Limitar a un máximo de 7 imágenes
 
-  for (let i = 1; i <= maxImagesToShow; i++) {
-    const imgSrc = `${imageFolder}${i}.jpg`;
+    for (let i = 1; i <= maxImagesToShow; i++) {
+        const imgSrc = `https://firebasestorage.googleapis.com/v0/b/arribate-com.firebasestorage.app/o/propiedades%2F${id}%2Fimg%2F${i}.jpg?alt=media`; // Usa id aquí
+        carousel += `
+            <div class="placeholder" style="background-color: #f0f0f0;"> 
+                <img src="${imgSrc}" class="${i === 1 ? 'active' : ''}" alt="Imagen ${i}" loading="lazy" onload="this.parentNode.style.backgroundImage = 'none'"> 
+            </div>`; 
+    }
     carousel += `
-      <div class="placeholder" style="background-color: #f0f0f0;"> 
-        <img src="${imgSrc}" class="${i === 1 ? 'active' : ''}" alt="Imagen ${i}" loading="lazy" onload="this.parentNode.style.backgroundImage = 'none'"> 
-      </div>`; 
-  }
-  carousel += `
                     </div>
                     <button class="prev">❮</button>
                     <button class="next">❯</button>
@@ -1019,7 +945,7 @@ rectangle._path.style.pointerEvents = "none";
                       ${Array.from({ length: maxImagesToShow }, (_, index) => `<span class="indicator ${index === 0 ? 'active' : ''}" data-index="${index}"></span>`).join('')}
                     </div>
                   </div>`;
-  return carousel;
+    return carousel;
 }
 
         // Función para cambiar la imagen
@@ -1103,69 +1029,67 @@ rectangle._path.style.pointerEvents = "none";
 
         // Añadimos los event listeners a cada carrusel después de crearlo
         function initializeCarouselEvents() {
-            const carousels = document.querySelectorAll('.carousel');
-            carousels.forEach(carousel => {
-                const prevButton = carousel.querySelector('.prev');
-                const nextButton = carousel.querySelector('.next');
-                const indicators = carousel.querySelectorAll('.indicator');
+    const carousels = document.querySelectorAll('.carousel');
 
-                prevButton.addEventListener('click', () => changeImage(carousel, -1));
-                nextButton.addEventListener('click', () => changeImage(carousel, 1));
+    carousels.forEach(carousel => {
+        const prevButton = carousel.querySelector('.prev');
+        const nextButton = carousel.querySelector('.next');
+        const indicators = carousel.querySelectorAll('.indicator');
 
-                indicators.forEach(indicator => {
-                    indicator.addEventListener('click', () => {
-                        const index = parseInt(indicator.getAttribute('data-index'));
-                        setActiveImage(carousel, index);
-                    });
-                });
+        prevButton.addEventListener('click', () => changeImage(carousel, -1));
+        nextButton.addEventListener('click', () => changeImage(carousel, 1));
 
-                // Añadir eventos táctiles
-                addTouchEvents(carousel);
+        indicators.forEach(indicator => {
+            indicator.addEventListener('click', () => {
+                const index = parseInt(indicator.getAttribute('data-index'));
+                setActiveImage(carousel, index);
             });
+        });
+
+        // Añadir eventos táctiles
+        addTouchEvents(carousel);
+    });
+}
+
+// Crear marcadores y popups con carruseles
+function createMarkers(locations, markersArray) {
+    locations.forEach(function (location) {
+        location = normalizeLocation(location);
+        var isAlquiler = markersArray === alquilerMarkers;  // Verifica si es alquiler
+        var marker = L.marker([location.lat, location.lng], { icon: createIcon(location.icon, location.price, isAlquiler) });
+
+        // Crear el carrusel usando el id de la propiedad
+        var carousel = location.imageCount ? createCarousel(location.id, location.imageCount) : '';
+
+        // Agregar condicionalmente "/mes" al precio si es un alquiler
+        var priceText = `RD$ ${formatNumber(location.price)}`;
+        if (markersArray === alquilerMarkers) {
+            priceText += '/mes';
         }
 
-        // Crear marcadores y popups con carruseles
-        function createMarkers(locations, markersArray) {
-            locations.forEach(function (location) {
-                location = normalizeLocation(location);
-                var isAlquiler = markersArray === alquilerMarkers;  // Verifica si es alquiler
-                var marker = L.marker([location.lat, location.lng], { icon: createIcon(location.icon, location.price, isAlquiler) });
-
-                // Crear el carrusel si hay una carpeta de imágenes disponible
-                var carousel = location.imageFolder ? createCarousel(location.imageFolder, location.imageCount) : '';
-
-                // Agregar condicionalmente "/mes" al precio si es un alquiler
-                var priceText = `RD$ ${formatNumber(location.price)}`;
-                if (markersArray === alquilerMarkers) {
-                    priceText += '/mes';
-                }
-
-                marker.bindPopup(
-                    `<button id="vermodal" onclick="openModal(${JSON.stringify(location).replace(/"/g, '&quot;')})"></button>
-                    <button onclick="openModal(${JSON.stringify(location).replace(/"/g, '&quot;')}) "style="position: absolute;top: 130px;right: 0px;height: 60px;width: 60px;z-index: 9;border: none;background: #00000000;cursor: pointer;"></button>
-                ${carousel}
-                <div class="informacion-basica"> 
-
-                 <button id="btncomollegar" onclick="comoLlegar(${location.lat}, ${location.lng})"><img src="./img/icons/location1.svg">Cómo llegar</button>
+        marker.bindPopup(
+            `<button id="vermodal" onclick="openModal(${JSON.stringify(location).replace(/"/g, '&quot;')})"></button>
+            <button onclick="openModal(${JSON.stringify(location).replace(/"/g, '&quot;')}) "style="position: absolute;top: 130px;right: 0px;height: 60px;width: 60px;z-index: 9;border: none;background: #00000000;cursor: pointer;"></button>
+            ${carousel}
+            <div class="informacion-basica"> 
+                <button id="btncomollegar" onclick="comoLlegar(${location.lat}, ${location.lng})"><img src="./img/icons/location1.svg">Cómo llegar</button>
                 <span class="price-text">${priceText}</span><br>
-                <b>${location.title}</b><br>
-
+                <div class="titulos-propiedad-pop"><b>${location.title}</b><br></div>
                 <div class="detalles-basicos"> 
-                <img src="${roomIcon}" style="width: 26px; height: 26px;"/> ${location.rooms}
-                <img src="${bathroomIcon}" style="width: 26px; height: 26px; margin-left: 10px;"/> ${location.bathrooms}
-                <img src="${parkingIcon}" style="width: 26px; height: 26px; margin-left: 10px;"/> ${location.parking}
-                <img src="${areaIcon}" style="width: 26px; height: 26px; margin-left: 10px;"/> ${location.area} m²
+                    <img src="${roomIcon}" style="width: 26px; height: 26px;"/> ${location.rooms}
+                    <img src="${bathroomIcon}" style="width: 26px; height: 26px; margin-left: 10px;"/> ${location.bathrooms}
+                    <img src="${parkingIcon}" style="width: 26px; height: 26px; margin-left: 10px;"/> ${location.parking}
+                    <img src="${areaIcon}" style="width: 26px; height: 26px; margin-left: 10px;"/> ${location.area} m²
                 </div>
-                </div>`
-                ).addTo(map).on('popupopen', function () {
-                    // Inicializar eventos del carrusel en el popup
-                    initializeCarouselEvents();
-                });
+            </div>`
+        ).addTo(map).on('popupopen', function () {
+            // Inicializar eventos del carrusel en el popup
+            initializeCarouselEvents();
+        });
 
-                markersArray.push(marker);
-            });
-        }
-
+        markersArray.push(marker);
+    });
+}
 
         // Función de cómo llegar
         function comoLlegar(lat, lng) {
@@ -1177,77 +1101,75 @@ rectangle._path.style.pointerEvents = "none";
 
 
         function comoLlegarDesdeModal() {
-            // Obtener latitud y longitud de la propiedad actualmente mostrada en el modal
-            const propertyId = parseInt(window.location.hash.substring('#id-'.length));
-            const property = [...alquileres, ...ventas].find(p => p.id === propertyId);
+    // Obtener el ID de la propiedad desde el hash de la URL
+    const propertyId = window.location.hash.substring('#id-'.length);
+    const property = [...alquileres, ...ventas].find(p => p.id === propertyId);
 
-            if (property) {
-                const lat = property.latLng ? property.latLng[0] : property.lat;
-                const lng = property.latLng ? property.latLng[1] : property.lng;
+    if (property) {
+        const lat = property.latLng ? property.latLng[0] : property.lat;
+        const lng = property.latLng ? property.latLng[1] : property.lng;
 
-                // Verificar si estamos en un dispositivo iOS
-                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        // Verificar si estamos en un dispositivo iOS
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
-                if (isIOS) {
-                    // Crear enlaces personalizados para cada aplicación en iOS
-                    const appleMapsUrl = `maps://?q=${lat},${lng}`;
-                    const googleMapsUrl = `comgooglemaps://?q=${lat},${lng}&center=${lat},${lng}`;
-                    const wazeUrl = `waze://?ll=${lat},${lng}&navigate=yes`;
-                    const uberUrl = `uber://?action=setPickup&dropoff[latitude]=${lat}&dropoff[longitude]=${lng}`;
+        if (isIOS) {
+            // Crear enlaces personalizados para cada aplicación en iOS
+            const appleMapsUrl = `maps://?q=${lat},${lng}`;
+            const googleMapsUrl = `comgooglemaps://?q=${lat},${lng}&center=${lat},${lng}`;
+            const wazeUrl = `waze://?ll=${lat},${lng}&navigate=yes`;
+            const uberUrl = `uber://?action=setPickup&dropoff[latitude]=${lat}&dropoff[longitude]=${lng}`;
 
-                    // Función para intentar abrir la URL y mostrar un mensaje si no está instalada
-                    function tryOpenUrl(url, fallbackMessage) {
-                        const timeout = setTimeout(() => {
-                            alert(fallbackMessage); // Mostrar el mensaje personalizado
-                        }, 1500); // 1.5 segundos de espera
+            // Función para intentar abrir la URL y mostrar un mensaje si no está instalada
+            function tryOpenUrl(url, fallbackMessage) {
+                const timeout = setTimeout(() => {
+                    alert(fallbackMessage); // Mostrar el mensaje personalizado
+                }, 1500); // 1.5 segundos de espera
 
-                        window.location.href = url;
+                window.location.href = url;
 
-                        window.addEventListener('blur', () => {
-                            clearTimeout(timeout); // Si la app se abre, cancelar el timeout
-                        });
-                    }
-
-                    // Mostrar el modal
-                    const modal = document.getElementById('modal-map-ios');
-                    modal.style.display = 'block';
-
-                    // Obtener los botones y asociar las URLs con la función tryOpenUrl
-                    document.getElementById('appleMapsBtn').onclick = function () {
-                        tryOpenUrl(appleMapsUrl, 'Apple Maps no está instalada en este dispositivo.');
-                    };
-                    document.getElementById('googleMapsBtn').onclick = function () {
-                        tryOpenUrl(googleMapsUrl, 'Google Maps no está instalada en este dispositivo.');
-                    };
-                    document.getElementById('wazeBtn').onclick = function () {
-                        tryOpenUrl(wazeUrl, 'Waze no está instalada en este dispositivo.');
-                    };
-                    document.getElementById('uberBtn').onclick = function () {
-                        tryOpenUrl(uberUrl, 'Uber no está instalada en este dispositivo.');
-                    };
-
-                    // Cerrar el modal cuando se hace clic en la "X"
-                    document.querySelector('.close-modal-map-ios').onclick = function () {
-                        modal.style.display = 'none';
-                    };
-
-                    // Cerrar el modal si el usuario hace clic fuera del contenido del modal
-                    window.onclick = function (event) {
-                        if (event.target == modal) {
-                            modal.style.display = 'none';
-                        }
-                    };
-                } else {
-                    // Para Android, usar geo URI scheme
-                    const url = `geo:${lat},${lng}?q=${lat},${lng}`;
-                    window.location.href = url;
-                }
-            } else {
-                console.error("No se pudo encontrar la propiedad para obtener las coordenadas.");
+                window.addEventListener('blur', () => {
+                    clearTimeout(timeout); // Si la app se abre, cancelar el timeout
+                });
             }
+
+            // Mostrar el modal
+            const modal = document.getElementById('modal-map-ios');
+            modal.style.display = 'block';
+
+            // Obtener los botones y asociar las URLs con la función tryOpenUrl
+            document.getElementById('appleMapsBtn').onclick = function () {
+                tryOpenUrl(appleMapsUrl, 'Apple Maps no está instalada en este dispositivo.');
+            };
+            document.getElementById('googleMapsBtn').onclick = function () {
+                tryOpenUrl(googleMapsUrl, 'Google Maps no está instalada en este dispositivo.');
+            };
+            document.getElementById('wazeBtn').onclick = function () {
+                tryOpenUrl(wazeUrl, 'Waze no está instalada en este dispositivo.');
+            };
+            document.getElementById('uberBtn').onclick = function () {
+                tryOpenUrl(uberUrl, 'Uber no está instalada en este dispositivo.');
+            };
+
+            // Cerrar el modal cuando se hace clic en la "X"
+            document.querySelector('.close-modal-map-ios').onclick = function () {
+                modal.style.display = 'none';
+            };
+
+            // Cerrar el modal si el usuario hace clic fuera del contenido del modal
+            window.onclick = function (event) {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                }
+            };
+        } else {
+            // Para Android, usar geo URI scheme
+            const url = `geo:${lat},${lng}?q=${lat},${lng}`;
+            window.location.href = url;
         }
-
-
+    } else {
+        console.error("No se pudo encontrar la propiedad para obtener las coordenadas.");
+    }
+}
 
 
         //boton compartir
@@ -1345,13 +1267,6 @@ rectangle._path.style.pointerEvents = "none";
 
 
 
-
-
-
-
-
-
-
         // Inicialmente mostrar solo los alquileres
         toggleMarkers('venta');
     </script>
@@ -1394,109 +1309,6 @@ rectangle._path.style.pointerEvents = "none";
     <script src="./js/scriptterminos.js"></script>
 
 
-    <script>
-        map.on('contextmenu', function (e) {
-            // Crea el cuadro de coordenadas
-            const coordinateBox = L.DomUtil.create('div', 'coordinate-box');
-            coordinateBox.innerHTML = `
-            <h2>Coordenadas</h2>
-            <p>Latitud: ${e.latlng.lat.toFixed(6)}</p>
-            <p>Longitud: ${e.latlng.lng.toFixed(6)}</p>
-            <button id="coordinateBox-copiar" onclick="copyCoordinates(${e.latlng.lat.toFixed(6)}, ${e.latlng.lng.toFixed(6)})">Copiar</button>
-            <button onclick="openGoogleMaps(${e.latlng.lat.toFixed(6)}, ${e.latlng.lng.toFixed(6)})">Abrir en Google Maps</button>
-            <button id="coordinateBox-cerrar" onclick="closeCoordinateBox()"></button> 
-          `;
-
-            // Posiciona el cuadro en el lugar del clic
-            L.popup({ className: 'coordinate-popup' }) // Agrega la clase 'coordinate-popup'
-                .setLatLng(e.latlng)
-                .setContent(coordinateBox)
-                .openOn(map);
-        });
-
-        function copyCoordinates(lat, lng) {
-            const coordinates = `${lat}, ${lng}`;
-            navigator.clipboard.writeText(coordinates)
-                .then(() => {
-                    const copyButton = document.querySelector('.coordinate-box button:first-of-type'); // Selecciona el primer botón (copiar)
-                    const originalText = copyButton.textContent; // Guarda el texto original del botón
-                    copyButton.textContent = 'Copiado!'; // Cambia el texto a "Copiado"
-
-                    setTimeout(() => {
-                        copyButton.textContent = originalText; // Restaura el texto original después de 3 segundos
-                    }, 3000);
-                })
-                .catch(err => {
-                    console.error('Error al copiar coordenadas: ', err);
-                });
-        }
-
-        function openGoogleMaps(lat, lng) {
-            const url = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
-            window.open(url, '_blank');
-        }
-
-        function closeCoordinateBox() {
-            map.closePopup(); // Cierra el popup que contiene el cuadro de coordenadas
-        }
-    </script>
-
-    <script>
-
-const botonesBox = document.querySelector('.terminos-botones-box');
-const botones = botonesBox.querySelectorAll('button');
-
-botones.forEach(boton => {
-  const seccion = boton.dataset.seccion;
-  const nombreCompleto = seccion.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()); // Convertir a nombre completo
-  boton.textContent = nombreCompleto;
-
-  // Verificar si el contenido se sale
-  const botonRect = boton.getBoundingClientRect();
-  const boxRect = botonesBox.getBoundingClientRect();
-  if (botonRect.right > boxRect.right) {
-    boton.classList.add('overflow'); // Agregar una clase para indicar el desbordamiento
-  }
-});
-
-
-    </script>
-
-    <script>
-
-// Seleccionamos todos los botones vibrar y los botones de zoom de Leaflet
-const vibrarButtons = document.querySelectorAll(".vibrar-button, .leaflet-control-zoom-in, .leaflet-control-zoom-out");
-const vibracionToggle = document.getElementById("vibracionToggle"); 
-
-let vibracionActivada = true; // Variable para controlar si la vibración está activada o no
-
-// Valores de duración e intensidad que puedes ajustar según tus necesidades
-const duracionVibracion = 150; // En milisegundos
-const intensidadVibracion = 0.4; // Entre 0 y 1
-
-vibrarButtons.forEach(button => {
-  button.addEventListener("click", () => {
-    if (vibracionActivada) {
-      vibrar(duracionVibracion, intensidadVibracion);
-    }
-  });
-});
-
-vibracionToggle.addEventListener("click", () => {
-  vibracionActivada = !vibracionActivada;
-  vibracionToggle.textContent = vibracionActivada ? "Apagar Vibración" : "Encender Vibración";
-});
-
-function vibrar(duracion, intensidad) {
-  if ("vibrate" in navigator) {
-    // Verificamos que la intensidad esté entre 0 y 1
-    const intensidadAjustada = Math.max(0, Math.min(1, intensidad));
-
-    navigator.vibrate([duracion * intensidadAjustada]); 
-  } 
-}
-
-    </script>
 
 </body>
 
