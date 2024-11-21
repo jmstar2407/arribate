@@ -41,7 +41,7 @@
         // Función para redirigir al usuario tras la inactividad
         function cerrarPorInactividad() {
             signOut(auth).then(() => {
-                window.location.href = "https://arribate.com/admin/login/";
+                window.location.href = "./auth.html";
             }).catch((error) => {
                 console.error("Error al cerrar sesión por inactividad: ", error);
             });
@@ -77,7 +77,8 @@
                 welcomeMessage.innerHTML = `HOLA, <br><span style="font-weight: bold;">${userName}</span>`;
                 correoUsuario = user.email;
             } else {
-                window.location.href = "https://arribate.com/admin/login/";
+                // Redirigir solo si el usuario no está autenticado
+                window.location.href = "./auth.html";
             }
         });
 
@@ -95,6 +96,7 @@
                 villa: "v",
                 finca: "f",
                 nave: "n",
+                nagocio: "ng",
                 penthouse: "p",
                 edificio: "e"
             }[tipoPropiedad];
@@ -370,6 +372,7 @@
                 removeButton.style.borderRadius = "5px";
                 removeButton.style.fontSize = "15px";
                 removeButton.style.color = "#ffffff";
+                removeButton.style.cursor = "pointer";
 
                 // Asignar eventos para eliminar la imagen
                 const handleRemove = () => {
@@ -453,39 +456,97 @@
         }
 
 
-        // Modifica la función `subirImagenes` para usar `orderedImages`
-        async function subirImagenes(imagenes, carpeta) {
-            document.getElementById("loading-indicator").style.display = "block";  // Mostrar indicador de carga
-            const lista = document.getElementById("lista-imagenes");
-            const imageElements = lista.querySelectorAll("li");
 
-            for (let i = 0; i < imageElements.length; i++) {
-                const imagen = orderedImages[i];
-                const label = imageElements[i].querySelector(".image-order-label");
-                const nombreImagen = `${i + 1}.jpg`;
-                const imagenRef = ref(storage, `${carpeta}/${nombreImagen}`);
 
-                try {
-                    // Subir la imagen al almacenamiento
-                    await uploadBytes(imagenRef, imagen);
-                    console.log(`Imagen ${nombreImagen} subida exitosamente.`);
-                } catch (error) {
-                    console.error(`Error al subir ${nombreImagen}:`, error);
-                    throw new Error(`Error al subir ${nombreImagen}: ${error.message}`);
-                }
-            }
-            document.getElementById("loading-indicator").style.display = "none";  // Ocultar indicador de carga
+
+
+
+
+
+
+
+
+
+
+// Función para agregar la marca de agua a la imagen
+async function agregarMarcaDeAgua(imagenFile) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        const logo = new Image();
+        
+        // Cargar la imagen original
+        img.src = URL.createObjectURL(imagenFile);
+        img.onload = () => {
+            // Cargar el logo
+            logo.src = 'https://arribate.com/img/logo_arribate_linea_1.png'; // Cambia esta ruta a la ubicación de tu logo
+            logo.onload = () => {
+                // Crear un canvas para dibujar la imagen y la marca de agua
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+
+                // Ajustar el tamaño del canvas al tamaño de la imagen
+                canvas.width = img.width;
+                canvas.height = img.height;
+
+                // Dibujar la imagen original
+                ctx.drawImage(img, 0, 0);
+
+                // Dibujar la marca de agua
+                const logoWidth = img.width * 0.2; // Cambia el tamaño de la marca de agua
+                const logoHeight = (logo.height / logo.width) * logoWidth;
+                ctx.drawImage(logo, img.width - logoWidth - 10, img.height - logoHeight - 10, logoWidth, logoHeight); // Posición en la esquina inferior derecha
+
+                // Convertir el canvas a un Blob
+                canvas.toBlob((blob) => {
+                    resolve(blob);
+                }, 'image/jpeg');
+            };
+            logo.onerror = reject;
+        };
+        img.onerror = reject;
+    });
+}
+
+// Modifica la función `subirImagenes` para usar `agregarMarcaDeAgua`
+async function subirImagenes(imagenes, carpeta) {
+    document.getElementById("loading-indicator").style.display = "block";  // Mostrar indicador de carga
+    const lista = document.getElementById("lista-imagenes");
+    const imageElements = lista.querySelectorAll("li");
+
+    for (let i = 0; i < imageElements.length; i++) {
+        const imagen = orderedImages[i];
+        const label = imageElements[i].querySelector(".image-order-label");
+        const nombreImagen = `${i + 1}.jpg`;
+        const imagenRef = ref(storage, `${carpeta}/${nombreImagen}`);
+
+        try {
+            // Agregar marca de agua a la imagen
+            const imagenConMarcaDeAgua = await agregarMarcaDeAgua(imagen);
+            // Subir la imagen procesada al almacenamiento
+            await uploadBytes(imagenRef, imagenConMarcaDeAgua);
+            console.log(`Imagen ${nombreImagen} subida exitosamente.`);
+        } catch (error) {
+            console.error(`Error al subir ${nombreImagen}:`, error);
+            throw new Error(`Error al subir ${nombreImagen}: ${error.message}`);
         }
+    }
+    document.getElementById("loading-indicator").style.display = "none";  // Ocultar indicador de carga
+}
 
 
-        // Función para cerrar sesión
-        function cerrarSesion() {
-            signOut(auth).then(() => {
-                window.location.href = "https://arribate.com/admin/login/";
-            }).catch((error) => {
-                alert("Error al cerrar sesión: " + error.message);
-            });
-        }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         // Asignar eventos
         window.onload = () => {
@@ -678,7 +739,7 @@
                     <input type="text" id="latLng" placeholder="Ej: 18.54,-69.90" required> -->
 
                     <label for="latLng">Ubicación de la Propiedad (Coordenadas):</label>
-                    <input type="text" id="latLng" placeholder="Seleccione en el mapa" readonly>
+                    <input type="text" id="latLng" placeholder="Seleccione en el mapa">
                     <div id="map"></div>
 
 
