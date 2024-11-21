@@ -25,17 +25,18 @@
 
         // Función para manejar el inicio de sesión
         async function iniciarSesion(event) {
-            event.preventDefault();
-            const email = document.getElementById("email").value;
-            const password = document.getElementById("password").value;
+    event.preventDefault();
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
 
-            try {
-                await signInWithEmailAndPassword(auth, email, password);
-                window.location.href = "https://arribate.com/admin/properties/add/adminform.html"; // Redirige al formulario
-            } catch (error) {
-                alert("No se ha podido iniciar sesión. Verifica tu correo electrónico y contraseña.");
-            }
-        }
+    try {
+        await signInWithEmailAndPassword(auth, email, password);
+        const previousUrl = localStorage.getItem('previousUrl') || "https://arribate.com/admin/properties/add/adminform.html"; // Ruta por defecto si no hay
+        window.location.href = previousUrl; // Redirige a la ruta anterior
+    } catch (error) {
+        alert("No se ha podido iniciar sesión. Verifica tu correo electrónico y contraseña.");
+    }
+}
 
         // Función para manejar el registro
         async function registrarUsuario() {
@@ -60,9 +61,12 @@
 
         // Asigna eventos a los botones de inicio de sesión y registro
         window.onload = () => {
-            document.getElementById("login-form").addEventListener("submit", iniciarSesion);
-            document.getElementById("register-button").addEventListener("click", registrarUsuario);
-        };
+    // Almacena la URL anterior
+    localStorage.setItem('previousUrl', document.referrer);
+
+    document.getElementById("login-form").addEventListener("submit", iniciarSesion);
+    document.getElementById("register-button").addEventListener("click", registrarUsuario);
+};
     </script>
 
     <style>
