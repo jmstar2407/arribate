@@ -478,7 +478,7 @@ async function agregarMarcaDeAgua(imagenFile) {
         img.src = URL.createObjectURL(imagenFile);
         img.onload = () => {
             // Cargar el logo
-            logo.src = 'https://arribate.com/img/logo_arribate_linea_1.png'; // Cambia esta ruta a la ubicación de tu logo
+            logo.src = 'https://arribate.com/img/logo_de_Arribate_water_1.png'; // Cambia esta ruta a la ubicación de tu logo
             logo.onload = () => {
                 // Crear un canvas para dibujar la imagen y la marca de agua
                 const canvas = document.createElement('canvas');
@@ -491,21 +491,28 @@ async function agregarMarcaDeAgua(imagenFile) {
                 // Dibujar la imagen original
                 ctx.drawImage(img, 0, 0);
 
+                // Establecer el nivel de opacidad para la marca de agua
+                ctx.globalAlpha = 0.5; // Cambia este valor entre 0 y 1 para ajustar la opacidad
+
                 // Dibujar la marca de agua
-                const logoWidth = img.width * 0.2; // Cambia el tamaño de la marca de agua
+                const logoWidth = img.width * 0.07; // Cambia el tamaño de la marca de agua
                 const logoHeight = (logo.height / logo.width) * logoWidth;
                 ctx.drawImage(logo, img.width - logoWidth - 10, img.height - logoHeight - 10, logoWidth, logoHeight); // Posición en la esquina inferior derecha
+
+                // Restablecer la opacidad al valor por defecto
+                ctx.globalAlpha = 0.4;
 
                 // Convertir el canvas a un Blob
                 canvas.toBlob((blob) => {
                     resolve(blob);
-                }, 'image/jpeg');
+                }, 'image/png');
             };
             logo.onerror = reject;
         };
         img.onerror = reject;
     });
 }
+
 
 // Modifica la función `subirImagenes` para usar `agregarMarcaDeAgua`
 async function subirImagenes(imagenes, carpeta) {
