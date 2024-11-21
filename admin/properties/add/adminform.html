@@ -468,77 +468,86 @@
 
 
 
-// Función para agregar la marca de agua a la imagen
-async function agregarMarcaDeAgua(imagenFile) {
-    return new Promise((resolve, reject) => {
-        const img = new Image();
-        const logo = new Image();
-        
-        // Cargar la imagen original
-        img.src = URL.createObjectURL(imagenFile);
-        img.onload = () => {
-            // Cargar el logo
-            logo.src = 'https://arribate.com/img/logo_de_Arribate_water_1.png'; // Cambia esta ruta a la ubicación de tu logo
-            logo.onload = () => {
-                // Crear un canvas para dibujar la imagen y la marca de agua
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
+        // Función para agregar la marca de agua a la imagen
+        async function agregarMarcaDeAgua(imagenFile) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                const logo = new Image();
 
-                // Ajustar el tamaño del canvas al tamaño de la imagen
-                canvas.width = img.width;
-                canvas.height = img.height;
+                // Cargar la imagen original
+                img.src = URL.createObjectURL(imagenFile);
+                img.onload = () => {
+                    // Cargar el logo
+                    logo.src = 'https://arribate.com/img/logo_de_Arribate_water_1.png'; // Cambia esta ruta a la ubicación de tu logo
+                    logo.onload = () => {
+                        // Crear un canvas para dibujar la imagen y la marca de agua
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
 
-                // Dibujar la imagen original
-                ctx.drawImage(img, 0, 0);
+                        // Ajustar el tamaño del canvas al tamaño de la imagen
+                        canvas.width = img.width;
+                        canvas.height = img.height;
 
-                // Establecer el nivel de opacidad para la marca de agua
-                ctx.globalAlpha = 0.5; // Cambia este valor entre 0 y 1 para ajustar la opacidad
+                        // Dibujar la imagen original
+                        ctx.drawImage(img, 0, 0);
 
-                // Dibujar la marca de agua
-                const logoWidth = img.width * 0.07; // Cambia el tamaño de la marca de agua
-                const logoHeight = (logo.height / logo.width) * logoWidth;
-                ctx.drawImage(logo, img.width - logoWidth - 10, img.height - logoHeight - 10, logoWidth, logoHeight); // Posición en la esquina inferior derecha
+                        // Establecer el nivel de opacidad para la marca de agua
+                        ctx.globalAlpha = 0.5; // Cambia este valor entre 0 y 1 para ajustar la opacidad
 
-                // Restablecer la opacidad al valor por defecto
-                ctx.globalAlpha = 0.4;
+                        // Dibujar la marca de agua
+                        const logoWidth = img.width * 0.07; // Cambia el tamaño de la marca de agua
+                        const logoHeight = (logo.height / logo.width) * logoWidth;
+                        ctx.drawImage(logo, img.width - logoWidth - 10, img.height - logoHeight - 10, logoWidth, logoHeight); // Posición en la esquina inferior derecha
 
-                // Convertir el canvas a un Blob
-                canvas.toBlob((blob) => {
-                    resolve(blob);
-                }, 'image/png');
-            };
-            logo.onerror = reject;
-        };
-        img.onerror = reject;
-    });
-}
+                        // Restablecer la opacidad al valor por defecto
+                        ctx.globalAlpha = 0.4;
 
-
-// Modifica la función `subirImagenes` para usar `agregarMarcaDeAgua`
-async function subirImagenes(imagenes, carpeta) {
-    document.getElementById("loading-indicator").style.display = "block";  // Mostrar indicador de carga
-    const lista = document.getElementById("lista-imagenes");
-    const imageElements = lista.querySelectorAll("li");
-
-    for (let i = 0; i < imageElements.length; i++) {
-        const imagen = orderedImages[i];
-        const label = imageElements[i].querySelector(".image-order-label");
-        const nombreImagen = `${i + 1}.jpg`;
-        const imagenRef = ref(storage, `${carpeta}/${nombreImagen}`);
-
-        try {
-            // Agregar marca de agua a la imagen
-            const imagenConMarcaDeAgua = await agregarMarcaDeAgua(imagen);
-            // Subir la imagen procesada al almacenamiento
-            await uploadBytes(imagenRef, imagenConMarcaDeAgua);
-            console.log(`Imagen ${nombreImagen} subida exitosamente.`);
-        } catch (error) {
-            console.error(`Error al subir ${nombreImagen}:`, error);
-            throw new Error(`Error al subir ${nombreImagen}: ${error.message}`);
+                        // Convertir el canvas a un Blob
+                        canvas.toBlob((blob) => {
+                            resolve(blob);
+                        }, 'image/png');
+                    };
+                    logo.onerror = reject;
+                };
+                img.onerror = reject;
+            });
         }
-    }
-    document.getElementById("loading-indicator").style.display = "none";  // Ocultar indicador de carga
-}
+
+
+        // Modifica la función `subirImagenes` para usar `agregarMarcaDeAgua`
+        async function subirImagenes(imagenes, carpeta) {
+            document.getElementById("loading-indicator").style.display = "block";  // Mostrar indicador de carga
+            const lista = document.getElementById("lista-imagenes");
+            const imageElements = lista.querySelectorAll("li");
+
+            const agregarMarcaDeAguaCheckbox = document.getElementById("marcaDeAgua").checked; // Obtener el estado del checkbox
+
+            for (let i = 0; i < imageElements.length; i++) {
+                const imagen = orderedImages[i];
+                const label = imageElements[i].querySelector(".image-order-label");
+                const nombreImagen = `${i + 1}.jpg`;
+                const imagenRef = ref(storage, `${carpeta}/${nombreImagen}`);
+
+                try {
+                    let imagenConMarcaDeAgua;
+
+                    // Solo agregar marca de agua si el checkbox está marcado
+                    if (agregarMarcaDeAguaCheckbox) {
+                        imagenConMarcaDeAgua = await agregarMarcaDeAgua(imagen);
+                    } else {
+                        imagenConMarcaDeAgua = imagen; // Usar la imagen original sin marca de agua
+                    }
+
+                    // Subir la imagen procesada al almacenamiento
+                    await uploadBytes(imagenRef, imagenConMarcaDeAgua);
+                    console.log(`Imagen ${nombreImagen} subida exitosamente.`);
+                } catch (error) {
+                    console.error(`Error al subir ${nombreImagen}:`, error);
+                    throw new Error(`Error al subir ${nombreImagen}: ${error.message}`);
+                }
+            }
+            document.getElementById("loading-indicator").style.display = "none";  // Ocultar indicador de carga
+        }
 
 
 
@@ -720,6 +729,9 @@ async function subirImagenes(imagenes, carpeta) {
                         </div>
                     </div>
 
+                    <label for="marcaDeAgua">¿Agregar marca de agua a las imágenes?</label>
+                    <input type="checkbox" id="marcaDeAgua" checked> <!-- Checkbox por defecto marcado -->
+
 
                     <label for="imageCount" style="display: none;">Número de Imágenes:</label> <!-- hiden-->
                     <input type="number" id="imageCount" readonly style="display: none;"> <!-- hiden-->
@@ -737,7 +749,8 @@ async function subirImagenes(imagenes, carpeta) {
                     <div class="form-divisor"></div> <!-- Divisor -->
 
                     <label for="caracteristicas">Detalles de la Propiedad:</label>
-                    <div id="editor"></div><div id="resizer"></div>
+                    <div id="editor"></div>
+                    <div id="resizer"></div>
                     <input type="hidden" id="caracteristicas" name="caracteristicas" required>
 
                     <div class="form-divisor"></div> <!-- Divisor -->
@@ -878,7 +891,7 @@ async function subirImagenes(imagenes, carpeta) {
         });
 
 
-     //Seleccionar icono de propiedad automaticamente
+        //Seleccionar icono de propiedad automaticamente
         document.addEventListener('DOMContentLoaded', () => {
             const propertyTypeSelect = document.getElementById('tipoPropiedad');
             const houseIconButton = document.getElementById('icon-casa');
@@ -895,61 +908,61 @@ async function subirImagenes(imagenes, carpeta) {
                 }
             });
         });
-     //Seleccionar icono de propiedad automaticamente FIN
+        //Seleccionar icono de propiedad automaticamente FIN
 
 
 
 
 
-     //cambiar tmaño de editor de texto
-     const editor = document.getElementById('editor');
-const resizer = document.getElementById('resizer');
+        //cambiar tmaño de editor de texto
+        const editor = document.getElementById('editor');
+        const resizer = document.getElementById('resizer');
 
-let isResizing = false;
+        let isResizing = false;
 
-resizer.addEventListener('mousedown', (e) => {
-    isResizing = true;
-    resizer.classList.add('active'); // Añadir clase activa al presionar
-});
+        resizer.addEventListener('mousedown', (e) => {
+            isResizing = true;
+            resizer.classList.add('active'); // Añadir clase activa al presionar
+        });
 
-resizer.addEventListener('touchstart', (e) => {
-    isResizing = true;
-    resizer.classList.add('active'); // Añadir clase activa al tocar
-    e.preventDefault(); // Prevenir comportamiento táctil por defecto
-});
+        resizer.addEventListener('touchstart', (e) => {
+            isResizing = true;
+            resizer.classList.add('active'); // Añadir clase activa al tocar
+            e.preventDefault(); // Prevenir comportamiento táctil por defecto
+        });
 
-document.addEventListener('mousemove', (e) => {
-    if (!isResizing) return;
+        document.addEventListener('mousemove', (e) => {
+            if (!isResizing) return;
 
-    const newHeight = e.clientY - editor.getBoundingClientRect().top;
+            const newHeight = e.clientY - editor.getBoundingClientRect().top;
 
-    // Limitar la altura máxima a 450px
-    if (newHeight <= 450 && newHeight >= 150) { // Ajusta el mínimo si lo deseas
-        editor.style.height = newHeight + 'px';
-    }
-});
+            // Limitar la altura máxima a 450px
+            if (newHeight <= 450 && newHeight >= 150) { // Ajusta el mínimo si lo deseas
+                editor.style.height = newHeight + 'px';
+            }
+        });
 
-document.addEventListener('mouseup', () => {
-    isResizing = false;
-    resizer.classList.remove('active'); // Quitar clase activa al soltar
-});
+        document.addEventListener('mouseup', () => {
+            isResizing = false;
+            resizer.classList.remove('active'); // Quitar clase activa al soltar
+        });
 
-document.addEventListener('touchmove', (e) => {
-    if (!isResizing) return;
+        document.addEventListener('touchmove', (e) => {
+            if (!isResizing) return;
 
-    const touch = e.touches[0]; // Obtener el primer punto de toque
-    const newHeight = touch.clientY - editor.getBoundingClientRect().top;
+            const touch = e.touches[0]; // Obtener el primer punto de toque
+            const newHeight = touch.clientY - editor.getBoundingClientRect().top;
 
-    // Limitar la altura máxima a 450px
-    if (newHeight <= 450 && newHeight >= 150) { // Ajusta el mínimo si lo deseas
-        editor.style.height = newHeight + 'px';
-    }
-});
+            // Limitar la altura máxima a 450px
+            if (newHeight <= 450 && newHeight >= 150) { // Ajusta el mínimo si lo deseas
+                editor.style.height = newHeight + 'px';
+            }
+        });
 
-document.addEventListener('touchend', () => {
-    isResizing = false;
-    resizer.classList.remove('active'); // Quitar clase activa al soltar
-});
+        document.addEventListener('touchend', () => {
+            isResizing = false;
+            resizer.classList.remove('active'); // Quitar clase activa al soltar
+        });
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.10.2/Sortable.min.js"></script>
