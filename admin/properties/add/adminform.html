@@ -113,13 +113,19 @@
             );
 
             const querySnapshot = await getDocs(q);
-            let siguienteNumero = 1;
+            let siguienteNumero;
 
-            querySnapshot.forEach((doc) => {
-                const ultimoID = doc.data().id;
-                const numeroActual = parseInt(ultimoID.slice(2));
-                siguienteNumero = numeroActual + 1;
-            });
+            if (querySnapshot.empty) {
+                // Si no hay documentos, comenzamos con 10001
+                siguienteNumero = 10001;
+            } else {
+                // Si hay documentos, obtenemos el último ID y sumamos 1
+                querySnapshot.forEach((doc) => {
+                    const ultimoID = doc.data().id;
+                    const numeroActual = parseInt(ultimoID.slice(2));
+                    siguienteNumero = numeroActual + 1;
+                });
+            }
 
             return `${prefijo}${String(siguienteNumero).padStart(5, "0")}`;
         }
@@ -775,11 +781,11 @@
 
 
                     <label for="mostrar" style="display: none;">¿Mostrar?</label>
-                    <input type="checkbox" id="mostrar" name="mostrar" checked  style="display: none;"> 
-                    
+                    <input type="checkbox" id="mostrar" name="mostrar" checked style="display: none;">
+
 
                     <div class="titulo">Encargado de la Propiedad</div>
-                    
+
                     <label for="encargado">Encargado:</label>
                     <select id="encargado" required>
                         <option value="">Selecciona</option>
@@ -792,7 +798,7 @@
                     <label for="nombreEncargado">Nombre del Encargado:</label>
                     <input type="text" id="nombreEncargado" placeholder="Nombre del encargado" required>
                     <br><br>
-                    
+
                     <label for="numeroContacto">Número de Contacto:</label>
                     <input type="text" id="numeroContacto" placeholder="Número de contacto" required>
                     <br><br>
