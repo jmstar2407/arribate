@@ -472,69 +472,11 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-        // Función para agregar la marca de agua a la imagen
-        async function agregarMarcaDeAgua(imagenFile) {
-            return new Promise((resolve, reject) => {
-                const img = new Image();
-                const logo = new Image();
-
-                // Cargar la imagen original
-                img.src = URL.createObjectURL(imagenFile);
-                img.onload = () => {
-                    // Cargar el logo
-                    logo.src = 'https://arribate.com/img/logo_de_Arribate_water_1.png'; // Cambia esta ruta a la ubicación de tu logo
-                    logo.onload = () => {
-                        // Crear un canvas para dibujar la imagen y la marca de agua
-                        const canvas = document.createElement('canvas');
-                        const ctx = canvas.getContext('2d');
-
-                        // Ajustar el tamaño del canvas al tamaño de la imagen
-                        canvas.width = img.width;
-                        canvas.height = img.height;
-
-                        // Dibujar la imagen original
-                        ctx.drawImage(img, 0, 0);
-
-                        // Establecer el nivel de opacidad para la marca de agua
-                        ctx.globalAlpha = 0.5; // Cambia este valor entre 0 y 1 para ajustar la opacidad
-
-                        // Dibujar la marca de agua
-                        const logoWidth = img.width * 0.07; // Cambia el tamaño de la marca de agua
-                        const logoHeight = (logo.height / logo.width) * logoWidth;
-                        ctx.drawImage(logo, img.width - logoWidth - 10, img.height - logoHeight - 10, logoWidth, logoHeight); // Posición en la esquina inferior derecha
-
-                        // Restablecer la opacidad al valor por defecto
-                        ctx.globalAlpha = 0.4;
-
-                        // Convertir el canvas a un Blob
-                        canvas.toBlob((blob) => {
-                            resolve(blob);
-                        }, 'image/jpeg');
-                    };
-                    logo.onerror = reject;
-                };
-                img.onerror = reject;
-            });
-        }
-
-
-        // Modifica la función `subirImagenes` para usar `agregarMarcaDeAgua`
+        // Modifica la función `subirImagenes` para usar `orderedImages`
         async function subirImagenes(imagenes, carpeta) {
             document.getElementById("loading-indicator").style.display = "block";  // Mostrar indicador de carga
             const lista = document.getElementById("lista-imagenes");
             const imageElements = lista.querySelectorAll("li");
-
-            const agregarMarcaDeAguaCheckbox = document.getElementById("marcaDeAgua").checked; // Obtener el estado del checkbox
 
             for (let i = 0; i < imageElements.length; i++) {
                 const imagen = orderedImages[i];
@@ -543,17 +485,8 @@
                 const imagenRef = ref(storage, `${carpeta}/${nombreImagen}`);
 
                 try {
-                    let imagenConMarcaDeAgua;
-
-                    // Solo agregar marca de agua si el checkbox está marcado
-                    if (agregarMarcaDeAguaCheckbox) {
-                        imagenConMarcaDeAgua = await agregarMarcaDeAgua(imagen);
-                    } else {
-                        imagenConMarcaDeAgua = imagen; // Usar la imagen original sin marca de agua
-                    }
-
-                    // Subir la imagen procesada al almacenamiento
-                    await uploadBytes(imagenRef, imagenConMarcaDeAgua);
+                    // Subir la imagen al almacenamiento
+                    await uploadBytes(imagenRef, imagen);
                     console.log(`Imagen ${nombreImagen} subida exitosamente.`);
                 } catch (error) {
                     console.error(`Error al subir ${nombreImagen}:`, error);
@@ -562,17 +495,6 @@
             }
             document.getElementById("loading-indicator").style.display = "none";  // Ocultar indicador de carga
         }
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -743,8 +665,8 @@
                         </div>
                     </div>
 
-                    <label for="marcaDeAgua">¿Agregar marca de agua a las imágenes?</label>
-                    <input type="checkbox" id="marcaDeAgua" checked> <!-- Checkbox por defecto marcado -->
+                    <!-- <label for="marcaDeAgua">¿Agregar marca de agua a las imágenes?</label>
+                    <input type="checkbox" id="marcaDeAgua" checked> -->
 
 
                     <label for="imageCount" style="display: none;">Número de Imágenes:</label> <!-- hiden-->
