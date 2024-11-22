@@ -1,0 +1,11 @@
+
+
+{
+    "redirects": [
+      {
+        "source": "/admin/properties/add/",
+        "destination": "/admin/properties/add/adminform.html",
+        "permanent": true
+      }
+    ]
+  }
