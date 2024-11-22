@@ -107,7 +107,7 @@ select {
 }
 
 .portada {
-position: absolute;
+    position: absolute;
     background: #1c1d2200;
     background-image: url(../img/background_formulario_admin_4.png);
     background-size: 95%;
@@ -176,14 +176,14 @@ label {
 
 #formulario-propiedades {
     position: relative;
-    padding: 7px 35px 20px 35px;
+    padding: 7px 35px 5px 35px;
     box-sizing: border-box;
     background: #1b1d23f2;
     backdrop-filter: blur(12px);
     /* box-shadow: 0px -35px 32px -37px rgb(1 52 81); */
     /* box-shadow: 0px -35px 32px -37px rgb(0 0 0 / 10%); */
     border-radius: 27px 27px 14px 14px;
-    margin: 190px 0px 20px 0px;
+    margin: 190px 0px 0px 0px;
 }
 
 #welcome-message {
@@ -765,14 +765,27 @@ li {
 
 #loading-indicator {
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: rgba(255, 255, 255, 0.8);
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    width: 100%;
+    background-color: rgb(28 29 33 / 96%);
     padding: 20px;
     border-radius: 5px;
     text-align: center;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.loading-content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #31343f;
+    padding: 50px;
+    border-radius: 17px;
+    font-family: system-ui;
+    font-size: 20px;
 }
 
 .modal {
@@ -980,7 +993,7 @@ li {
     position: relative;
     width: 100%;
     height: 100%;
-    background-color: #004c9d;
+    background-color: #006bdb;
     border: none;
     border-radius: 25px;
     color: white;
@@ -993,7 +1006,7 @@ li {
     transition: background-color 0.3s ease;
     padding: 0px;
     -webkit-tap-highlight-color: transparent;
-    /* box-shadow: 3px 4px 12px 1px rgb(0 49 98) inset; */
+    /* box-shadow: 3px 4px 12px 1px rgb(0 68 120) inset; */
 }
 
 .slider-text {
