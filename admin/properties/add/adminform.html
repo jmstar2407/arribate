@@ -481,7 +481,7 @@
             for (let i = 0; i < imageElements.length; i++) {
                 const imagen = orderedImages[i];
                 const label = imageElements[i].querySelector(".image-order-label");
-                const nombreImagen = `${i + 1}.jpg`;
+                const nombreImagen = `${label.textContent}.jpg`; // Cambiado a usar el texto del label
                 const imagenRef = ref(storage, `${carpeta}/${nombreImagen}`);
 
                 try {
