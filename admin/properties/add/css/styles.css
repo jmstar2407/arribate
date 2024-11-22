@@ -96,9 +96,22 @@ select {
 .portada {
     position: absolute;
     background: #1c1d2200;
-    background-image: url(../img/background_formulario_admin_2.png);
+    background-image: url(../img/background_formulario_admin_3.png);
     background-size: 56%;
     background-position: right;
+    width: 100%;
+    max-width: 750px;
+    padding: 0px 55px;
+    box-sizing: border-box;
+    background-repeat: no-repeat;
+}
+
+.portada {
+position: absolute;
+    background: #1c1d2200;
+    background-image: url(../img/background_formulario_admin_4.png);
+    background-size: 95%;
+    background-position: center;
     width: 100%;
     max-width: 750px;
     padding: 0px 55px;
