@@ -770,7 +770,6 @@ li {
     height: 100%;
     width: 100%;
     background-color: rgb(28 29 33 / 96%);
-    padding: 20px;
     border-radius: 5px;
     text-align: center;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -782,10 +781,21 @@ li {
     left: 50%;
     transform: translate(-50%, -50%);
     background: #31343f;
+    width: 250px;
     padding: 50px;
     border-radius: 17px;
     font-family: system-ui;
     font-size: 20px;
+}
+
+.loading-content p {
+    margin-block-start: 0px;
+    margin-block-end: 10px;
+}
+
+.loading-content img {
+    height: 100px;
+    filter: hue-rotate(5deg) saturate(2.5);
 }
 
 .modal {
