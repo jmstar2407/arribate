@@ -249,6 +249,7 @@
 
                 // Muestra el modal
                 document.getElementById("modal-exito").style.display = "block";
+                document.querySelector('.animation-wrapper').style.display = "block";
 
                 // Resetear el formulario y limpiar la lista de imágenes
                 document.getElementById("formulario-propiedades").reset();
@@ -578,7 +579,7 @@
                             <p>Casa<br> Estándar</p>
                         </button>
                         <button type="button" class="icon-button" value="buildingIcon" id="icon-apartamento">
-                            <img src="./img/apartamento3.png" alt="Apartamento" class="icon-image"
+                            <img src="./img/apartamento_1.png" alt="Apartamento" class="icon-image"
                                 style="border-color: #1090e7;">
                             <p>Apartamento<br> Estándar</p>
                         </button>
@@ -694,18 +695,18 @@
                     <input type="text" id="latLng" placeholder="Ej: 18.54,-69.90" required> -->
 
                     <label for="latLng">Ubicación de la Propiedad (Coordenadas):</label>
-                    <input type="text" id="latLng" placeholder="Seleccione en el mapa" required>
+                    <input type="text" id="latLng" placeholder="Pegar o seleccionar en el mapa" required>
                     <div id="map"></div>
 
 
                     <div class="form-divisor"></div> <!-- Divisor -->
 
 
-                    <label for="mostrar" style="display: none;">¿Mostrar?</label>
-                    <input type="checkbox" id="mostrar" name="mostrar" checked style="display: none;">
+                    <label for="mostrar" style="display: none;">¿Mostrar?</label> <!-- hiden-->
+                    <input type="checkbox" id="mostrar" name="mostrar" checked style="display: none;"> <!-- hiden-->
 
 
-                    <div class="titulo">Encargado de la Propiedad</div>
+                    <div class="tituloEncargado">Encargado de la Propiedad</div>
 
                     <label for="encargado">Encargado:</label>
                     <select id="encargado" required>
@@ -717,12 +718,25 @@
                     <br><br>
 
                     <label for="nombreEncargado">Nombre del Encargado:</label>
-                    <input type="text" id="nombreEncargado" placeholder="Nombre del encargado" required>
-                    <br><br>
+                    <div class="input-numeroContacto">
+                        <input type="text" id="nombreEncargado" placeholder="Nombre del encargado" required>
+                        <div class="cantidad-img"><img src="./img/nombre_1.png"></div>
+                    </div>
+
+
 
                     <label for="numeroContacto">Número de Contacto:</label>
-                    <input type="text" id="numeroContacto" placeholder="Número de contacto" required>
-                    <br><br>
+                    <div class="input-numeroContacto">
+                        <input type="text" id="numeroContacto" placeholder="Número de contacto" required>
+                        <div class="cantidad-img"><img src="./img/phone_1.png"></div>
+                    </div>
+
+
+
+
+
+
+
 
 
                     <div class="form-divisor"></div> <!-- Divisor -->
