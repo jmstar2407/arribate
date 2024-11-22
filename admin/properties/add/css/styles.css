@@ -41,8 +41,10 @@ input:-webkit-autofill:focus {
     color: #ffffff;
     border: none;
     border-radius: 0px 0px 14px 14px;
-    overflow: auto; /* Para permitir el scroll si el contenido excede el tamaño */
-    position: relative; /* Necesario para el posicionamiento del resizer */
+    overflow: auto;
+    /* Para permitir el scroll si el contenido excede el tamaño */
+    position: relative;
+    /* Necesario para el posicionamiento del resizer */
 }
 
 #resizer {
@@ -60,7 +62,8 @@ input:-webkit-autofill:focus {
 }
 
 #resizer.active {
-    background: #868fa5; /* Color cuando se presiona */
+    background: #868fa5;
+    /* Color cuando se presiona */
     transition: 0.2s;
 }
 
@@ -190,6 +193,15 @@ label {
     font-weight: 300;
     text-align: center;
     color: #1180cb;
+}
+
+.tituloEncargado {
+    font-family: system-ui;
+    font-size: 24px;
+    font-weight: 300;
+    text-align: center;
+    color: #49a1ff;
+    font-weight: bold;
 }
 
 #content {
@@ -530,13 +542,34 @@ label {
     border-radius: 14px 0px 0px 14px;
 }
 
+#title {
+    font-size: 18px;
+    padding: 13px 13px 13px 15px;
+    margin-top: 7px;
+}
+
 #price {
-    padding-left: 57px;
+    font-size: 18px;
+    padding: 13px 13px 13px 60px;
     margin-top: 0px;
 }
 
+#nombreEncargado,
+#numeroContacto {
+    font-size: 17px;
+    padding: 15px 13px 13px 60px;
+    margin-top: 0px;
+}
 
-.input-cantidad {
+#title {
+    font-size: 18px;
+    padding: 13px 13px 13px 15px;
+    margin-top: 7px;
+}
+
+
+.input-cantidad,
+.input-numeroContacto {
     position: relative;
     display: inline-block;
     width: 100%;
@@ -987,6 +1020,7 @@ li {
 
 
 .animation-wrapper {
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
