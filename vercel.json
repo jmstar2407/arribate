@@ -3,7 +3,7 @@
 {
     "redirects": [
       {
-        "source": "/admin/properties/add/",
+        "source": "/admin/properties/add/12/",
         "destination": "/admin/properties/add/adminform.html",
         "permanent": true
       }
