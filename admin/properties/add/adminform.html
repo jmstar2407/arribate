@@ -445,11 +445,12 @@
                 onUpdate: () => {
                     const imageElements = lista.querySelectorAll("li");
                     orderedImages = Array.from(imageElements).map((li) => {
-                        const originalIndex = li.dataset.index;
-                        return orderedImages[originalIndex];
+                        const originalIndex = li.dataset.index; // Este índice debe reflejar el orden actual
+                        return orderedImages[originalIndex]; // Obtener la imagen correspondiente
                     });
                     imageElements.forEach((li, index) => {
-                        li.querySelector(".image-order-label").textContent = index + 1;
+                        li.querySelector(".image-order-label").textContent = index + 1; // Actualizar el label
+                        li.dataset.index = index; // Actualizar el índice
                     });
                 }
             });
@@ -476,12 +477,10 @@
         async function subirImagenes(imagenes, carpeta) {
             document.getElementById("loading-indicator").style.display = "block";  // Mostrar indicador de carga
             const lista = document.getElementById("lista-imagenes");
-            const imageElements = lista.querySelectorAll("li");
 
-            for (let i = 0; i < imageElements.length; i++) {
-                const imagen = orderedImages[i];
-                const label = imageElements[i].querySelector(".image-order-label");
-                const nombreImagen = `${label.textContent}.jpg`; // Cambiado a usar el texto del label
+            for (let i = 0; i < orderedImages.length; i++) { // Cambia 'imageElements' a 'orderedImages'
+                const imagen = orderedImages[i]; // Usa el array 'orderedImages' directamente
+                const nombreImagen = `${i + 1}.jpg`; // Nombra la imagen según su índice en 'orderedImages'
                 const imagenRef = ref(storage, `${carpeta}/${nombreImagen}`);
 
                 try {
