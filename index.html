@@ -1,579 +1,16 @@
-<!DOCTYPE html>
-<html lang="es">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ArríbaTe | Propiedades en República Dominicana</title>
-    <meta name="description"
-        content="Arríbate, el mapa de propiedades en República Dominicana. Alquila, vende o encuentra propiedades con nuestra herramienta fácil de usar, mapa interactivo y atención personalizada. ¡Eleva tu búsqueda de propiedades con ARRIBATE!">
-    <meta property="og:url" content="https://arribate.com" />
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="ArríbaTe | Propiedades en República Dominicana" />
-    <meta property="og:description"
-        content="Arríbate, el mapa de propiedades en República Dominicana. Alquila, vende o encuentra propiedades con nuestra herramienta fácil de usar, mapa interactivo y atención personalizada. ¡Eleva tu búsqueda de propiedades con ARRIBATE!" />
-    <meta property="og:image" content="https://arribate.com/img/og_image_1.jpg" />
-
-    <link rel="icon" href="./img/icon_favicon_arribate.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" sizes="180x180" href="./img/icon_ios_180x180.png">
-    <link rel="icon" href="./img/icon_arribate_32x32_circle.png" sizes="32x32" type="image/png">
-    <link rel="icon" href="./img/icon_android_192x192.png" sizes="192x192" type="image/png">
-
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-    <link rel="stylesheet" href="./css/styles1.css" />
-    <link rel="stylesheet" href="./css/stylefilter.css" />
-    <link rel="stylesheet" href="./css/stylesmodal.css" />
-    <link rel="stylesheet" href="./css/stylesmenu.css" />
-    <link rel="stylesheet" href="./css/stylespublicate.css" />
-    <link rel="stylesheet" href="./css/stylesterminos.css" />
-</head>
-
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-NMJVZCLFQV"></script>
-<script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore-compat.js"></script>
-
-<script>
-    // Firebase Config
-    const firebaseConfig = {
-        apiKey: "AIzaSyBRjDso4IPrh9WLvWWMYoPiJxNFD6Vt3RU",
-        authDomain: "arribate-com.firebaseapp.com",
-        projectId: "arribate-com",
-        storageBucket: "arribate-com.firebasestorage.app",
-        messagingSenderId: "46945634270",
-        appId: "1:46945634270:web:c74fd6781ac1fab5da7f4f",
-        measurementId: "G-Y4J11MBYKQ"
-    };
-    const app = firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore(app);
-</script>
-
-<script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
-
-    gtag('config', 'G-NMJVZCLFQV');
-</script>
-    
-
-<body>
-    <div class="loader">
-        <div class="loader-logo"></div>
-        <!-- <img src="./img/logo2.svg" id="loader-img" alt="Logo de carga"> -->
-        <img src="./img/logonombre2.png" alt="Logo de Arríbate - Plataforma de búsqueda de propiedades en República Dominicana" style="animation: loadernombre 3s forwards; ">
-    </div>
-
-    <div class="boxmaster">
-
-
-        <div class="menumaster">
-            <!-- Menu Left -->
-            <div class="menumaster-in-left">
-                <div class="logonombre">
-                    <div class="logo1"></div>
-                    <div style="margin-left: 10px;">
-                        <h1>ArríbaTe</h1>
-                        <span>República dominicana</span>
-                    </div>
-                </div>
-
-                <div class="linediv"></div>
-
-                <div class="botonbox">
-                    <button id="ventaButton" class="toggle-button vibrar-button">Venta</button>
-                    <button id="alquilerButton" class="toggle-button active vibrar-button">Alquiler</button>
-                </div>
-
-
-
-            </div>
-            <!-- Menu Left FIN -->
-
-
-
-            <!-- Menu respon -->
-            <div class="botonbox2">
-
-                <div>
-                    <button id="ventaButton-rpsv" class="toggle-button vibrar-button">
-                        <h3>Venta</h3>
-                    </button>
-                    <button id="alquilerButton-rpsv" class="toggle-button vibrar-button">
-                        <h3>Alquiler</h3>
-                    </button>
-                </div>
-
-                <div id="publicate-filter-rpsv" class="vibrar-button">
-                    <div class="publicate-rpsv" class="vibrar-button">
-                        <!-- <h3>Publíca<span style="color: #cd1025;">Te</span></h3> -->
-                        <button id="open-publicate-respon" class="vibrar-button"></button> <!--  -------------   -->
-                    </div>
-                    <div class="cube-boton-filtro-respon"><button id="open-filter-button-respon" class="vibrar-button"></button></div>
-                </div>
-            </div>
-            <!-- Menu respon FIN -->
-
-            <div class="cube-boton-filtro"><button id="open-filter-button" class="vibrar-button">Filtros</button></div>
-
-            <!-- Menu Right -->
-            <div class="menumaster-in-right">
-                <!-- <div class="cube-boton-filtro-respon"><button id="open-filter-button-respon"></button></div> -->
-                <!-- Alquilar/vender -->
-
-                <!-- <div class="Menu-contacto-redes-respon"></div> -->
-                <div class="publicate">
-                    <div class="publicate-In" id="open-publicate">Publíca<span style="color: #cd1025;">Te</span></div>
-                    <!--  -------------   -->
-                </div>
-
-                <div class="linediv" style="margin: 0px 12px;"></div>
-                <!-- Alquilar/vender FIN-->
-                <!-- Redes -->
-                <div class="redes-box">
-                    <div class="redes-box-in">
-                        <p>Síguenos:</p>
-                        <div class="redes-buttones">
-                            <div class="redes-button"><a href="https://www.instagram.com/arribate_oficial/" target="_blank"></a></div>
-                            <div class="redes-button" style="background-image: url(./img/icons/facebook1.png);"><a href="https://www.facebook.com/profile.php?id=61567029011220&mibextid=ZbWKwL" target="_blank"></a></div>
-                            <div class="redes-button" style="background-image: url(./img/icons/tiktok1.png);"><a href="https://www.tiktok.com/@arribate?_t=8qi2CSFx7or&_r=1" target="_blank"></a></div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Redes FIN -->
-
-
-                <!-- Menú new -->
-                <div id="openBoxJmBtn" class="menu-all single-menu vibrar-button">
-                    <div class="menu-lines">
-                        <span class="line line1"></span>
-                        <span class="line line2"></span>
-                        <span class="line line3"></span>
-                    </div>
-                </div>
-
-                <!-- Menú new FIN-->
-            </div>
-            <!-- Menu Right FIN -->
-
-        </div>
-
-
-        <!-- MAPA -->
-        <div class="mapbox" style="position: fixed;top: 0px;left: 0px;">
-            <div id="map" style="background: #aad3df;height: 100%;width: 100%;"></div>
-
-            <button id="fullscreenButton" class="vibrar-button"></button>
-
-
-            <!-- Botones capas, location -->
-            <button id="changeLayerButton" class="layer-button vibrar-button">
-                <img src="./img/capasatelite2.png" alt="Cambiar capa" id="layerIcon">
-            </button>
-
-            <button id="locateButton" class="vibrar-button"></button>
-
-            <!-- Boton centrar en RD -->
-            <button id="centerButton" class="center-button vibrar-button" style="display: none;">
-            </button>
-            <!-- Boton centrar en RD FIN -->
-            <!-- Botones capas, location FIN -->
-
-        </div>
-    </div>
-    <!-- MAPA Fin-->
-
-
-    <!-- Modal -->
-    <div id="propertyModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-logo">
-                <div class="modal-logo-in">
-                    <img src="./img/logo2.png" alt="arribate">
-                    <p>ARRIBA<span>TE</span></p>
-                    <h1 style="position: absolute;
-                    width: 1px;
-                    height: 1px;
-                    margin: -1px;
-                    padding: 0;
-                    border: 0;
-                    clip: rect(0, 0, 0, 0);
-                    overflow: hidden;">arribate</h1>
-                </div>
-
-            </div>
-            <div class="modal-in">
-                <!-- <h2>Información de la Propiedad</h2> -->
-
-
-
-
-                <!-- Galeria -->
-                <div class="gallery">
-                    <div class="main-image">
-
-                        <button class="nav-button-img-p left" id="prevMainImage">&#10094;</button>
-                        <img id="currentImage" src="" alt="Imagen Principal">
-                        <button class="nav-button-img-p right" id="nextMainImage">&#10095;</button>
-                    </div>
-                    <div class="thumbnails-container">
-                        <button class="scroll-button left">&#10094;</button>
-
-                        <div class="thumbnails"></div>
-
-                        <button class="scroll-button right">&#10095;</button>
-                    </div>
-                </div>
-
-                <div id="fullscreenView">
-                    <button class="nav-button left" id="prevImage">&#10094;</button>
-                    <div id="fullscreenImageContainer">
-                        <img id="fullscreenImage" src="" alt="Imagen en pantalla completa">
-                    </div>
-                    <button class="nav-button right" id="nextImage">&#10095;</button>
-                    <button id="closeFullscreen">Cerrar</button>
-                </div>
-                <!-- Galeria FIN -->
-
-
-
-                <!-- Aquí se inyectará la información de CADA propiedad -->
-                <div class="infocompleta">
-                    <!-- Modal body -->
-                    <div class="modal-body" id="modalPropertyDetails">
-
-                    </div>
-
-
-
-                    <!-- Modal para selección de aplicaciones de mapas IOS -->
-                    <div id="modal-map-ios" class="modal-map-ios">
-                        <div class="modal-map-ios-content">
-                            <span class="close-modal-map-ios">&times;</span>
-                            <h2>¿Con qué APP quieres abrir las coordenadas de esta propiedad?</h2>
-                            <div>
-                                <button id="appleMapsBtn"></button>
-                                <button id="googleMapsBtn"></button>
-                                <button id="wazeBtn"></button>
-                                <button id="uberBtn"></button>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Modal para selección de aplicaciones de mapas IOS FIN -->
-
-                    <!-- Modal body FIN -->
-
-                </div>
-                <!-- Aquí se inyectará la información de CADA propiedad FIN -->
-
-            </div>
-
-            <!-- Información general para todas las propiedades -->
-            <div class="modal-end">
-                <button id="comoLlegarButton" class="como-llegar-button" onclick="comoLlegarDesdeModal()"><img
-                        src="./img/icons/location1.svg">
-                    <div>
-                        <h3>Cómo llegar</h3><span>a esta propiedad</span>
-                    </div>
-                </button>
-                <div class="contactos-res">
-                    <button><a href="#" id="whatsappButton" class="whatsapp-button" onclick="openWhatsApp()"
-                            target="_blank"><img src="./img/icons/whatsapp2.svg">
-                            <div><span>Para más información</span>
-                                <h3>WhatsApp</h3>
-                            </div>
-                        </a>
-                    </button></a>
-
-                </div>
-
-            </div>
-            <span class="close" onclick="closeModal()">&times;</span>
-        </div>
-        <!-- Modal FIN -->
-
-
-
-        <!-- Modal para imágenes en pantalla completa -->
-        <div id="fullscreenModal" class="fullscreen-modal">
-            <button class="close-fullscreen" onclick="closeFullscreenModal()">&times;</button>
-            <img class="fullscreen-image" id="fullscreenModalImage" src="">
-            <button class="nav-button left" id="prevFullscreenImage">&#10094;</button>
-            <button class="nav-button right" id="nextFullscreenImage">&#10095;</button>
-        </div>
-        <!-- Modal para imágenes en pantalla completa FIN -->
-
-
-    </div>
-
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-
-
-    <!-- Filtros -->
-    <div id="price-filter" class="filter">
-
-        <div class="header-filter"><img src="./img/logo2.svg">
-            <h1>Filtros</h1>
-            <button id="close-filter-button" class="vibrar-button">X</button>
-        </div>
-
-
-        <div class="body-filter">
-            <!-- Filtro de tipo de propiedad -->
-            <h2>Tipos de propiedad</h2>
-            <div class="filter-buttons">
-
-                <button id="filter-house" class="filter-button active vibrar-button">
-                    <img src="./img/casa4.png" alt="Casas">
-                    <p>Casas</p>
-                </button>
-                <button id="filter-building" class="filter-button active vibrar-button">
-                    <img src="./img/apartamento_1.png" alt="Edificios" style="border-color: #52bae8;">
-                    <p>Apartamentos</p>
-                </button>
-                <button id="filter-land" class="filter-button active vibrar-button">
-                    <img src="./img/solar2.png" alt="Solares" style="border-color: #59a739;">
-                    <p>Solares</p>
-                </button>
-            </div>
-            <!-- Filtro de tipo de propiedad FIN-->
-
-            <div class="filtro-divisor"></div>
-
-            <!-- Filtro de Precios -->
-            <h2>Rango de Precio</h2>
-
-            <div class="price-labels">
-                <div class="price-labels-cube">
-                    <h6>Mínimo</h6>
-                    <input type="text" id="min-price" placeholder="RD$0" readonly>
-                </div>
-                <h6 style="margin-block-start: 25px;color: #777777;">hasta</h6>
-                <div class="price-labels-cube">
-                    <h6>Máximo</h6>
-                    <input type="text" id="max-price" placeholder="RD$0" readonly>
-                </div>
-            </div>
-
-            <div class="range-slider">
-                <div class="track"></div>
-                <div class="range" id="range-highlight"></div>
-                <input type="range" id="min-price-range" min="0" max="30000000" value="0">
-                <input type="range" id="max-price-range" min="0" max="30000000" value="30000000">
-            </div>
-
-            <!-- Filtro de Precios fin -->
-
-            <div class="filtro-divisor"></div>
-
-            <!-- Filtro de cantidad -->
-            <h2>Cantidades</h2>
-            <div class="filtro-cantidad-cube">
-
-                <div class="filter-counter">
-                    <img src="./img/icons/habitacion1.svg">
-                    <h6>Habitaciones</h6>
-                    <div class="counter-cube">
-                        <button id="decrease-rooms" class="vibrar-button">-</button>
-                        <span id="rooms-count">Cualquiera</span>
-                        <button id="increase-rooms" class="vibrar-button">+</button>
-                    </div>
-                </div>
-
-                <div class="filter-counter">
-                    <img src="./img/icons/baño2.svg">
-                    <h6>Baños</h6>
-                    <div class="counter-cube">
-                        <button id="decrease-bathrooms" class="vibrar-button">-</button>
-                        <span id="bathrooms-count">Cualquiera</span>
-                        <button id="increase-bathrooms" class="vibrar-button">+</button>
-                    </div>
-                </div>
-
-                <div class="filter-counter">
-                    <img src="./img/icons/parqueo1.svg">
-                    <h6>Parqueos</h6>
-                    <div class="counter-cube">
-                        <button id="decrease-parking" class="vibrar-button">-</button>
-                        <span id="parking-count">Cualquiera</span>
-                        <button id="increase-parking" class="vibrar-button">+</button>
-                    </div>
-                </div>
-            </div>
-            <!-- Filtro de cantidad FIN -->
-        </div>
-
-
-        <div class="footer-filter">
-
-            <div class="toggle-buttons2">
-                <button id="alquilerButton-filter" class="toggle-button active vibrar-button"><img src="./img/icons/refresh1.png">
-                    <h3>Alquiler</h3>
-                </button>
-                <button id="ventaButton-filter" class="toggle-button vibrar-button"><img src="./img/icons/refresh1.png">
-                    <h3>Venta</h3>
-                </button>
-            </div>
-
-        </div>
-        <!-- Filtros FIN -->
-
-
-    </div>
-
-
-
-    <!-- Cuadro BoxJM1 -->
-    <div id="boxjm1" class="boxjm1">
-        <div class="boxjm1-content">
-
-            <div class="boxjm1-titulo">
-                <p>Información</p>
-                <span class="close2">&times;</span>
-            </div>
-            <div class="boxjm1-body">
-
-                <nav>
-                    <ul>
-                        <li>
-                            <h3>Conócenos:</h3>
-
-                            <button data-seccion="sobre-nosotros" class="vibrar-button"><img src="./img/logo2.svg"><h5>Sobre nosotros</h5></button>
-
-                        </li>
-                        <li>
-                            <h3>Contáctanos:</h3>
-                            <button class="vibrar-button"><a href="tel:+18299605566"><img src="./img/icons/llamar1.png"><h5>+1 (829) 960-5566</h5></a></button>
-                            <button class="vibrar-button"><a href="https://wa.me/18299605566?text=Hola,%20quisiera%20comunicarme%20con%20el%20servicio%20al%20cliente." target="_blank"><img src="./img/icons/servicio al cliente1.png"><h5>Servicio al cliente</h5></a></button>
-                            <button class="vibrar-button"><a href="mailto:info@arribate.com"><img src="./img/icons/correo1.png"><h5>info@arribate.com</h5></a></button>
-                        </li>
-                        <li>
-                            <h3>Siguénos:</h3>
-                            <button class="vibrar-button" style="padding-right: 115px;"><a href="https://www.instagram.com/arribate_oficial/" target="_blank"><img src="./img/icons/instagram4.png"><h5>Instagram</h5></a></button>
-                            <button class="vibrar-button" style="padding-right: 145px;"><a href="https://www.facebook.com/profile.php?id=61567029011220&mibextid=ZbWKwL" target="_blank"><img src="./img/icons/facebook4.png"><h5>Facebook</h5></a></button>
-                            <button class="vibrar-button"><img src="./img/icons/tiktok4.png"><a href="https://www.tiktok.com/@arribate?_t=8qi2CSFx7or&_r=1" target="_blank"><h5>TikTok</h5></a></button>
-                        </li>
-                        <li>
-                            <h3>Infórmate:</h3>
-                            <button data-seccion="terminos-de-uso" class="vibrar-button"><img src="./img/icons/condiciones1.png"><h5>Condiciones de uso</h5></button>
-                            <button data-seccion="politicas-de-privacidad" class="vibrar-button"><img src="./img/icons/privacidad1.png"><h5>Políticas de privacidad</h5></button>
-                        </li>
-
-
-                    </ul>
-                </nav>
-
-
-            </div>
-            <div class="boxjm1-down">
-
-                <div class="boxjm1-redes">
-                    <h6> © ArríbaTe 2024 </h6>
-                    <!-- <div><img src="./img/icons/instagram2.png"><img src="./img/icons/facebook2.png"><img
-                            src="./img/icons/x2.png"></div> -->
-
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-
-    <!-- PublicaTE -->
-    <div id="background-publicate-modal" class="modal-background">
-        <div id="publicate-modal" class="modal-publicate">
-            <div class="publicate-titulo">
-                <p>Publíca<span style="color: #cd1025;">Te</span></p>
-                <button id="close-publicate-modal" class="vibrar-button">X</button>
-            </div>
-            <div class="publicate-body">
-                <p style="font-size: 14px;">¿Quieres <span style="color: #096caf;">alquilar</span> o <span
-                        style="color: #cd1025;">vender</span> tu propiedad?<br>
-                    <span style="font-size: 13px;">Comunícate con nosotros y nosotros nos encargamos del resto.</span>
-                </p>
-                <p style="font-weight: 100;color: #1e1e1e;font-size: 12px;text-align: left;">Como administradores de
-                    propiedades, facilitamos el proceso y nos ocupamos de todo para que tú no tengas que preocuparte.
-                </p>
-
-                <div class="beneficios-publicate" style="font-family: sans-serif;font-size: 14px;margin-bottom: 18px;">
-                    <p>Beneficios:</p>
-                    Atención personalizada.<br>
-                    Proceso sencillo y sin complicaciones.<br>
-                    Experiencia en el mercado inmobiliario.<br>
-                    Asesoría para la mejor valorización de la propiedad.
-                </div>
-                <div class="publicate-btns">
-                    <button id="publicate-btn-alquilar"><img src="./img/icons/whatsapp2.svg">
-                        <div>
-                            <h3>ALQUILAR</h3><span>propiedad</span>
-                        </div>
-                    </button>
-
-                    <button id="publicate-btn-vender" style="margin-right: 0px;"><img src="./img/icons/whatsapp2.svg">
-                        <div>
-                            <h3>VENDER</h3><span>propiedad</span>
-                        </div>
-                    </button>
-                </div>
-
-            </div>
-        </div>
-    </div>
-    <!-- PublicaTE FIN -->
-
-
-    <!-- Terminos y condiciones -->
-
-    <div class="terminos-politica-back" id="open-terminos-politica">
-        <div class="terminos-politica-content">
-            <div class="terminos-politica-titulo">
-                <h1>Informaciones</h1>
-                <button class="cerrar-cuadro">X</button>
-
-                <div class="terminos-botones-box">
-                    <button data-seccion="sobre-nosotros" class="vibrar-button">Sobre Nosotros</button>
-                    <button data-seccion="terminos-de-uso" class="vibrar-button">Condiciones de Uso</button>
-                    <button data-seccion="politicas-de-privacidad" class="vibrar-button">Políticas de privacidad</button>
-                </div>
-            </div>
-
-            <div class="terminos-politica-body">
-
-                <div class="display-info-all"></div>
-            </div>
-            <div class="terminos-politica-end">
-                <p>Copyright © 2024 ArríbaTe.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Terminos y condiciones FIN -->
-
-
-    <script>
-
-
-
-        // Ocultar la pantalla de carga y mostrar el contenido después de 2.7 segundos
-        setTimeout(function () {
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ArríbaTe | Propiedades en República Dominicana</title><meta name="description" content="Arríbate, el mapa de propiedades en República Dominicana. Alquila, vende o encuentra propiedades con nuestra herramienta fácil de usar, mapa interactivo y atención personalizada. ¡Eleva tu búsqueda de propiedades con ARRIBATE!"><meta property="og:url" content="https://arribate.com"><meta property="og:type" content="website"><meta property="og:title" content="ArríbaTe | Propiedades en República Dominicana"><meta property="og:description" content="Arríbate, el mapa de propiedades en República Dominicana. Alquila, vende o encuentra propiedades con nuestra herramienta fácil de usar, mapa interactivo y atención personalizada. ¡Eleva tu búsqueda de propiedades con ARRIBATE!"><meta property="og:image" content="https://arribate.com/img/og_image_1.jpg"><link rel="icon" href="./img/icon_favicon_arribate.svg" type="image/svg+xml"><link rel="apple-touch-icon" sizes="180x180" href="./img/icon_ios_180x180.png"><link rel="icon" href="./img/icon_arribate_32x32_circle.png" sizes="32x32" type="image/png"><link rel="icon" href="./img/icon_android_192x192.png" sizes="192x192" type="image/png"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"><link rel="stylesheet" href="./css/styles1.css"><link rel="stylesheet" href="./css/stylefilter.css"><link rel="stylesheet" href="./css/stylesmodal.css"><link rel="stylesheet" href="./css/stylesmenu.css"><link rel="stylesheet" href="./css/stylespublicate.css"><link rel="stylesheet" href="./css/stylesterminos.css"></head><script async src="https://www.googletagmanager.com/gtag/js?id=G-NMJVZCLFQV"></script><script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore-compat.js"></script><script>const firebaseConfig = {apiKey: "AIzaSyBRjDso4IPrh9WLvWWMYoPiJxNFD6Vt3RU",authDomain: "arribate-com.firebaseapp.com",projectId: "arribate-com",storageBucket: "arribate-com.firebasestorage.app",messagingSenderId: "46945634270",appId: "1:46945634270:web:c74fd6781ac1fab5da7f4f",measurementId: "G-Y4J11MBYKQ"};const app = firebase.initializeApp(firebaseConfig);const db = firebase.firestore(app);</script><script>function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","G-NMJVZCLFQV")</script><body><div class="loader"><div class="loader-logo"></div><img src="./img/logonombre2.png" alt="Logo de Arríbate - Plataforma de búsqueda de propiedades en República Dominicana" style="animation:loadernombre 3s forwards"></div><div class="boxmaster"><div class="menumaster"><div class="menumaster-in-left"><div class="logonombre"><div class="logo1"></div><div style="margin-left:10px"><h1>ArríbaTe</h1><span>República dominicana</span></div></div><div class="linediv"></div><div class="botonbox"><button id="ventaButton" class="toggle-button vibrar-button">Venta</button><button id="alquilerButton" class="toggle-button active vibrar-button">Alquiler</button></div></div><div class="botonbox2"><div><button id="ventaButton-rpsv" class="toggle-button vibrar-button"><h3>Venta</h3></button><button id="alquilerButton-rpsv" class="toggle-button vibrar-button"><h3>Alquiler</h3></button></div><div id="publicate-filter-rpsv" class="vibrar-button"><div class="publicate-rpsv" class="vibrar-button"><button id="open-publicate-respon" class="vibrar-button"></button></div><div class="cube-boton-filtro-respon"><button id="open-filter-button-respon" class="vibrar-button"></button></div></div></div><div class="cube-boton-filtro"><button id="open-filter-button" class="vibrar-button">Filtros</button></div><div class="menumaster-in-right"><div class="publicate"><div class="publicate-In" id="open-publicate">Publíca<span style="color:#cd1025">Te</span></div></div><div class="linediv" style="margin:0 12px"></div><div class="redes-box"><div class="redes-box-in"><p>Síguenos:</p><div class="redes-buttones"><div class="redes-button"><a href="https://www.instagram.com/arribate_oficial/" target="_blank"></a></div><div class="redes-button" style="background-image:url(img/icons/facebook1.png)"><a href="https://www.facebook.com/profile.php?id=61567029011220&mibextid=ZbWKwL" target="_blank"></a></div><div class="redes-button" style="background-image:url(img/icons/tiktok1.png)"><a href="https://www.tiktok.com/@arribate?_t=8qi2CSFx7or&_r=1" target="_blank"></a></div></div></div></div><div id="openBoxJmBtn" class="menu-all single-menu vibrar-button"><div class="menu-lines"><span class="line line1"></span><span class="line line2"></span><span class="line line3"></span></div></div></div></div><div class="mapbox" style="position:fixed;top:0;left:0"><div id="map" style="background:#aad3df;height:100%;width:100%"></div><button id="fullscreenButton" class="vibrar-button"></button><button id="changeLayerButton" class="layer-button vibrar-button"><img src="./img/capasatelite2.png" alt="Cambiar capa" id="layerIcon"></button><button id="locateButton" class="vibrar-button"></button><button id="centerButton" class="center-button vibrar-button" style="display:none"></button></div></div><div id="propertyModal" class="modal"><div class="modal-content"><div class="modal-logo"><div class="modal-logo-in"><img src="./img/logo2.png" alt="arribate"><p>ARRIBA<span>TE</span></p><h1 style="position:absolute;width:1px;height:1px;margin:-1px;padding:0;border:0;clip:rect(0,0,0,0);overflow:hidden">arribate</h1></div></div><div class="modal-in"><div class="gallery"><div class="main-image"><button class="nav-button-img-p left" id="prevMainImage">&#10094;</button><img id="currentImage" src="" alt="Imagen Principal"><button class="nav-button-img-p right" id="nextMainImage">&#10095;</button></div><div class="thumbnails-container"><button class="scroll-button left">&#10094;</button><div class="thumbnails"></div><button class="scroll-button right">&#10095;</button></div></div><div id="fullscreenView"><button class="nav-button left" id="prevImage">&#10094;</button><div id="fullscreenImageContainer"><img id="fullscreenImage" src="" alt="Imagen en pantalla completa"></div><button class="nav-button right" id="nextImage">&#10095;</button><button id="closeFullscreen">Cerrar</button></div><div class="infocompleta"><div class="modal-body" id="modalPropertyDetails"></div><div id="modal-map-ios" class="modal-map-ios"><div class="modal-map-ios-content"><span class="close-modal-map-ios">&times;</span><h2>¿Con qué APP quieres abrir las coordenadas de esta propiedad?</h2><div><button id="appleMapsBtn"></button><button id="googleMapsBtn"></button><button id="wazeBtn"></button><button id="uberBtn"></button></div></div></div></div></div><div class="modal-end"><button id="comoLlegarButton" class="como-llegar-button" onclick="comoLlegarDesdeModal()"><img src="./img/icons/location1.svg"><div><h3>Cómo llegar</h3><span>a esta propiedad</span></div></button><div class="contactos-res"><button><a href="#" id="whatsappButton" class="whatsapp-button" onclick="openWhatsApp()" target="_blank"><img src="./img/icons/whatsapp2.svg"><div><span>Para más información</span><h3>WhatsApp</h3></div></a></button></div></div><span class="close" onclick="closeModal()">&times;</span></div><div id="fullscreenModal" class="fullscreen-modal"><button class="close-fullscreen" onclick="closeFullscreenModal()">&times;</button><img class="fullscreen-image" id="fullscreenModalImage" src=""><button class="nav-button left" id="prevFullscreenImage">&#10094;</button><button class="nav-button right" id="nextFullscreenImage">&#10095;</button></div></div><script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script><div id="price-filter" class="filter"><div class="header-filter"><img src="./img/logo2.svg"><h1>Filtros</h1><button id="close-filter-button" class="vibrar-button">X</button></div><div class="body-filter"><h2>Tipos de propiedad</h2><div class="filter-buttons"><button id="filter-house" class="filter-button active vibrar-button"><img src="./img/casa4.png" alt="Casas"><p>Casas</p></button><button id="filter-building" class="filter-button active vibrar-button"><img src="./img/apartamento_1.png" alt="Edificios" style="border-color:#52bae8"><p>Apartamentos</p></button><button id="filter-land" class="filter-button active vibrar-button"><img src="./img/solar2.png" alt="Solares" style="border-color:#59a739"><p>Solares</p></button></div><div class="filtro-divisor"></div><h2>Rango de Precio</h2><div class="price-labels"><div class="price-labels-cube"><h6>Mínimo</h6><input type="text" id="min-price" placeholder="RD$0" readonly="readonly"></div><h6 style="margin-block-start:25px;color:#777">hasta</h6><div class="price-labels-cube"><h6>Máximo</h6><input type="text" id="max-price" placeholder="RD$0" readonly="readonly"></div></div><div class="range-slider"><div class="track"></div><div class="range" id="range-highlight"></div><input type="range" id="min-price-range" min="0" max="30000000" value="0"> <input type="range" id="max-price-range" min="0" max="30000000" value="30000000"></div><div class="filtro-divisor"></div><h2>Cantidades</h2><div class="filtro-cantidad-cube"><div class="filter-counter"><img src="./img/icons/habitacion1.svg"><h6>Habitaciones</h6><div class="counter-cube"><button id="decrease-rooms" class="vibrar-button">-</button><span id="rooms-count">Cualquiera</span><button id="increase-rooms" class="vibrar-button">+</button></div></div><div class="filter-counter"><img src="./img/icons/baño2.svg"><h6>Baños</h6><div class="counter-cube"><button id="decrease-bathrooms" class="vibrar-button">-</button><span id="bathrooms-count">Cualquiera</span><button id="increase-bathrooms" class="vibrar-button">+</button></div></div><div class="filter-counter"><img src="./img/icons/parqueo1.svg"><h6>Parqueos</h6><div class="counter-cube"><button id="decrease-parking" class="vibrar-button">-</button><span id="parking-count">Cualquiera</span><button id="increase-parking" class="vibrar-button">+</button></div></div></div></div><div class="footer-filter"><div class="toggle-buttons2"><button id="alquilerButton-filter" class="toggle-button active vibrar-button"><img src="./img/icons/refresh1.png"><h3>Alquiler</h3></button><button id="ventaButton-filter" class="toggle-button vibrar-button"><img src="./img/icons/refresh1.png"><h3>Venta</h3></button></div></div></div><div id="boxjm1" class="boxjm1"><div class="boxjm1-content"><div class="boxjm1-titulo"><p>Información</p><span class="close2">&times;</span></div><div class="boxjm1-body"><nav><ul><li><h3>Conócenos:</h3><button data-seccion="sobre-nosotros" class="vibrar-button"><img src="./img/logo2.svg"><h5>Sobre nosotros</h5></button></li><li><h3>Contáctanos:</h3><button class="vibrar-button"><a href="tel:+18299605566"><img src="./img/icons/llamar1.png"><h5>+1 (829) 960-5566</h5></a></button><button class="vibrar-button"><a href="https://wa.me/18299605566?text=Hola,%20quisiera%20comunicarme%20con%20el%20servicio%20al%20cliente." target="_blank"><img src="./img/icons/servicio al cliente1.png"><h5>Servicio al cliente</h5></a></button><button class="vibrar-button"><a href="mailto:info@arribate.com"><img src="./img/icons/correo1.png"><h5>info@arribate.com</h5></a></button></li><li><h3>Siguénos:</h3><button class="vibrar-button" style="padding-right:115px"><a href="https://www.instagram.com/arribate_oficial/" target="_blank"><img src="./img/icons/instagram4.png"><h5>Instagram</h5></a></button><button class="vibrar-button" style="padding-right:145px"><a href="https://www.facebook.com/profile.php?id=61567029011220&mibextid=ZbWKwL" target="_blank"><img src="./img/icons/facebook4.png"><h5>Facebook</h5></a></button><button class="vibrar-button"><img src="./img/icons/tiktok4.png"><a href="https://www.tiktok.com/@arribate?_t=8qi2CSFx7or&_r=1" target="_blank"><h5>TikTok</h5></a></button></li><li><h3>Infórmate:</h3><button data-seccion="terminos-de-uso" class="vibrar-button"><img src="./img/icons/condiciones1.png"><h5>Condiciones de uso</h5></button><button data-seccion="politicas-de-privacidad" class="vibrar-button"><img src="./img/icons/privacidad1.png"><h5>Políticas de privacidad</h5></button></li></ul></nav></div><div class="boxjm1-down"><div class="boxjm1-redes"><h6>© ArríbaTe 2024</h6></div></div></div></div><div id="background-publicate-modal" class="modal-background"><div id="publicate-modal" class="modal-publicate"><div class="publicate-titulo"><p>Publíca<span style="color:#cd1025">Te</span></p><button id="close-publicate-modal" class="vibrar-button">X</button></div><div class="publicate-body"><p style="font-size:14px">¿Quieres<span style="color:#096caf">alquilar</span>o<span style="color:#cd1025">vender</span>tu propiedad?<br><span style="font-size:13px">Comunícate con nosotros y nosotros nos encargamos del resto.</span></p><p style="font-weight:100;color:#1e1e1e;font-size:12px;text-align:left">Como administradores de propiedades, facilitamos el proceso y nos ocupamos de todo para que tú no tengas que preocuparte.</p><div class="beneficios-publicate" style="font-family:sans-serif;font-size:14px;margin-bottom:18px"><p>Beneficios:</p>Atención personalizada.<br>Proceso sencillo y sin complicaciones.<br>Experiencia en el mercado inmobiliario.<br>Asesoría para la mejor valorización de la propiedad.</div><div class="publicate-btns"><button id="publicate-btn-alquilar"><img src="./img/icons/whatsapp2.svg"><div><h3>ALQUILAR</h3><span>propiedad</span></div></button><button id="publicate-btn-vender" style="margin-right:0"><img src="./img/icons/whatsapp2.svg"><div><h3>VENDER</h3><span>propiedad</span></div></button></div></div></div></div><div class="terminos-politica-back" id="open-terminos-politica"><div class="terminos-politica-content"><div class="terminos-politica-titulo"><h1>Informaciones</h1><button class="cerrar-cuadro">X</button><div class="terminos-botones-box"><button data-seccion="sobre-nosotros" class="vibrar-button">Sobre Nosotros</button><button data-seccion="terminos-de-uso" class="vibrar-button">Condiciones de Uso</button><button data-seccion="politicas-de-privacidad" class="vibrar-button">Políticas de privacidad</button></div></div><div class="terminos-politica-body"><div class="display-info-all"></div></div><div class="terminos-politica-end"><p>Copyright © 2024 ArríbaTe.</p></div></div></div><script>setTimeout(function () {
             document.querySelector('.loader').style.display = 'none';
             document.querySelector('.content').style.display = 'block';
 
         }, 2700);
-
-
-
-
-        
-        // Inicialización del mapa con un maxZoom aumentado
         var map;
 
-        if (window.innerWidth <= 700) { // ajuste responsive
+        if (window.innerWidth <= 700) { 
             map = L.map('map').setView([18.7357, -70.1627], 7);
         } else {
             map = L.map('map').setView([18.7357, -70.1627], 8);
         }
 
-        // Capas de mapa
         var baseMaps = {
             "Claro": L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
@@ -585,51 +22,41 @@
             })
         };
 
-        // Referencia al botón de cambio de capa
         const changeLayerButton = document.getElementById('changeLayerButton');
-        let isSatelliteView = false;  // Estado inicial
+        let isSatelliteView = false; 
 
         changeLayerButton.addEventListener('click', () => {
             if (isSatelliteView) {
-                // Cambiar a capa de mapa
+              
                 map.removeLayer(baseMaps["Vista Satelital"]);
                 baseMaps["Claro"].addTo(map);
-                changeLayerButton.querySelector('img').src = './img/capasatelite2.png'; // Cambiar imagen a satélite
+                changeLayerButton.querySelector('img').src = './img/capasatelite2.png'; 
                 changeLayerButton.querySelector('img').alt = 'Cambiar a Satélite';
             } else {
-                // Cambiar a capa satelital
+                
                 map.removeLayer(baseMaps["Claro"]);
                 baseMaps["Vista Satelital"].addTo(map);
-                changeLayerButton.querySelector('img').src = './img/capamapa2.png'; // Cambiar imagen a mapa
+                changeLayerButton.querySelector('img').src = './img/capamapa2.png'; 
                 changeLayerButton.querySelector('img').alt = 'Cambiar a Mapa';
             }
-            isSatelliteView = !isSatelliteView; // Alternar estado
+            isSatelliteView = !isSatelliteView; 
         });
-
-
-
-
-
-
-
-
-        // Definir el ícono personalizado
         const customIcon = L.icon({
-            iconUrl: './img/icons/location5.png', // Reemplaza con la ruta de tu imagen personalizada
-            iconSize: [38, 38], // Tamaño del ícono [ancho, alto]
-            iconAnchor: [19, 19], // Punto de anclaje en el centro del ícono
+            iconUrl: './img/icons/location5.png',
+            iconSize: [38, 38], 
+            iconAnchor: [19, 19], 
             className: 'custom-icon',
         });
 
-        // Variables para almacenar el marcador y el círculo
+       
         let userMarker;
         let userCircle;
         let tooltip;
 
-        // Botón de mi ubicación
+     
         const locateButton = document.getElementById('locateButton');
 
-        // Evento click para centrar el mapa en la ubicación del usuario
+
         locateButton.addEventListener('click', () => {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition((position) => {
@@ -694,9 +121,6 @@
                 console.error("La geolocalización no es soportada por este navegador.");
             }
         });
-
-
-
 
         // centrar
         const bounds = [
@@ -786,10 +210,10 @@ function getIconFromFirebase(iconKey) {
         }
 
 
-        // Creación de íconos personalizados con precio y color según el tipo de propiedad
+  
         function createIcon(iconUrl, price, isAlquiler) {
-            var backgroundColor = getBackgroundColor(iconUrl); // Obtener color de fondo
-            // Si es un alquiler, añade "/mes" al final del precio
+            var backgroundColor = getBackgroundColor(iconUrl);
+
             var priceText = `RD$${formatNumber(price)}` + (isAlquiler ? "/mes" : "");
 
             return L.divIcon({
@@ -807,101 +231,7 @@ function getIconFromFirebase(iconKey) {
             });
         }
 
-        // Íconos para referencia
-        var roomIcon = './img/icons/habitacion1.svg'; // ícono para habitaciones
-        var bathroomIcon = './img/icons/baño1.svg'; // ícono para baños
-        var parkingIcon = './img/icons/parqueo1.svg'; // ícono para parqueo
-        var areaIcon = './img/icons/area1.svg'; // ícono para área
-
-        // Normalización de ubicaciones
-        function normalizeLocation(location) {
-            return location.latLng ? { ...location, lat: location.latLng[0], lng: location.latLng[1] } : location;
-        }
-
-
-//firebase
-     // Definición de ubicaciones con información adicional
-        var alquileres = [];
-
-        var ventas = [];
-
-// Función para obtener propiedades de Firestore
-// Función para obtener propiedades de Firestore
-async function obtenerPropiedadesDeFirestore() {
-    const alquileresFirestore = [];
-    const ventasFirestore = [];
-    
-    // Obtener propiedades de alquiler
-    const alquileresSnapshot = await db.collection('alquileres').get();
-    alquileresSnapshot.forEach(doc => {
-        const data = doc.data();
-        const latLng = data.latLng.split(',').map(Number);
-        
-        if (data.mostrar) {
-            alquileresFirestore.push({
-                id: data.id,
-                latLng: latLng,
-                title: data.title,
-                price: data.price,
-                icon: getIconFromFirebase(data.icon),
-                rooms: data.rooms,
-                bathrooms: data.bathrooms,
-                parking: data.parking,
-                area: data.area,
-                imageFolder: data.imageFolder,
-                imageCount: data.imageCount,
-                caracteristicas: data.caracteristicas
-            });
-        }
-    });
-
-    // Obtener propiedades de venta
-    const ventasSnapshot = await db.collection('ventas').get();
-    ventasSnapshot.forEach(doc => {
-        const data = doc.data();
-        const latLng = data.latLng.split(',').map(Number);
-        
-        if (data.mostrar) {
-            ventasFirestore.push({
-                id: data.id,
-                latLng: latLng,
-                title: data.title,
-                price: data.price,
-                icon: getIconFromFirebase(data.icon),
-                rooms: data.rooms,
-                bathrooms: data.bathrooms,
-                parking: data.parking,
-                area: data.area,
-                imageFolder: data.imageFolder,
-                imageCount: data.imageCount,
-                caracteristicas: data.caracteristicas
-            });
-        }
-    });
-
-    // Combinar datos locales con datos de Firestore
-    alquileres = [...alquileres, ...alquileresFirestore];
-    ventas = [...ventas, ...ventasFirestore];
-
-    // Crear marcadores después de obtener los datos
-    createMarkers(alquileres, alquilerMarkers);
-    createMarkers(ventas, ventaMarkers);
-}
-
-// Llamar a la función para obtener propiedades
-obtenerPropiedadesDeFirestore().then(() => {
-    // Mostrar inicialmente solo los marcadores de venta
-    toggleMarkers('venta'); // Muestra solo las propiedades de venta al cargar la página
-
-    // Verificar el hash en la URL después de cargar los datos
-    const hash = window.location.hash;
-    console.log("Hash de la URL:", hash); // Imprimir el hash
-
-    if (hash.startsWith('#id-')) {
-        const propertyId = hash.substring('#id-'.length); // Extraer ID como cadena
-        console.log("ID extraído de la URL:", propertyId); // Imprimir el ID extraído
-
-        // Verificar si el ID no está vacío
+        var roomIcon = './img/icons/habitacion1.svg'; var bathroomIcon = './img/icons/baño1.svg'; var parkingIcon = './img/icons/parqueo1.svg'; var areaIcon = './img/icons/area1.svg'; function normalizeLocation(location) { return location.latLng ? { ...location, lat: location.latLng[0], lng: location.latLng[1] } : location; } var alquileres = []; var ventas = []; async function obtenerPropiedadesDeFirestore() { const alquileresFirestore = []; const ventasFirestore = []; const alquileresSnapshot = await db.collection('alquileres').get(); alquileresSnapshot.forEach(doc => { const data = doc.data(); const latLng = data.latLng.split(',').map(Number); if (data.mostrar) { alquileresFirestore.push({ id: data.id, latLng: latLng, title: data.title, price: data.price, icon: getIconFromFirebase(data.icon), rooms: data.rooms, bathrooms: data.bathrooms, parking: data.parking, area: data.area, imageFolder: data.imageFolder, imageCount: data.imageCount, caracteristicas: data.caracteristicas }); } }); const ventasSnapshot = await db.collection('ventas').get(); ventasSnapshot.forEach(doc => { const data = doc.data(); const latLng = data.latLng.split(',').map(Number); if (data.mostrar) { ventasFirestore.push({ id: data.id, latLng: latLng, title: data.title, price: data.price, icon: getIconFromFirebase(data.icon), rooms: data.rooms, bathrooms: data.bathrooms, parking: data.parking, area: data.area, imageFolder: data.imageFolder, imageCount: data.imageCount, caracteristicas: data.caracteristicas }); } }); alquileres = [...alquileres, ...alquileresFirestore]; ventas = [...ventas, ...ventasFirestore]; createMarkers(alquileres, alquilerMarkers); createMarkers(ventas, ventaMarkers); } obtenerPropiedadesDeFirestore().then(() => { toggleMarkers('venta'); const hash = window.location.hash; console.log("Hash de la URL:", hash); if (hash.startsWith('#id-')) { const propertyId = hash.substring('#id-'.length); console.log("ID extraído de la URL:", propertyId);
         if (propertyId) {
             const property = [...alquileres, ...ventas].find(p => p.id === propertyId);
             console.log("Propiedad encontrada:", property); // Imprimir la propiedad encontrada
@@ -1268,11 +598,7 @@ function createMarkers(locations, markersArray) {
 
 
         // Inicialmente mostrar solo los alquileres
-        toggleMarkers('venta');
-    </script>
-
-    <script>
-        // Función para detectar si el dispositivo es iOS
+        toggleMarkers('venta');</script><script>// Función para detectar si el dispositivo es iOS
         function isIOS() {
             return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         }
@@ -1299,17 +625,4 @@ function createMarkers(locations, markersArray) {
                     fullscreenButton.classList.remove('active'); // Quitar clase 'active'
                 }
             });
-        }
-    </script>
-
-    <script src="./js/scriptfiltros.js"></script>
-    <script src="./js/scriptmodal.js"></script>
-    <script src="./js/scriptmenu.js"></script>
-    <script src="./js/scriptpublicate.js"></script>
-    <script src="./js/scriptterminos.js"></script>
-
-
-
-</body>
-
-</html>
+        }</script><script src="./js/scriptfiltros.js"></script><script src="./js/scriptmodal.js"></script><script src="./js/scriptmenu.js"></script><script src="./js/scriptpublicate.js"></script><script src="./js/scriptterminos.js"></script></body></html>
