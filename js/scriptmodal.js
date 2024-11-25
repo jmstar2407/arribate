@@ -82,7 +82,7 @@ function updateModalDetails(property) {
             <div class="info-mini-bottom-modal">
                 <p>ArríbaTe se compromete a garantizar la accesibilidad digital para personas con discapacidades.<br> Trabajamos continuamente para mejorar la accesibilidad de nuestra experiencia web para todos.</p>
             </div>
-             <div class="info-mini-bottom-modal">
+            <div class="info-mini-bottom-modal">
                 <p><strong>Aviso:</strong> La información presentada es de carácter informativo y está sujeta a cambios sin previo aviso.<br>
                 Al utilizar nuestra plataforma, reconoces y aceptas cumplir con nuestras <button class="boton-terminos-modal" data-seccion="terminos-de-uso">Condiciones de uso</button> y <button class="boton-terminos-modal" data-seccion="politicas-de-privacidad">Políticas de privacidad</button></p>
             </div>
@@ -118,7 +118,7 @@ function updateGallery(id, imageCount) {
     }
     setupGalleryNavigation(images);
     setupFullscreen(images);
-    setupTouchSupport(); // Agregar soporte para desplazamiento táctil
+    setupTouchNavigation(images); // Agregar navegación por touch
 }
 
 // Crear array de imágenes
@@ -205,32 +205,34 @@ function setupFullscreen(images) {
         currentFullscreenIndex = (currentFullscreenIndex + 1) % images.length;
         fullscreenImage.src = images[currentFullscreenIndex];
     });
-// Abrir el modal de pantalla completa al hacer clic en la imagen principal
-mainImage.addEventListener('click', () => openFullscreenModal(currentFullscreenIndex));
+
+    // Abrir el modal de pantalla completa al hacer clic en la imagen principal
+    mainImage.addEventListener('click', () => openFullscreenModal(currentFullscreenIndex));
 }
 
-// Soporte para desplazamiento táctil
-function setupTouchSupport() {
-    let startX;
+// Navegación por touch
+function setupTouchNavigation(images) {
+    let startX = 0;
+    let currentIndex = 0;
 
-    mainImage.addEventListener('touchstart', (event) => {
-        startX = event.touches[0].clientX;
+    mainImage.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
     });
 
-    mainImage.addEventListener('touchmove', (event) => {
-        const moveX = event.touches[0].clientX;
-        const diffX = startX - moveX;
+    mainImage.addEventListener('touchend', (e) => {
+        const endX = e.changedTouches[0].clientX;
+        const deltaX = endX - startX;
 
-        if (Math.abs(diffX) > 50) { // Umbral para el desplazamiento
-            if (diffX > 0) {
-                // Desplazamiento a la derecha (siguiente imagen)
-                document.getElementById('nextMainImage').click();
-            } else {
-                // Desplazamiento a la izquierda (imagen anterior)
-                document.getElementById('prevMainImage').click();
-            }
-            startX = moveX; // Reiniciar la posición de inicio
+        if (deltaX > 50) {
+            // Deslizamiento hacia la izquierda (anterior imagen)
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+        } else if (deltaX < -50) {
+            // Deslizamiento hacia la derecha (siguiente imagen)
+            currentIndex = (currentIndex + 1) % images.length;
         }
+
+        mainImage.src = images[currentIndex];
+        updateActiveThumbnail(currentIndex);
     });
 }
 
