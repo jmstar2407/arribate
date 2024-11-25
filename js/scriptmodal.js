@@ -4,18 +4,12 @@ const modalDetails = document.getElementById('modalPropertyDetails');
 const whatsappButton = document.getElementById('whatsappButton');
 const mainImage = document.getElementById('currentImage');
 const thumbnailsContainer = document.querySelector('.thumbnails');
-const fullscreenModal = document.getElementById('fullscreenModal');
-const fullscreenImage = document.getElementById('fullscreenModalImage');
-
-let currentIndex = 0; // Estado global para la imagen actual
-let images = []; // Array de imágenes
 
 // Abrir modal con la propiedad
 function openModal(property) {
     setupWhatsappButton(property);
     updateModalDetails(property);
-    images = createImageArray(property.id, property.imageCount);
-    updateGallery();
+    updateGallery(property.id, property.imageCount);
     history.pushState(null, '', `#id-${property.id}`);
 
     const modalContent = modal.querySelector('.modal-content');
@@ -115,15 +109,16 @@ function createIconItem(icon, text) {
 }
 
 // Actualizar galería
-function updateGallery() {
+function updateGallery(id, imageCount) {
+    let images = createImageArray(id, imageCount);
     clearGallery();
-    addThumbnails();
+    addThumbnails(images);
     if (images.length > 0) {
-        mainImage.src = images[currentIndex];
-        updateActiveThumbnail(currentIndex);
+        mainImage.src = images[0];
+        updateActiveThumbnail(0);
     }
-    setupGalleryNavigation();
-    setupFullscreen();
+    setupGalleryNavigation(images);
+    setupFullscreen(images);
     setupTouchSupport();
 }
 
@@ -141,14 +136,15 @@ function clearGallery() {
 }
 
 // Agregar miniaturas a la galería
-function addThumbnails() {
+function addThumbnails(images) {
     images.forEach((imgSrc, index) => {
         const thumbnail = document.createElement('img');
         thumbnail.src = imgSrc;
         thumbnail.alt = `Thumbnail ${index + 1}`;
         thumbnail.dataset.index = index;
         thumbnail.addEventListener('click', () => {
-            setCurrentIndex(index);
+            mainImage.src = imgSrc;
+            updateActiveThumbnail(index);
         });
         thumbnailsContainer.appendChild(thumbnail);
     });
@@ -184,20 +180,31 @@ function updateActiveThumbnail(index) {
 }
 
 // Navegación de la galería
-function setupGalleryNavigation() {
+function setupGalleryNavigation(images) {
+    let currentIndex = 0;
+
     document.getElementById('prevMainImage').addEventListener('click', () => {
-        setCurrentIndex((currentIndex - 1 + images.length) % images.length);
+        currentIndex = (currentIndex - 1 + images.length) % images.length;
+        mainImage.src = images[currentIndex];
+        updateActiveThumbnail(currentIndex);
     });
 
     document.getElementById('nextMainImage').addEventListener('click', () => {
-        setCurrentIndex((currentIndex + 1) % images.length);
+        currentIndex = (currentIndex + 1) % images.length;
+        mainImage.src = images[currentIndex];
+        updateActiveThumbnail(currentIndex);
     });
 }
 
 // Pantalla completa
-function setupFullscreen() {
-    function openFullscreenModal() {
-        fullscreenImage.src = images[currentIndex];
+function setupFullscreen(images) {
+    const fullscreenModal = document.getElementById('fullscreenModal');
+    const fullscreenImage = document.getElementById('fullscreenModalImage');
+    let currentFullscreenIndex = 0;
+
+    function openFullscreenModal(index) {
+        currentFullscreenIndex = index;
+        fullscreenImage.src = images[currentFullscreenIndex];
         fullscreenModal.style.display = 'block';
     }
 
@@ -213,36 +220,31 @@ function setupFullscreen() {
     });
 
     document.getElementById('prevFullscreenImage').addEventListener('click', () => {
-        setCurrentIndex((currentIndex - 1 + images.length) % images.length);
+        currentFullscreenIndex = (currentFullscreenIndex - 1 + images.length) % images.length;
+        fullscreenImage.src = images[currentFullscreenIndex];
     });
 
     document.getElementById('nextFullscreenImage').addEventListener('click', () => {
-        setCurrentIndex((currentIndex + 1) % images.length);
+        currentFullscreenIndex = (currentFullscreenIndex + 1) % images.length;
+        fullscreenImage.src = images[currentFullscreenIndex];
     });
-
     // Abrir el modal de pantalla completa al hacer clic en la imagen principal
-    mainImage.addEventListener('click', openFullscreenModal);
+    mainImage.addEventListener('click', () => openFullscreenModal(currentFullscreenIndex));
 }
 
 // Soporte para desplazamiento táctil
 function setupTouchSupport() {
     let startX;
-    let isSwiping = false; // Variable para controlar si se está realizando un desplazamiento
 
     mainImage.addEventListener('touchstart', (event) => {
         startX = event.touches[0].clientX;
-        isSwiping = true; // Iniciar el desplazamiento
     });
 
     mainImage.addEventListener('touchmove', (event) => {
-        if (!isSwiping) return; // Si no se está desplazando, no hacer nada
-
         const moveX = event.touches[0].clientX;
         const diffX = startX - moveX;
 
         if (Math.abs(diffX) > 50) { // Umbral para el desplazamiento
-            isSwiping = false; // Deshabilitar el desplazamiento temporalmente
-
             if (diffX > 0) {
                 // Desplazamiento a la derecha (siguiente imagen)
                 document.getElementById('nextMainImage').click();
@@ -250,26 +252,9 @@ function setupTouchSupport() {
                 // Desplazamiento a la izquierda (imagen anterior)
                 document.getElementById('prevMainImage').click();
             }
-
-            // Reiniciar la posición de inicio después de un breve retraso
-            setTimeout(() => {
-                startX = moveX;
-                isSwiping = true; // Reactivar el desplazamiento
-            }, 300); // Ajusta el tiempo según sea necesario
+            startX = moveX; // Reiniciar la posición de inicio
         }
     });
-
-    mainImage.addEventListener('touchend', () => {
-        isSwiping = false; // Finalizar el desplazamiento
-    });
-}
-
-// Actualizar el índice actual y sincronizar las imágenes
-function setCurrentIndex(index) {
-    currentIndex = index;
-    mainImage.src = images[currentIndex];
-    fullscreenImage.src = images[currentIndex];
-    updateActiveThumbnail(currentIndex);
 }
 
 // Manejar el evento "popstate" para el botón de "atrás"
