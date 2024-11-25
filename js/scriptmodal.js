@@ -9,13 +9,13 @@ const thumbnailsContainer = document.querySelector('.thumbnails');
 function openModal(property) {
     setupWhatsappButton(property);
     updateModalDetails(property);
-    updateGallery(property.id, property.imageCount); // Cambiar a property.id
+    updateGallery(property.id, property.imageCount);
     history.pushState(null, '', `#id-${property.id}`);
 
     const modalContent = modal.querySelector('.modal-content');
 
-    modal.classList.add('modal-in-anim'); // Animación de entrada para el modal
-    modalContent.classList.add('modal-content-in-anim'); // Animación de entrada para el contenido
+    modal.classList.add('modal-in-anim');
+    modalContent.classList.add('modal-content-in-anim');
 
     modal.style.display = "block";
 }
@@ -24,16 +24,15 @@ function openModal(property) {
 function closeModal() {
     const modalContent = modal.querySelector('.modal-content');
 
-    modal.classList.add('modal-out-anim'); // Animación de salida para el modal
-    modalContent.classList.add('modal-content-out-anim'); // Animación de salida para el contenido
+    modal.classList.add('modal-out-anim');
+    modalContent.classList.add('modal-content-out-anim');
 
-    // Espera a que las animaciones terminen antes de ocultar el modal
     modal.addEventListener('animationend', () => {
         modal.style.display = "none";
-        history.pushState(null, '', window.location.pathname); // Eliminar id del link al cerrar el modal
+        history.pushState(null, '', window.location.pathname);
         modal.classList.remove('modal-out-anim');
         modalContent.classList.remove('modal-content-out-anim');
-    }, { once: true }); // Asegúrate de que el evento solo se dispare una vez.
+    }, { once: true });
 }
 
 // Configurar botón de WhatsApp
@@ -82,9 +81,11 @@ function updateModalDetails(property) {
             <div class="info-mini-bottom-modal">
                 <p>ArríbaTe se compromete a garantizar la accesibilidad digital para personas con discapacidades.<br> Trabajamos continuamente para mejorar la accesibilidad de nuestra experiencia web para todos.</p>
             </div>
-            <div class="info-mini-bottom-modal">
+             <div class="info-mini-bottom-modal">
                 <p><strong>Aviso:</strong> La información presentada es de carácter informativo y está sujeta a cambios sin previo aviso.<br>
                 Al utilizar nuestra plataforma, reconoces y aceptas cumplir con nuestras <button class="boton-terminos-modal" data-seccion="terminos-de-uso">Condiciones de uso</button> y <button class="boton-terminos-modal" data-seccion="politicas-de-privacidad">Políticas de privacidad</button></p>
+            </div>
+            <button class="boton-terminos-modal" data-seccion="politicas-de-privacidad">Políticas de privacidad</button></p>
             </div>
             <div class="info-mini-redes">
                 <h6>Síguenos:</h6>
@@ -118,7 +119,7 @@ function updateGallery(id, imageCount) {
     }
     setupGalleryNavigation(images);
     setupFullscreen(images);
-    setupTouchNavigation(images); // Agregar navegación por touch
+    setupTouchSupport();
 }
 
 // Crear array de imágenes
@@ -149,10 +150,21 @@ function addThumbnails(images) {
     });
 }
 
-// Actualizar miniatura activa
+// Actualizar miniatura activa y centrarla
 function updateActiveThumbnail(index) {
-    document.querySelectorAll('.thumbnails img').forEach((img, i) => {
+    const thumbnails = document.querySelectorAll('.thumbnails img');
+    thumbnails.forEach((img, i) => {
         img.classList.toggle('active', i === index);
+    });
+
+    const thumbnail = thumbnails[index];
+    const container = thumbnailsContainer;
+
+    // Centrar la miniatura activa
+    const offset = thumbnail.offsetLeft - (container.clientWidth / 2) + (thumbnail.clientWidth / 2);
+    container.scrollTo({
+        left: offset,
+        behavior: 'smooth' // Desplazamiento suave
     });
 }
 
@@ -205,34 +217,32 @@ function setupFullscreen(images) {
         currentFullscreenIndex = (currentFullscreenIndex + 1) % images.length;
         fullscreenImage.src = images[currentFullscreenIndex];
     });
-
     // Abrir el modal de pantalla completa al hacer clic en la imagen principal
     mainImage.addEventListener('click', () => openFullscreenModal(currentFullscreenIndex));
 }
 
-// Navegación por touch
-function setupTouchNavigation(images) {
-    let startX = 0;
-    let currentIndex = 0;
+// Soporte para desplazamiento táctil
+function setupTouchSupport() {
+    let startX;
 
-    mainImage.addEventListener('touchstart', (e) => {
-        startX = e.touches[0].clientX;
+    mainImage.addEventListener('touchstart', (event) => {
+        startX = event.touches[0].clientX;
     });
 
-    mainImage.addEventListener('touchend', (e) => {
-        const endX = e.changedTouches[0].clientX;
-        const deltaX = endX - startX;
+    mainImage.addEventListener('touchmove', (event) => {
+        const moveX = event.touches[0].clientX;
+        const diffX = startX - moveX;
 
-        if (deltaX > 50) {
-            // Deslizamiento hacia la izquierda (anterior imagen)
-            currentIndex = (currentIndex - 1 + images.length) % images.length;
-        } else if (deltaX < -50) {
-            // Deslizamiento hacia la derecha (siguiente imagen)
-            currentIndex = (currentIndex + 1) % images.length;
+        if (Math.abs(diffX) > 50) { // Umbral para el desplazamiento
+            if (diffX > 0) {
+                // Desplazamiento a la derecha (siguiente imagen)
+                document.getElementById('nextMainImage').click();
+            } else {
+                // Desplazamiento a la izquierda (imagen anterior)
+                document.getElementById('prevMainImage').click();
+            }
+            startX = moveX; // Reiniciar la posición de inicio
         }
-
-        mainImage.src = images[currentIndex];
-        updateActiveThumbnail(currentIndex);
     });
 }
 
