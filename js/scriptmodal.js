@@ -4,6 +4,8 @@ const modalDetails = document.getElementById('modalPropertyDetails');
 const whatsappButton = document.getElementById('whatsappButton');
 const mainImage = document.getElementById('currentImage');
 const thumbnailsContainer = document.querySelector('.thumbnails');
+let images = []; // Inicializa el array de imágenes
+let currentIndex = 0; // Índice actual de la imagen
 
 // Abrir modal con la propiedad
 function openModal(property) {
@@ -83,9 +85,9 @@ function updateModalDetails(property) {
             </div>
              <div class="info-mini-bottom-modal">
                 <p><strong>Aviso:</strong> La información presentada es de carácter informativo y está sujeta a cambios sin previo aviso.<br>
-                Al utilizar nuestra plataforma, reconoces y aceptas cumplir con nuestras <button class="boton-terminos-modal" data-seccion="terminos-de-uso">Condiciones de uso</button> y <button class="boton-terminos-modal" data-seccion="politicas-de-privacidad">Políticas de privacidad</button></p>
+               Al utilizar nuestra plataforma, reconoces y aceptas cumplir con nuestras <button class="boton-terminos-modal" data-seccion="terminos-de-uso">Condiciones de uso</button> y <button class="boton-terminos-modal" data-seccion="politicas-de-privacidad">Políticas de privacidad</button></p>
             </div>
-            <button class="boton-terminos-modal" data-seccion="politicas-de-privacidad">Políticas de privacidad</button></p>
+            <button class="boton-terminos-modal" data-seccion="politicas-de-privacidad">Políticas de privacidad</button>
             </div>
             <div class="info-mini-redes">
                 <h6>Síguenos:</h6>
@@ -110,7 +112,7 @@ function createIconItem(icon, text) {
 
 // Actualizar galería
 function updateGallery(id, imageCount) {
-    let images = createImageArray(id, imageCount);
+    images = createImageArray(id, imageCount); // Asigna las imágenes a la variable global
     clearGallery();
     addThumbnails(images);
     if (images.length > 0) {
@@ -119,7 +121,7 @@ function updateGallery(id, imageCount) {
     }
     setupGalleryNavigation(images);
     setupFullscreen(images);
-    setupTouchSupport();
+    setupTouchAndMouseSupport(); // Inicializa el soporte táctil y de mouse
 }
 
 // Crear array de imágenes
@@ -181,8 +183,6 @@ function updateActiveThumbnail(index) {
 
 // Navegación de la galería
 function setupGalleryNavigation(images) {
-    let currentIndex = 0;
-
     document.getElementById('prevMainImage').addEventListener('click', () => {
         currentIndex = (currentIndex - 1 + images.length) % images.length;
         mainImage.src = images[currentIndex];
@@ -205,88 +205,87 @@ function setupFullscreen(images) {
     function openFullscreenModal(index) {
         currentFullscreenIndex = index;
         fullscreenImage.src = images[currentFullscreenIndex];
-        fullscreenModal.style.display = 'block';
+        fullscreenModal.style.display = "block";
     }
 
     function closeFullscreenModal() {
-        fullscreenModal.style.display = 'none';
+        fullscreenModal.style.display = "none";
     }
 
-    document.querySelector('.close-fullscreen').addEventListener('click', closeFullscreenModal);
-    document.addEventListener('keydown', (event) => {
-        if (event.key === "Escape") {
-            closeFullscreenModal();
-        }
-    });
-
-    document.getElementById('prevFullscreenImage').addEventListener('click', () => {
-        currentFullscreenIndex = (currentFullscreenIndex - 1 + images.length) % images.length;
-        fullscreenImage.src = images[currentFullscreenIndex];
-    });
-
-    document.getElementById('nextFullscreenImage').addEventListener('click', () => {
+    fullscreenImage.addEventListener('click', () => {
         currentFullscreenIndex = (currentFullscreenIndex + 1) % images.length;
         fullscreenImage.src = images[currentFullscreenIndex];
     });
-    // Abrir el modal de pantalla completa al hacer clic en la imagen principal
-    mainImage.addEventListener('click', () => openFullscreenModal(currentFullscreenIndex));
-}
 
-// Soporte para desplazamiento táctil
-function setupTouchSupport() {
-    let startX;
-
-    mainImage.addEventListener('touchstart', (event) => {
-        startX = event.touches[0].clientX;
+    document.getElementById('fullscreenButton').addEventListener('click', () => {
+        openFullscreenModal(currentIndex);
     });
 
-    mainImage.addEventListener('touchmove', (event) => {
-        const moveX = event.touches[0].clientX;
+    fullscreenModal.addEventListener('click', closeFullscreenModal);
+}
+
+// Soporte para desplazamiento táctil y con mouse
+function setupTouchAndMouseSupport() {
+    let startX;
+    let isDragging = false;
+
+    const handleStart = (event) => {
+        startX = event.touches ? event.touches[0].clientX : event.clientX;
+        isDragging = true;
+    };
+
+    const handleMove = (event) => {
+        if (!isDragging) return;
+
+        const moveX = event.touches ? event.touches[0].clientX : event.clientX;
         const diffX = startX - moveX;
 
-        if (Math.abs(diffX) > 50) { // Umbral para el desplazamiento
-            if (diffX > 0) {
-                // Desplazamiento a la derecha (siguiente imagen)
-                document.getElementById('nextMainImage').click();
-            } else {
-                // Desplazamiento a la izquierda (imagen anterior)
-                document.getElementById('prevMainImage').click();
-            }
-            startX = moveX; // Reiniciar la posición de inicio
+        // Mostrar la imagen siguiente/previa parcialmente
+        if (Math.abs(diffX) < 50) {
+            const nextImageIndex = (currentIndex + (diffX < 0 ? -1 : 1) + images.length) % images.length;
+            mainImage.src = images[nextImageIndex];
+            mainImage.style.transform = `translateX(${diffX}px)`; // Desplazamiento cruzado
         }
+    };
+
+    const handleEnd = () => {
+        isDragging = false;
+        mainImage.style.transform = 'translateX(0)'; // Restablecer el desplazamiento
+    };
+
+    mainImage.addEventListener('touchstart', handleStart);
+    mainImage.addEventListener('mousedown', handleStart);
+
+    mainImage.addEventListener('touchmove', handleMove);
+    mainImage.addEventListener('mousemove', (event) => {
+        if (isDragging) handleMove(event);
     });
+
+    mainImage.addEventListener('touchend', handleEnd);
+    mainImage.addEventListener('mouseup', handleEnd);
+    mainImage.addEventListener('mouseleave', handleEnd); // Para manejar el mouse saliendo de la imagen
 }
 
-// Manejar el evento "popstate" para el botón de "atrás"
-window.addEventListener('popstate', (event) => {
-    const modal = document.getElementById('propertyModal');
-    if (modal.style.display === 'block') {
-        closeModal(); // Si el modal está abierto, lo cierra
+// Función de compartir
+function shareProperty() {
+    // Implementa la lógica para compartir la propiedad aquí
+    alert('Función de compartir no implementada.');
+}
+
+// Inicialización
+document.addEventListener('DOMContentLoaded', () => {
+    // Aquí puedes inicializar tu aplicación o cargar datos iniciales
+    // Por ejemplo, agregar eventos a botones de apertura de modal, etc.
+});
+
+// Cerrar modal al hacer clic fuera del contenido
+modal.addEventListener('click', (event) => {
+    if (event.target === modal) {
+        closeModal();
     }
 });
 
-// Verificar ID en la URL al cargar
-window.addEventListener('load', () => {
-    const hash = window.location.hash;
-    if (hash.startsWith('#id-')) {
-        const propertyId = parseInt(hash.substring('#id-'.length));
-        const property = [...alquileres, ...ventas].find(p => p.id === propertyId);
-        if (property) {
-            openModal(property);
-        }
-    }
-});
-
-// Desplazamiento de thumbnails
-window.addEventListener('DOMContentLoaded', () => {
-    const scrollLeftButton = document.querySelector('.scroll-button.left');
-    const scrollRightButton = document.querySelector('.scroll-button.right');
-
-    scrollLeftButton.addEventListener('click', () => {
-        thumbnailsContainer.scrollLeft -= 150;
-    });
-
-    scrollRightButton.addEventListener('click', () => {
-        thumbnailsContainer.scrollLeft += 150;
-    });
+// Manejar el estado de la historia
+window.addEventListener('popstate', () => {
+    closeModal();
 });
