@@ -272,10 +272,10 @@ window.addEventListener('DOMContentLoaded', () => {
     const scrollRightButton = document.querySelector('.scroll-button.right');
 
     scrollLeftButton.addEventListener('click', () => {
-        thumbnailsContainer.scrollLeft -= 150;
+        thumbnailsContainer.scrollLeft -= 10;
     });
 
     scrollRightButton.addEventListener('click', () => {
-        thumbnailsContainer.scrollLeft += 150;
+        thumbnailsContainer.scrollLeft += 10;
     });
 });
