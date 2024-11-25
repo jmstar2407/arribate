@@ -239,10 +239,10 @@ function setupTouchSupport() {
         if (Math.abs(diffX) > 50) { // Umbral para el desplazamiento
             if (diffX > 0) {
                 // Desplazamiento a la derecha (siguiente imagen)
-                document.getElementById('nextMainImage').click();
+                setCurrentImageIndex((currentImageIndex + 1) % images.length);
             } else {
                 // Desplazamiento a la izquierda (imagen anterior)
-                document.getElementById('prevMainImage').click();
+                setCurrentImageIndex((currentImageIndex - 1 + images.length) % images.length);
             }
             startX = moveX; // Reiniciar la posición de inicio
         }
