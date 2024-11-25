@@ -227,16 +227,22 @@ function setupFullscreen() {
 // Soporte para desplazamiento táctil
 function setupTouchSupport() {
     let startX;
+    let isSwiping = false; // Variable para controlar si se está realizando un desplazamiento
 
     mainImage.addEventListener('touchstart', (event) => {
         startX = event.touches[0].clientX;
+        isSwiping = true; // Iniciar el desplazamiento
     });
 
     mainImage.addEventListener('touchmove', (event) => {
+        if (!isSwiping) return; // Si no se está desplazando, no hacer nada
+
         const moveX = event.touches[0].clientX;
         const diffX = startX - moveX;
 
         if (Math.abs(diffX) > 50) { // Umbral para el desplazamiento
+            isSwiping = false; // Deshabilitar el desplazamiento temporalmente
+
             if (diffX > 0) {
                 // Desplazamiento a la derecha (siguiente imagen)
                 document.getElementById('nextMainImage').click();
@@ -244,8 +250,17 @@ function setupTouchSupport() {
                 // Desplazamiento a la izquierda (imagen anterior)
                 document.getElementById('prevMainImage').click();
             }
-            startX = moveX; // Reiniciar la posición de inicio
+
+            // Reiniciar la posición de inicio después de un breve retraso
+            setTimeout(() => {
+                startX = moveX;
+                isSwiping = true; // Reactivar el desplazamiento
+            }, 300); // Ajusta el tiempo según sea necesario
         }
+    });
+
+    mainImage.addEventListener('touchend', () => {
+        isSwiping = false; // Finalizar el desplazamiento
     });
 }
 
