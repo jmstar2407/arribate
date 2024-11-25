@@ -160,11 +160,22 @@ function updateActiveThumbnail(index) {
     const thumbnail = thumbnails[index];
     const container = thumbnailsContainer;
 
-    // Centrar la miniatura activa
-    const offset = thumbnail.offsetLeft - (container.clientWidth / 2) + (thumbnail.clientWidth / 2);
+    // Tamaños y posición
+    const thumbnailRect = thumbnail.getBoundingClientRect(); // Dimensiones de la miniatura activa
+    const containerRect = container.getBoundingClientRect(); // Dimensiones del contenedor
+
+    // Cálculo del desplazamiento
+    const offset =
+        container.scrollLeft + thumbnailRect.left - containerRect.left - (containerRect.width / 2) + (thumbnailRect.width / 2);
+
+    // Asegurarse de no exceder los límites
+    const maxScroll = container.scrollWidth - container.clientWidth;
+    const adjustedOffset = Math.max(0, Math.min(offset, maxScroll));
+
+    // Aplicar el desplazamiento
     container.scrollTo({
-        left: offset,
-        behavior: 'smooth' // Desplazamiento suave
+        left: adjustedOffset,
+        behavior: 'smooth',
     });
 }
 
@@ -272,10 +283,10 @@ window.addEventListener('DOMContentLoaded', () => {
     const scrollRightButton = document.querySelector('.scroll-button.right');
 
     scrollLeftButton.addEventListener('click', () => {
-        thumbnailsContainer.scrollLeft -= 10;
+        thumbnailsContainer.scrollLeft -= 150;
     });
 
     scrollRightButton.addEventListener('click', () => {
-        thumbnailsContainer.scrollLeft += 10;
+        thumbnailsContainer.scrollLeft += 150;
     });
 });
