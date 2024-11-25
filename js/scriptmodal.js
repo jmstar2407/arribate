@@ -235,6 +235,7 @@ function setupFullscreen(images) {
 // Soporte para desplazamiento táctil
 function setupTouchSupport() {
     let startX;
+    let currentIndex = 0; // Índice actual de la imagen
 
     mainImage.addEventListener('touchstart', (event) => {
         startX = event.touches[0].clientX;
@@ -244,19 +245,29 @@ function setupTouchSupport() {
         const moveX = event.touches[0].clientX;
         const diffX = startX - moveX;
 
-        if (Math.abs(diffX) > 50) { // Umbral para el desplazamiento
+        // Si se mueve solo un poco, mostrar la siguiente imagen parcialmente
+        if (Math.abs(diffX) < 50) {
+            const nextImageIndex = (currentIndex + 1) % images.length;
+            mainImage.src = images[nextImageIndex];
+            mainImage.style.transform = `translateX(${diffX}px)`; // Desplazamiento cruzado
+        } else {
+            // Si se desplaza más de 50px, cambiar a la siguiente imagen
             if (diffX > 0) {
                 // Desplazamiento a la derecha (siguiente imagen)
-                document.getElementById('nextMainImage').click();
+                currentIndex = (currentIndex + 1) % images.length;
             } else {
                 // Desplazamiento a la izquierda (imagen anterior)
-                document.getElementById('prevMainImage').click();
+                currentIndex = (currentIndex - 1 + images.length) % images.length;
             }
-            startX = moveX; // Reiniciar la posición de inicio
+            mainImage.src = images[currentIndex];
+            mainImage.style.transform = 'translateX(0)'; // Restablecer el desplazamiento
         }
     });
-}
 
+    mainImage.addEventListener('touchend', () => {
+        mainImage.style.transform = 'translateX(0)'; // Restablecer al finalizar el toque
+    });
+}
 // Manejar el evento "popstate" para el botón de "atrás"
 window.addEventListener('popstate', (event) => {
     const modal = document.getElementById('propertyModal');
