@@ -4,323 +4,792 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard de Contabilidad - Paris Laundry</title>
-  <link rel="stylesheet" href="./css/styles_contabilidad.css">
+  <title>Inventario - Paris Laundry</title>
+  <link rel="stylesheet" href="./css/styles.css">
   <script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore-compat.js"></script>
+
   <style>
-  body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 20px;
-    background-color: #f0c8e8;
-  }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #f0c8e8;
+    }
 
-  h1 {
-    color: #333;
-  }
+    h1 {
+      color: #333;
+    }
 
-  .button-list {
-    margin-top: 20px;
-  }
+    .BarraMenu {
+      position: relative;
+      height: 60px;
+      width: 100%;
+      background: white;
+      margin-bottom: 14px;
+      border-radius: 0px 0px 14px 14px;
+      display: inline-flex;
+    }
 
-  .button-list button {
-    padding: 10px;
-    margin-right: 10px;
-    cursor: pointer;
-  }
+    .MasterBox0 {
+      position: relative;
+      top: 0px;
+      width: 100%;
+      margin: 0 auto;
+      max-width: 1500px;
+      background: #ffffff00;
+    }
 
-  .transaction-list {
-    margin-top: 20px;
-  }
+    .MasterBox {
+      display: flex;
+      width: 100%;
+      background: #ffffff00;
+      gap: 14px;
+    }
 
-  .transaction-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    background: #fff;
-  }
+    .product-list {
+      margin-top: 20px;
+    }
 
-  .modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgb(0, 0, 0);
-    background-color: rgba(0, 0, 0, 0.4);
-    padding-top: 60px;
-  }
+    .button-list {
+      margin-top: 20px;
+    }
 
-  .modal-content {
+    .button-list button {
+      padding: 10px;
+      margin-right: 10px;
+      cursor: pointer;
+    }
+
+    /* Estilos del modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgb(0, 0, 0);
+      background-color: rgba(0, 0, 0, 0.4);
+      padding-top: 60px;
+    }
+
+
+    .modal-content-addProduct {
+      background-color: #fefefe;
+      margin: 5% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 500px;
+      border-radius: 10px;
+    }
+
+    .modal-content-editProduct {
+      background-color: #fefefe;
+      margin: 5% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 500px;
+      border-radius: 10px;
+    }
+
+    .modal-historialInvetario {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgb(0, 0, 0);
+      background-color: rgb(0 0 0 / 64%);
+    }
+
+    .modal-content-historialInvetario {
     background-color: #fefefe;
-    margin: 5% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 500px;
+    width: 75%;
+    height: 85%;
+    max-width: 1080px;
     border-radius: 10px;
-  }
+    overflow: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+}
 
-  .close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-  }
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      position: absolute;
+    top: 0px;
+    right: 0px;
+    margin: 4px 6px;
+    background: #ff4c4c;
+    padding: 0px 15px;
+    border-radius: 6px;
+    color: #ffffff;
+    transition: 0.2s;
+}
+    
 
-  .close:hover,
-  .close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-  }
+    .close:hover,
+    .close:focus {
+      background: red;
+      text-decoration: none;
+      cursor: pointer;
+      transition: 0.2s;
+    }
 
-  .filter {
-    margin-top: 20px;
-  }
+    .history-list {
+      margin-top: 20px;
+    }
 
-  .filter input {
-    padding: 5px;
-    margin-right: 10px;
-  }
+    .history-item {
+      padding: 10px;
+      border-radius: 7px;
+      margin-bottom: 10px;
+      background: #fff;
+    }
 
-  .summary {
-    margin-top: 20px;
-    padding: 10px;
-    border: 1px solid #ddd;
+    .product-item {
+      display: grid;
+      grid-template-columns: 0.1fr 0.1fr 3fr 7fr 1fr 1fr 0.1fr 0.1fr;
+      border-radius: 10px;
+      background: #e6f3ff;
+      align-items: center;
+      margin-bottom: 10px;
+      overflow: hidden;
+      box-shadow: 0px 0px 0px 1px rgb(186 216 243);
+    }
+
+    .product-item:hover {
+      cursor: grab;
+      background: #aeccfd;
+      transition: 0.3s;
+    }
+
+    .product-item:active {
+      cursor: grabbing;
+      transition: 0.3s;
+    }
+
+    .product-item>div {
+      padding: 10px;
+    }
+
+    .product-item div {
+      display: flex;
+      align-items: center;
+      flex-direction: row;
+    }
+
+    .product-item>div:not(:last-child) {
+      border-right: 1px solid #ddd;
+    }
+
+    .product-item.dragging {
+      opacity: 1;
+      /* Efecto visual al arrastrar */
+      background: #81b2ff;
+    }
+
+    .container_inventario {
+      width: 100%;
+      position: relative;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      background: #ffffff;
+      height: calc(100vh - 74px);
+      display: flex;
+      flex-direction: column;
+      border-radius: 14px;
+      margin: 0 auto;
+    }
+
+    .panelfacturacion_tittle,
+    .modalInvetario_tittle {
+      height: 40px;
+      background: #ffffff00;
+      border-bottom: 1px solid rgb(221 221 221);
+    }
+
+    .modalInvetario_tittle h2 {
+    margin-block-start: 0px;
+    margin-block-end: 0px;
+    text-align: center;
+    color: #000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+    .panelfacturacion_down,
+    .modalInvetario_down
+     {
+      width: 100%;
+      background: #ffffff00;
+      border-top: 1px solid hsl(208.13deg 44.59% 87.48%);
+    }
+
+    .modalInvetario_down p {
+    margin-block-start: 7px;
+    margin-block-end: 7px;
+    font-size: 14px;
+    text-align: center;
+}
+
+    .panelfacturacion_body,
+    .modalInvetario_body {
+      overflow: auto;
+      flex: 1;
+      padding: 0px 30px 60px 30px;
+    }
+
+    #btnEliminarProduct{
+      background: #fb7f7f;
+    border: none;
+    padding: 5px 7px;
     border-radius: 5px;
-    background: #fff;
-  }
+    transition: 0.3s;
+    }
+
+    #btnEliminarProduct:hover {
+      cursor: pointer;
+      background: #eb5a5a;
+      transition: 0.3s;
+    }
+
+    #addProductButton, #viewHistoryButton {
+      background: #a6e6ff;
+    border: none;
+    border-radius: 7px;
+    font-weight: bold;
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 7px;
+    font-size: 14px;
+    gap: 5px;
+    transition: 0.3s;
+}
+
+#addProductButton:hover, #viewHistoryButton:hover {
+      background: #6ac9ee;
+      transition: 0.3s;
+}
+
+#addProductButton img, #viewHistoryButton img  {
+  position: relative;
+    height: 32px;
+}
+
+
   </style>
 </head>
 
 <body>
-    <h1>Dashboard de Contabilidad y Facturación</h1>
-  
-    <div class="button-list">
-      <button id="addTransactionButton">Agregar Transacción</button>
-    </div>
-  
-    <div class="filter">
-      <label for="startDate">Desde:</label>
-      <input type="date" id="startDate">
-      <label for="endDate">Hasta:</label>
-      <input type="date" id="endDate">
-      <button id="filterButton">Filtrar</button>
-    </div>
-  
-    <div class="summary" id="summary">
-      <h2>Resumen</h2>
-      <p>Total Ingresos: RD$<span id="totalIncome">0.00</span></p>
-      <p>Total Gastos: RD$<span id="totalExpenses">0.00</span></p>
-      <p>Balance: RD$<span id="balance">0.00</span></p>
-    </div>
-  
-  
-    <h2>Transacciones</h2>
-  
-    <div class="transaction-list" id="combinedTransactionList"></div>
 
 
-<!-- Modal para agregar transacción -->
-<div id="addTransactionModal" class="modal">
-  <div class="modal-content">
-    <span class="close" id="closeModal">&times;</span>
-    <h2>Agregar Nueva Transacción</h2>
-    <label for="transactionType">Tipo:</label>
-    <select id="transactionType">
-      <option value="income">Ingreso</option>
-      <option value="expense">Gasto</option>
-    </select>
-    <br>
-    <label for="transactionAmount">Monto:</label>
-    <input type="number" id="transactionAmount" placeholder="Monto" step="0.01">
-    <br>
-    <label for="transactionDate">Fecha:</label>
-    <input type="date" id="transactionDate">
-    <br>
-    <label for="transactionDescription">Detalles:</label>
-    <textarea id="transactionDescription" placeholder="Descripción de la transacción"></textarea>
-    <br><br>
-    <button id="submitTransactionButton">Agregar Transacción</button>
+  <div class="MasterBox0">
+
+    <div class="BarraMenu">
+      <img src="./img/Paris Laundry 1.png" style="height: 60px; margin-left: 70px;">
+
+      <h1>Paris Laundry</h1>
+
+      <div class="linediv"></div>
+
+      <button>Facturación</button>
+      <button>Facturas Generadas</button>
+      <button style="color: #0078df;">Inventario</button>
+
+      <div class="linediv" style="position: absolute;right: 230px;"></div>
+
+      <div id="dateTime">
+        <h1 id="time">--:--:--</h1>
+        <p id="date">Cargando fecha...</p>
+      </div>
+
+    </div>
+
+    <div class="container_inventario ">
+
+      <div class="panelfacturacion_tittle">
+        <h2>Inventario</h2>
+      </div>
+
+      <div class="panelfacturacion_body">
+
+        <div class="button-list">
+          <button id="addProductButton"><img src="./img/icon/mas.png">Añadir Producto</button>
+          <button id="viewHistoryButton"><img src="./img/icon/historial-de-pedidos.png">Ver Historial de Inventario</button>
+        </div>
+
+        <div class="product-list" id="productList"></div>
+
+      </div>
+
+      <div class="panelfacturacion_down">
+        <p>© Paris Laundry RD - 2025</p>
+      </div>
+
+    </div>
+
+    <!-- Modal para agregar producto -->
+    <div id="addProductModal" class="modal">
+      <div class="modal-content-addProduct">
+        <span class="close" id="closeModal">&times;</span>
+        <h2>Agregar Nuevo Producto</h2>
+        <label for="newProductName">Nombre:</label>
+        <input type="text" id="newProductName" placeholder="Nombre del producto">
+        <br>
+        <label for="newProductDetails">Detalles:</label>
+        <input type="text" id="newProductDetails" placeholder="Detalles del producto">
+        <br>
+        <label for="newProductPrice">Precio:</label>
+        <input type="number" id="newProductPrice" placeholder="Precio" step="0.01">
+        <br>
+        <label for="newProductQuantity">Cantidad:</label>
+        <input type="number" id="newProductQuantity" placeholder="Cantidad" min="0">
+        <br><br>
+        <button id="submitProductButton">Agregar Producto</button>
+      </div>
+    </div>
+
+    <!-- Modal para editar producto -->
+    <div id="editProductModal" class="modal">
+      <div class="modal-content-editProduct">
+        <span class="close" id="closeEditModal">&times;</span>
+        <h2>Editar Producto</h2>
+        <div id="editProductId"></div> <!-- Mostrar el ID aquí -->
+        <label for="editProductName">Nombre:</label>
+        <input type="text" id="editProductName" placeholder="Nombre del producto">
+        <br>
+        <label for="editProductDetails">Detalles:</label>
+        <input type="text" id="editProductDetails" placeholder="Detalles del producto">
+        <br>
+        <label for="editProductPrice">Precio:</label>
+        <input type="number" id="editProductPrice" placeholder="Precio" step="0.01">
+        <br>
+        <label for="editProductQuantity">Cantidad:</label>
+        <input type="number" id="editProductQuantity" placeholder="Cantidad" min="0">
+        <br><br>
+        <button id="updateProductButton">Actualizar</button>
+      </div>
+    </div>
+
+    <!-- Modal para ver historial de inventario -->
+    <div id="historyModal" class="modal-historialInvetario ">
+      <div class="modal-content-historialInvetario">
+
+        <div class="modalInvetario_tittle">
+          <h2>Historial de Inventario</h2>
+          <span class="close" id="closeHistoryModal">&times;</span>
+        </div>
+
+        <div class="modalInvetario_body">
+        <div class="history-list" id="historyList"></div>
+      </div>
+
+      <div class="modalInvetario_down">
+        <p>© Paris Laundry RD</p>
+      </div>
+
+      </div>
+    </div>
+
   </div>
-</div>
+
+  <script>
+    // Configuración de Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyDdG-CP2kO3v-zkkjD17Wj028QJvjp54qY",
+      authDomain: "paris-laundry.firebaseapp.com",
+      projectId: "paris-laundry",
+      storageBucket: "paris-laundry.appspot.com",
+      messagingSenderId: "1022712814457",
+      appId: "1:1022712814457:web:7bddb47ed46bac22c32da8"
+    };
+
+    // Inicializar Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const productList = document.getElementById("productList");
+    const addProductModal = document.getElementById("addProductModal");
+    const closeModal = document.getElementById("closeModal");
+    const submitProductButton = document.getElementById("submitProductButton");
+    const editProductModal = document.getElementById("editProductModal");
+    const closeEditModal = document.getElementById("closeEditModal");
+    const updateProductButton = document.getElementById("updateProductButton");
+    const historyModal = document.getElementById("historyModal");
+    const closeHistoryModal = document.getElementById("closeHistoryModal");
+    const historyList = document.getElementById("historyList");
+
+    let currentEditingProductId = null;
+    let draggingElement = null; // Elemento que se está arrastrando
+
+    // Cargar productos desde Firestore
+    const loadProducts = () => {
+      db.collection("productos").orderBy("ordenNum", "asc").onSnapshot((snapshot) => {
+        productList.innerHTML = ""; // Limpiar la lista antes de cargar
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          const productItem = document.createElement("div");
+          productItem.classList.add("product-item");
+          productItem.setAttribute("draggable", true); // Hacer el elemento arrastrable
+          productItem.setAttribute("data-id", doc.id); // Guardar el ID del producto
+          productItem.innerHTML = `
   
-    <script>
-      // Configuración de Firebase
-      const firebaseConfig = {
-        apiKey: "AIzaSyDdG-CP2kO3v-zkkjD17Wj028QJvjp54qY",
-        authDomain: "paris-laundry.firebaseapp.com",
-        projectId: "paris-laundry",
-        storageBucket: "paris-laundry.appspot.com",
-        messagingSenderId: "1022712814457",
-        appId: "1:1022712814457:web:7bddb47ed46bac22c32da8"
-      };
-  
-      // Inicializar Firebase
-      firebase.initializeApp(firebaseConfig);
-      const db = firebase.firestore();
-  
-      const transactionList = document.getElementById("transactionList");
-      const invoiceList = document.getElementById("invoiceList");
-      const addTransactionModal = document.getElementById("addTransactionModal");
-      const closeModal = document.getElementById("closeModal");
-      const submitTransactionButton = document.getElementById("submitTransactionButton");
-      const filterButton = document.getElementById("filterButton");
-      const totalIncomeElement = document.getElementById("totalIncome");
-      const totalExpensesElement = document.getElementById("totalExpenses");
-      const balanceElement = document.getElementById("balance");
-  
- // Cargar transacciones y facturas desde Firestore
- const loadTransactions = () => {
-      const combinedTransactions = []; // Array para almacenar transacciones combinadas
-      const startDate = document.getElementById("startDate").value ? new Date(document.getElementById("startDate").value) : null;
-      const endDate = document.getElementById("endDate").value ? new Date(document.getElementById("endDate").value) : null;
+          <div style="background: #b3c5ef;height: 100%;">${data.ordenNum}</div>
+          <div><strong>${data.id}</strong></div>
+          <div><strong>${data.nombre}</strong></div> 
+          <div>${data.detalles}</div> 
+          <div style="flex-direction: column;">Precio:<br><strong>RD$${data.precio}</strong></div>
+          <div style="flex-direction: column;">Stock:<br><strong>${data.cantidad}</strong></div> 
 
-      let totalIncome = 0;
-      let totalExpenses = 0;
 
-      // Cargar transacciones
-      let transactionsQuery = db.collection("transacciones").orderBy("date", "desc");
+        <div><button onclick="openEditModal('${doc.id}', '${data.id}', '${data.nombre}', '${data.detalles}', ${data.precio}, ${data.cantidad})">Editar</button></div>
+        <div><button id="btnEliminarProduct" onclick="deleteProduct('${doc.id}')">X</button></div>
+        
+      `;
+          productList.appendChild(productItem);
+        });
 
-      if (startDate && endDate) {
-          transactionsQuery = transactionsQuery.where("date", ">=", startDate).where("date", "<=", endDate);
-      }
-
-      transactionsQuery.get()
-          .then((snapshot) => {
-              snapshot.forEach((doc) => {
-                  const data = doc.data();
-                  combinedTransactions.push({
-                      type: "transaction",
-                      amount: data.amount,
-                      date: data.date.toDate(),
-                      description: data.type === "income" ? "Ingreso" : "Gasto"
-                  });
-                  if (data.type === "income") {
-                      totalIncome += data.amount;
-                  } else {
-                      totalExpenses += data.amount;
-                  }
-              });
-
-              // Cargar facturas
-              let invoicesQuery = db.collection("facturas").orderBy("timestamp", "desc");
-
-              if (startDate && endDate) {
-                  invoicesQuery = invoicesQuery.where("timestamp", ">=", startDate.toISOString()).where("timestamp", "<=", endDate.toISOString());
-              }
-
-              return invoicesQuery.get();
-          })
-          .then((snapshot) => {
-              snapshot.forEach((doc) => {
-                  const data = doc.data();
-                  combinedTransactions.push({
-                      type: "invoice",
-                      amount: data.total,
-                      date: new Date(data.timestamp),
-                      description: `Factura - Cliente: ${data.clientName}`
-                  });
-                  totalIncome += data.total; // Sumar el total de la factura a los ingresos
-              });
-
-              // Ordenar las transacciones combinadas por fecha
-              combinedTransactions.sort((a, b) => b.date - a.date); // Ordenar de más reciente a más antiguo
-
-              // Limitar a las últimas 10 transacciones
-              const lastTenTransactions = combinedTransactions.slice(0, 10);
-
-              // Limpiar la lista antes de cargar
-              const combinedTransactionList = document.getElementById("combinedTransactionList");
-              combinedTransactionList.innerHTML = "";
-
-              // Mostrar transacciones combinadas
-              lastTenTransactions.forEach(item => {
-                  const transactionItem = document.createElement("div");
-                  transactionItem.classList.add("transaction-item");
-                  transactionItem.innerHTML = `
-                      <div>
-                          ${item.description} - RD$${item.amount.toFixed(2)} - Fecha: ${item.date.toLocaleDateString()}
-                      </div>
-                  `;
-                  combinedTransactionList.appendChild(transactionItem);
-              });
-
-              // Actualizar resumen
-              updateSummary(totalIncome, totalExpenses);
-          });
-  };
-  
-      // Actualizar el resumen
-      const updateSummary = (totalIncome, totalExpenses) => {
-        totalIncomeElement.textContent = totalIncome.toFixed(2);
-        totalExpensesElement.textContent = totalExpenses.toFixed(2);
-        balanceElement.textContent = (totalIncome - totalExpenses).toFixed(2);
-      };
-  
-// Agregar una nueva transacción
-const addTransaction = () => {
-  const type = document.getElementById("transactionType").value;
-  const amount = parseFloat(document.getElementById("transactionAmount").value);
-  const date = new Date(document.getElementById("transactionDate").value);
-  const description = document.getElementById("transactionDescription").value; // Obtener la descripción
-
-  if (!isNaN(amount) && date) {
-    db.collection("transacciones").add({
-      type,
-      amount,
-      date,
-      description // Agregar la descripción a la transacción
-    }).then(() => {
-      alert("Transacción agregada correctamente.");
-      closeModal.click(); // Cerrar el modal
-      document.getElementById("transactionAmount").value = ""; // Limpiar campos
-      document.getElementById("transactionDate").value = "";
-      document.getElementById("transactionDescription").value = ""; // Limpiar descripción
-      loadTransactions(); // Recargar transacciones
-    }).catch((error) => {
-      console.error("Error al agregar la transacción: ", error);
-      alert("Hubo un problema al agregar la transacción.");
-    });
-  } else {
-    alert("Por favor, completa todos los campos correctamente.");
-  }
-};
-  
-      // Evento para abrir el modal de agregar transacción
-      document.getElementById("addTransactionButton").addEventListener("click", () => {
-        addTransactionModal.style.display = "block";
+        // Agregar eventos de drag and drop a los productos
+        addDragAndDropEvents();
       });
-  
-      // Evento para cerrar el modal de agregar transacción
-      closeModal.addEventListener("click", () => {
-        addTransactionModal.style.display = "none";
+    };
+
+    // Agregar eventos de drag and drop
+    const addDragAndDropEvents = () => {
+      const items = document.querySelectorAll(".product-item");
+
+      items.forEach((item) => {
+        item.addEventListener("dragstart", handleDragStart);
+        item.addEventListener("dragover", handleDragOver);
+        item.addEventListener("drop", handleDrop);
+        item.addEventListener("dragend", handleDragEnd);
       });
-  
-      // Evento para agregar la transacción desde el modal
-      submitTransactionButton.addEventListener("click", addTransaction);
-  
-      // Evento para filtrar transacciones
-      filterButton.addEventListener("click", loadTransactions);
-  
-      // Cargar transacciones y facturas al iniciar
-      loadTransactions();
-  
-      // Cerrar el modal si se hace clic fuera de él
-      window.onclick = function (event) {
-        if (event.target === addTransactionModal) {
-          addTransactionModal.style.display = "none";
+    };
+
+    // Manejar el inicio del arrastre
+    const handleDragStart = (e) => {
+      draggingElement = e.target;
+      e.target.classList.add("dragging"); // Aplicar estilo al arrastrar
+      e.dataTransfer.setData("text/plain", e.target.getAttribute("data-id")); // Guardar el ID del producto
+    };
+
+    // Manejar el arrastre sobre otro elemento
+    const handleDragOver = (e) => {
+      e.preventDefault();
+      const target = e.target.closest(".product-item");
+      if (target && target !== draggingElement) {
+        const rect = target.getBoundingClientRect();
+        const nextPosition = (e.clientY - rect.top) / rect.height > 0.5 ? "after" : "before";
+
+        if (nextPosition === "before") {
+          productList.insertBefore(draggingElement, target);
+        } else {
+          productList.insertBefore(draggingElement, target.nextSibling);
         }
-      };
-    </script>
+      }
+    };
+
+    // Manejar el soltar el elemento
+    const handleDrop = async (e) => {
+      e.preventDefault();
+      const droppedId = e.dataTransfer.getData("text/plain");
+
+      // Obtener la nueva posición del producto arrastrado
+      const newIndex = Array.from(productList.children).indexOf(draggingElement);
+
+      // Obtener todos los productos de la lista
+      const products = Array.from(productList.children);
+
+      // Reasignar los números de orden
+      products.forEach((product, index) => {
+        const productId = product.getAttribute("data-id");
+        const newOrdenNum = index + 1; // Nuevo número de orden
+
+        // Actualizar el número de orden en Firestore
+        db.collection("productos").doc(productId).update({ ordenNum: newOrdenNum });
+      });
+
+      // Recargar la lista para reflejar los cambios
+      loadProducts();
+    };
+
+    // Manejar el final del arrastre
+    const handleDragEnd = (e) => {
+      e.target.classList.remove("dragging"); // Quitar el estilo de arrastre
+      draggingElement = null;
+    };
+
+    // Agregar un nuevo producto
+    const addProduct = async () => {
+      const nombre = document.getElementById("newProductName").value;
+      const detalles = document.getElementById("newProductDetails").value;
+      const precio = parseFloat(document.getElementById("newProductPrice").value);
+      const cantidad = parseInt(document.getElementById("newProductQuantity").value);
+
+      if (nombre && detalles && !isNaN(precio) && !isNaN(cantidad)) {
+        // Obtener el último id
+        const lastProduct = await db.collection("productos").orderBy("id", "desc").limit(1).get();
+        let newId = 1;
+
+        if (!lastProduct.empty) {
+          newId = parseInt(lastProduct.docs[0].data().id) + 1; // Incrementar el último id
+        }
+
+        // Formatear el nuevo ID con ceros a la izquierda
+        const formattedId = newId.toString().padStart(4, '0'); // Asegurarse de que tenga 4 dígitos
+
+        db.collection("productos").add({
+          id: formattedId, // Usar el ID formateado
+          nombre,
+          detalles,
+          precio,
+          cantidad,
+          ordenNum: newId // Puedes usar el mismo id como ordenNum si lo deseas
+        }).then((docRef) => {
+          // Registrar en el historial de inventario
+          db.collection("historialInventario").add({
+            id: formattedId, // Guardar el ID del producto
+            action: "entrada",
+            nombre: nombre,
+            detalles: detalles,
+            precio: precio,
+            cantidad: cantidad,
+            date: new Date()
+          });
+          alert("Producto agregado correctamente.");
+          closeModal.click(); // Cerrar el modal
+          clearModalFields(); // Limpiar campos del modal
+        }).catch((error) => {
+          console.error("Error al agregar el producto: ", error);
+          alert("Hubo un problema al agregar el producto.");
+        });
+      } else {
+        alert("Por favor, completa todos los campos correctamente.");
+      }
+    };
+
+    // Limpiar campos del modal
+    const clearModalFields = () => {
+      document.getElementById("newProductName").value = "";
+      document.getElementById("newProductDetails").value = "";
+      document.getElementById("newProductPrice").value = "";
+      document.getElementById("newProductQuantity").value = "";
+    };
+
+    // Abrir el modal de edición
+    const openEditModal = (id, productId, nombre, detalles, precio, cantidad) => {
+      currentEditingProductId = id;
+      document.getElementById("editProductName").value = nombre;
+      document.getElementById("editProductDetails").value = detalles;
+      document.getElementById("editProductPrice").value = precio;
+      document.getElementById("editProductQuantity").value = cantidad;
+      // Puedes mostrar el ID en el modal si lo deseas
+      document.getElementById("editProductId").innerText = `ID: ${productId}`;
+      editProductModal.style.display = "block";
+    };
+
+    // Actualizar un producto
+    const updateProduct = async () => {
+      const nombre = document.getElementById("editProductName").value;
+      const detalles = document.getElementById("editProductDetails").value;
+      const precio = parseFloat(document.getElementById("editProductPrice").value);
+      const cantidad = parseInt(document.getElementById("editProductQuantity").value);
+
+      if (nombre && detalles && !isNaN(precio) && !isNaN(cantidad)) {
+        // Obtener el documento del producto actual
+        const productDoc = await db.collection("productos").doc(currentEditingProductId).get();
+        const previousData = productDoc.data();
+
+        // Crear un objeto para almacenar los cambios
+        const changes = {
+          id: previousData.id, // Guardar el ID del producto
+          action: "actualización",
+          date: new Date()
+        };
+
+        // Verificar qué campos han cambiado y almacenar los cambios
+        if (nombre !== previousData.nombre) {
+          changes.nombreAnterior = previousData.nombre;
+          changes.nombreNuevo = nombre;
+        }
+        if (detalles !== previousData.detalles) {
+          changes.detallesAnterior = previousData.detalles;
+          changes.detallesNuevo = detalles;
+        }
+        if (precio !== previousData.precio) {
+          changes.precioAnterior = previousData.precio;
+          changes.precioNuevo = precio;
+        }
+        if (cantidad !== previousData.cantidad) {
+          changes.cantidadAnterior = previousData.cantidad;
+          changes.cantidadNuevo = cantidad;
+        }
+
+        // Actualizar el producto en Firestore
+        await db.collection("productos").doc(currentEditingProductId).update({
+          nombre,
+          detalles,
+          precio,
+          cantidad
+        });
+
+        // Registrar en el historial de inventario solo si hay cambios
+        if (Object.keys(changes).length > 3) { // Asegurarse de que haya cambios
+          await db.collection("historialInventario").add(changes);
+        }
+
+        alert("Producto actualizado correctamente.");
+        closeEditModal.click(); // Cerrar el modal
+      } else {
+        alert("Por favor, completa todos los campos correctamente.");
+      }
+    };
+
+    // Eliminar un producto
+    const deleteProduct = async (id) => {
+      if (confirm("¿Estás seguro de que deseas eliminar este producto?")) {
+        const productDoc = await db.collection("productos").doc(id).get();
+        const productData = productDoc.data();
+
+        db.collection("productos").doc(id).delete()
+          .then(() => {
+            // Registrar en el historial de inventario
+            db.collection("historialInventario").add({
+              id: productData.id, // Guardar el ID del producto
+              action: "eliminación",
+              nombre: productData.nombre,
+              detalles: productData.detalles,
+              precio: productData.precio,
+              cantidad: productData.cantidad,
+              date: new Date()
+            });
+            alert("Producto eliminado correctamente.");
+          }).catch((error) => {
+            console.error("Error al eliminar el producto: ", error);
+            alert("Hubo un problema al eliminar el producto.");
+          });
+      }
+    };
+
+    // Ver historial de inventario
+    const viewHistory = () => {
+      historyList.innerHTML = ""; // Limpiar la lista antes de cargar
+      db.collection("historialInventario").orderBy("date", "desc").onSnapshot((snapshot) => {
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          const historyItem = document.createElement("div");
+          historyItem.classList.add("history-item");
+
+          // Cambiar el color de fondo y agregar sombra según la acción
+          switch (data.action) {
+            case "actualización":
+              historyItem.style.backgroundColor = "#e6f3ff"; // Azul para actualizaciones
+              historyItem.style.boxShadow = "0px 0px 0px 1px #bad8f3"; // Sombra azul
+              break;
+            case "entrada":
+              historyItem.style.backgroundColor = "#05e10530"; // Verde para entradas
+              historyItem.style.boxShadow = "0px 0px 0px 1px rgb(0 255 0 / 71%)"; // Sombra verde
+              break;
+            case "eliminación":
+              historyItem.style.backgroundColor = "#ff000017"; // Rojo para eliminaciones
+              historyItem.style.boxShadow = "0px 0px 0px 1px rgba(255, 0, 0, 0.5)"; // Sombra roja
+              break;
+            default:
+              historyItem.style.backgroundColor = "#fff"; // Blanco por defecto
+              historyItem.style.boxShadow = "none"; // Sin sombra por defecto
+          }
+
+          let changesDescription = `<strong>ID:</strong> ${data.id}<br><strong>Acción:</strong> ${data.action}<br><strong>Fecha:</strong> ${data.date.toDate().toLocaleString()}`;
+
+          // Mostrar información completa si la acción es "entrada" o "eliminación"
+          if (data.action === "entrada" || data.action === "eliminación") {
+            changesDescription += `<br><strong>Nombre:</strong> ${data.nombre}<br><strong>Detalles:</strong> ${data.detalles}<br><strong>Precio:</strong> RD$${data.precio}<br><strong>Cantidad:</strong> ${data.cantidad}`;
+          } else if (data.action === "actualización") {
+            // Mostrar solo los cambios relevantes para actualizaciones
+            if (data.nombreAnterior) {
+              changesDescription += `<br><strong>Cambio de nombre:</strong> "${data.nombreAnterior}" a "${data.nombreNuevo}"`;
+            }
+            if (data.detallesAnterior) {
+              changesDescription += `<br><strong>Cambio de detalles:</strong> "${data.detallesAnterior}" a "${data.detallesNuevo}"`;
+            }
+            if (data.precioAnterior) {
+              changesDescription += `<br><strong>Cambio de precio:</strong> RD$${data.precioAnterior} a RD$${data.precioNuevo}`;
+            }
+            if (data.cantidadAnterior) {
+              changesDescription += `<br><strong>Cambio de cantidad:</strong> ${data.cantidadAnterior} a ${data.cantidadNuevo}`;
+            }
+          }
+
+          historyItem.innerHTML = `<div>${changesDescription}</div>`;
+          historyList.appendChild(historyItem);
+        });
+      });
+      historyModal.style.display = "block"; // Mostrar el modal del historial
+    };
+
+    // Evento para abrir el modal de agregar producto
+    document.getElementById("addProductButton").addEventListener("click", () => {
+      addProductModal.style.display = "block";
+    });
+
+    // Evento para ver el historial de inventario
+    document.getElementById("viewHistoryButton").addEventListener("click", viewHistory);
+
+    // Evento para cerrar el modal de agregar producto
+    closeModal.addEventListener("click", () => {
+      addProductModal.style.display = "none";
+      clearModalFields(); // Limpiar campos al cerrar
+    });
+
+    // Evento para agregar el producto desde el modal
+    submitProductButton.addEventListener("click", addProduct);
+
+    // Evento para cerrar el modal de editar producto
+    closeEditModal.addEventListener("click", () => {
+      editProductModal.style.display = "none";
+    });
+
+    // Evento para actualizar el producto desde el modal
+    updateProductButton.addEventListener("click", updateProduct);
+
+    // Evento para cerrar el modal de historial
+    closeHistoryModal.addEventListener("click", () => {
+      historyModal.style.display = "none";
+    });
+
+    // Cargar productos al iniciar
+    loadProducts();
+
+    // Cerrar el modal si se hace clic fuera de él
+    // window.onclick = function (event) {
+    //    if (event.target === addProductModal) {
+    //     addProductModal.style.display = "none";
+    //     clearModalFields(); // Limpiar campos al cerrar
+    //    } else if (event.target === editProductModal) {
+    //      editProductModal.style.display = "none";
+    //  } else if (event.target === historyModal) {
+    //    historyModal.style.display = "none";
+    //   }
+    //  };
+  </script>
 </body>
 
 </html>
